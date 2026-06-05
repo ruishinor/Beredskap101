@@ -1,0 +1,21 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Ingestion report artifacts (review locally before publishing curated dataset)
+src/data/processedAssets.rejected.json
+src/data/processedAssets.ingest-report.json
+
+# Raw scrape/browser sidecar noise should never enter app repo
+*.download
+*.crdownload
+*_files/
+
+# Browser automation artifacts
+playwright-report/
+test-results/playwright/

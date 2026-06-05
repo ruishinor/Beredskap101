@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "packageId": "norway-basemap-v1",
+  "mode": "local-public-file",
+  "styleUrl": "/maps/norway-style.json",
+  "archiveUrl": "/maps/norway.pmtiles",
+  "minArchiveBytes": 1048576,
+  "installedAt": "2026-06-03T00:00:00.000Z",
+  "lastUpdatedAt": "2026-06-03T00:00:00.000Z",
+  "staleAfterDays": 180
+}

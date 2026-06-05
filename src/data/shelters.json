@@ -1,0 +1,3894 @@
+[
+  {
+    "romnr": "776",
+    "plasser": 400,
+    "adresse": "Trimv. 09 - Borre Idrettspark (off)",
+    "lat": 59.404915,
+    "lng": 10.462108
+  },
+  {
+    "romnr": "777",
+    "plasser": 390,
+    "adresse": "Torget 6",
+    "lat": 59.417183,
+    "lng": 10.483879
+  },
+  {
+    "romnr": "785",
+    "plasser": 370,
+    "adresse": "Vestre Braarudgt. 6b - Åsheim",
+    "lat": 59.4177,
+    "lng": 10.479063
+  },
+  {
+    "romnr": "786",
+    "plasser": 215,
+    "adresse": "Vognmannsgt. 1 - Trygdegården",
+    "lat": 59.415724,
+    "lng": 10.483809
+  },
+  {
+    "romnr": "787",
+    "plasser": 800,
+    "adresse": "Langgt. 14",
+    "lat": 59.489427,
+    "lng": 10.315461
+  },
+  {
+    "romnr": "788",
+    "plasser": 159,
+    "adresse": "Badeparken 7 - Bøkeskogen eldresenter",
+    "lat": 59.057097,
+    "lng": 10.029484
+  },
+  {
+    "romnr": "789",
+    "plasser": 265,
+    "adresse": "Byskogv. 5 - Byskogen Bo- og aktivitetssenter",
+    "lat": 59.053505,
+    "lng": 10.036693
+  },
+  {
+    "romnr": "791",
+    "plasser": 128,
+    "adresse": "Øvre Dr. Holms vei 44 - KUF-huset",
+    "lat": 59.056225,
+    "lng": 10.047809
+  },
+  {
+    "romnr": "793",
+    "plasser": 220,
+    "adresse": "Nordbyveien 27 - Hagatun grendehus",
+    "lat": 59.077853,
+    "lng": 10.049947
+  },
+  {
+    "romnr": "794",
+    "plasser": 220,
+    "adresse": "Rosendalsgt. 17 - Langestrand skole",
+    "lat": 59.048978,
+    "lng": 10.011399
+  },
+  {
+    "romnr": "795",
+    "plasser": 850,
+    "adresse": "Ahlefeldtsgt. 1 - Mesterfjellet",
+    "lat": 59.049386,
+    "lng": 10.041182
+  },
+  {
+    "romnr": "796",
+    "plasser": 425,
+    "adresse": "Skallestadv. 38 - Hårkollhallen",
+    "lat": 59.200725,
+    "lng": 10.442214
+  },
+  {
+    "romnr": "797",
+    "plasser": 42,
+    "adresse": "Tinghaugv. 14 - Nøtterøy kulturhus, nedre rom",
+    "lat": 59.225079,
+    "lng": 10.409499
+  },
+  {
+    "romnr": "798",
+    "plasser": 225,
+    "adresse": "Tinghaugv. 14 - Nøtterøy kulturhus, øvre rom",
+    "lat": 59.225024,
+    "lng": 10.409454
+  },
+  {
+    "romnr": "799",
+    "plasser": 415,
+    "adresse": "Harpunv. 3 - Optura A/S (off.)",
+    "lat": 59.262825,
+    "lng": 10.390622
+  },
+  {
+    "romnr": "802",
+    "plasser": 195,
+    "adresse": "Sportsv. 31 - Off. Bugården u-skole",
+    "lat": 59.134069,
+    "lng": 10.187642
+  },
+  {
+    "romnr": "803",
+    "plasser": 1170,
+    "adresse": "Dronningensgt. 24 - Off.  Forsmannssenteret",
+    "lat": 59.132868,
+    "lng": 10.21984
+  },
+  {
+    "romnr": "804",
+    "plasser": 293,
+    "adresse": "Lyhmannsv. 2 - Off. Framnes Eldresenter",
+    "lat": 59.118233,
+    "lng": 10.234024
+  },
+  {
+    "romnr": "805",
+    "plasser": 1233,
+    "adresse": "Maurveien 14 - Off. Gjekstad (garasjeanlegg)",
+    "lat": 59.131677,
+    "lng": 10.264337
+  },
+  {
+    "romnr": "806",
+    "plasser": 400,
+    "adresse": "Gokstadv. 5 - Off.",
+    "lat": 59.134373,
+    "lng": 10.229432
+  },
+  {
+    "romnr": "807",
+    "plasser": 600,
+    "adresse": "Høstsgt. 3 - Off.",
+    "lat": 59.129605,
+    "lng": 10.214538
+  },
+  {
+    "romnr": "808",
+    "plasser": 200,
+    "adresse": "Hystadv. 167 - Off.  Jotun A/S",
+    "lat": 59.111364,
+    "lng": 10.222859
+  },
+  {
+    "romnr": "809",
+    "plasser": 300,
+    "adresse": "Rødslia 28 - I krysset ved Fagerstadveien",
+    "lat": 59.115648,
+    "lng": 10.240034
+  },
+  {
+    "romnr": "810",
+    "plasser": 400,
+    "adresse": "Sandefjordsv. 3 - Off. Sandefjord Rådhus",
+    "lat": 59.128743,
+    "lng": 10.219716
+  },
+  {
+    "romnr": "813",
+    "plasser": 1500,
+    "adresse": "Haugar",
+    "lat": 59.268637,
+    "lng": 10.410234
+  },
+  {
+    "romnr": "814",
+    "plasser": 150,
+    "adresse": "Larvev. 31 - Hogsnes Grendehus, rom 1 (off)",
+    "lat": 59.26682,
+    "lng": 10.356823
+  },
+  {
+    "romnr": "815",
+    "plasser": 150,
+    "adresse": "Larvev. 31 - Hogsnes Grendehus, rom 2 (off)",
+    "lat": 59.26682,
+    "lng": 10.356823
+  },
+  {
+    "romnr": "816",
+    "plasser": 962,
+    "adresse": "Slottsfjelltunnelen (off)",
+    "lat": 59.270745,
+    "lng": 10.401937
+  },
+  {
+    "romnr": "817",
+    "plasser": 215,
+    "adresse": "Trimveien 14 - ved Slagenhallen",
+    "lat": 59.269527,
+    "lng": 10.462225
+  },
+  {
+    "romnr": "831",
+    "plasser": 800,
+    "adresse": "Dronningensgate 52",
+    "lat": 68.437973,
+    "lng": 17.429275
+  },
+  {
+    "romnr": "917",
+    "plasser": 215,
+    "adresse": "Torget 6",
+    "lat": 58.451714,
+    "lng": 6.001145
+  },
+  {
+    "romnr": "933",
+    "plasser": 240,
+    "adresse": "Jernbaneveien 22",
+    "lat": 58.455565,
+    "lng": 6.00248
+  },
+  {
+    "romnr": "934",
+    "plasser": 88,
+    "adresse": "Sokndalsveien 26",
+    "lat": 58.447809,
+    "lng": 6.006595
+  },
+  {
+    "romnr": "1220",
+    "plasser": 270,
+    "adresse": "Røyrvika 10",
+    "lat": 58.73663,
+    "lng": 5.65549
+  },
+  {
+    "romnr": "1255",
+    "plasser": 60,
+    "adresse": "Bedriftsvegen 6",
+    "lat": 58.785423,
+    "lng": 5.697532
+  },
+  {
+    "romnr": "1286",
+    "plasser": 180,
+    "adresse": "Kleppevarden 2",
+    "lat": 58.774921,
+    "lng": 5.627106
+  },
+  {
+    "romnr": "1423",
+    "plasser": 30,
+    "adresse": "Horghallvegen 25, HORGHALLEN",
+    "lat": 63.15113,
+    "lng": 10.283676
+  },
+  {
+    "romnr": "1434",
+    "plasser": 50,
+    "adresse": "Tømmesdalsvegen 70, HOVIN SKOLE/SAMF.HUS",
+    "lat": 63.106671,
+    "lng": 10.226629
+  },
+  {
+    "romnr": "1435",
+    "plasser": 60,
+    "adresse": "Per Bortens veg 21, MELHUS SKYSSTASJON",
+    "lat": 63.28477,
+    "lng": 10.276954
+  },
+  {
+    "romnr": "1515",
+    "plasser": 200,
+    "adresse": "STATENS HUS ORKANGER",
+    "lat": 63.297739,
+    "lng": 9.847558
+  },
+  {
+    "romnr": "1516",
+    "plasser": 33,
+    "adresse": "TORGSENTERET, ORKANGER",
+    "lat": 63.305067,
+    "lng": 9.849686
+  },
+  {
+    "romnr": "1517",
+    "plasser": 40,
+    "adresse": "Orkdalsveien 82",
+    "lat": 63.301909,
+    "lng": 9.848431
+  },
+  {
+    "romnr": "1563",
+    "plasser": 16,
+    "adresse": "Sollihagaen 17, RØROS KJØLESERVICE",
+    "lat": 62.571786,
+    "lng": 11.369025
+  },
+  {
+    "romnr": "1568",
+    "plasser": 20,
+    "adresse": "Lorentz Lossius gata 45, RØROSMUSEET",
+    "lat": 62.577088,
+    "lng": 11.391251
+  },
+  {
+    "romnr": "1628",
+    "plasser": 170,
+    "adresse": "Teletunet, Opphaug, Offentlig",
+    "lat": 63.725351,
+    "lng": 9.687023
+  },
+  {
+    "romnr": "1681",
+    "plasser": 315,
+    "adresse": "Kaigaten 8 OFF T-ROM hotellet",
+    "lat": 70.37256,
+    "lng": 31.102779
+  },
+  {
+    "romnr": "1688",
+    "plasser": 136,
+    "adresse": "BANEHEIVEIEN",
+    "lat": 58.149152,
+    "lng": 7.982373
+  },
+  {
+    "romnr": "1707",
+    "plasser": 195,
+    "adresse": "BYDALSVEIEN 19",
+    "lat": 58.148045,
+    "lng": 7.922029
+  },
+  {
+    "romnr": "1740",
+    "plasser": 65,
+    "adresse": "FREDRIK FRANSSONSVEI 4",
+    "lat": 58.182995,
+    "lng": 8.083976
+  },
+  {
+    "romnr": "1755",
+    "plasser": 235,
+    "adresse": "GROSTØLVEIEN 4 E",
+    "lat": 58.200181,
+    "lng": 8.032042
+  },
+  {
+    "romnr": "1756",
+    "plasser": 500,
+    "adresse": "GRÅGÅSVEIEN 43",
+    "lat": 58.121466,
+    "lng": 7.936558
+  },
+  {
+    "romnr": "1776",
+    "plasser": 170,
+    "adresse": "RAVNEDALSVEIEN 34",
+    "lat": 58.155102,
+    "lng": 7.972962
+  },
+  {
+    "romnr": "1795",
+    "plasser": 50,
+    "adresse": "HÅNESVEIEN 61",
+    "lat": 58.181109,
+    "lng": 8.088882
+  },
+  {
+    "romnr": "1799",
+    "plasser": 390,
+    "adresse": "INDUSTRIGATA  6",
+    "lat": 58.151397,
+    "lng": 8.025721
+  },
+  {
+    "romnr": "1818",
+    "plasser": 170,
+    "adresse": "JORDBÆRVEIEN 2",
+    "lat": 58.175809,
+    "lng": 8.095322
+  },
+  {
+    "romnr": "1822",
+    "plasser": 184,
+    "adresse": "KARUSSVEIEN 7",
+    "lat": 58.129267,
+    "lng": 7.94637
+  },
+  {
+    "romnr": "1832",
+    "plasser": 465,
+    "adresse": "KIRSTEN FLAGSTADSVEI  30",
+    "lat": 58.12539,
+    "lng": 7.953971
+  },
+  {
+    "romnr": "1857",
+    "plasser": 243,
+    "adresse": "KONGENSGATE 2",
+    "lat": 58.142947,
+    "lng": 7.995512
+  },
+  {
+    "romnr": "1874",
+    "plasser": 191,
+    "adresse": "KRISTIAN 4. DES GATE 35-37",
+    "lat": 58.148304,
+    "lng": 7.991813
+  },
+  {
+    "romnr": "1890",
+    "plasser": 120,
+    "adresse": "LINDEBØSKOGEN",
+    "lat": 58.08907,
+    "lng": 7.999183
+  },
+  {
+    "romnr": "1895",
+    "plasser": 95,
+    "adresse": "MAGNUS BARFOTSVEI 7",
+    "lat": 58.177356,
+    "lng": 8.04325
+  },
+  {
+    "romnr": "1897",
+    "plasser": 360,
+    "adresse": "MALMVEIEN 4",
+    "lat": 58.14858,
+    "lng": 7.955776
+  },
+  {
+    "romnr": "1908",
+    "plasser": 330,
+    "adresse": "MARKENSGATE 42",
+    "lat": 58.147248,
+    "lng": 7.990488
+  },
+  {
+    "romnr": "1919",
+    "plasser": 200,
+    "adresse": "MÆBØ",
+    "lat": 58.07591,
+    "lng": 8.001262
+  },
+  {
+    "romnr": "1922",
+    "plasser": 300,
+    "adresse": "MØLLEVANNSVEIEN 50",
+    "lat": 58.148601,
+    "lng": 7.970141
+  },
+  {
+    "romnr": "1931",
+    "plasser": 220,
+    "adresse": "ODDERHEI 1",
+    "lat": 58.13434,
+    "lng": 8.076469
+  },
+  {
+    "romnr": "1938",
+    "plasser": 230,
+    "adresse": "PRESTHEIA 10",
+    "lat": 58.166579,
+    "lng": 8.010934
+  },
+  {
+    "romnr": "1951",
+    "plasser": 170,
+    "adresse": "RØDSTRUPEVEIEN 17",
+    "lat": 58.133828,
+    "lng": 7.960986
+  },
+  {
+    "romnr": "1971",
+    "plasser": 170,
+    "adresse": "SKIBÅSEN 2",
+    "lat": 58.173421,
+    "lng": 8.12606
+  },
+  {
+    "romnr": "1998",
+    "plasser": 70,
+    "adresse": "SLETTHEIVEIEN 63 B",
+    "lat": 58.13564,
+    "lng": 7.935868
+  },
+  {
+    "romnr": "2014",
+    "plasser": 234,
+    "adresse": "STRØMMEVEIEN 85-87",
+    "lat": 58.15468,
+    "lng": 8.08145
+  },
+  {
+    "romnr": "2057",
+    "plasser": 130,
+    "adresse": "VARDÅSVEIEN 115/117",
+    "lat": 58.145409,
+    "lng": 8.059194
+  },
+  {
+    "romnr": "2082",
+    "plasser": 150,
+    "adresse": "VIGVOLLÅSEN 16",
+    "lat": 58.171563,
+    "lng": 8.088491
+  },
+  {
+    "romnr": "2083",
+    "plasser": 150,
+    "adresse": "VOIE RINGVEI 108",
+    "lat": 58.101744,
+    "lng": 7.947832
+  },
+  {
+    "romnr": "2091",
+    "plasser": 120,
+    "adresse": "ØSTERVEIEN 30 B",
+    "lat": 58.152844,
+    "lng": 8.009106
+  },
+  {
+    "romnr": "2094",
+    "plasser": 220,
+    "adresse": "ØSTERØYA 8",
+    "lat": 58.077045,
+    "lng": 8.001413
+  },
+  {
+    "romnr": "2098",
+    "plasser": 190,
+    "adresse": "ØSTRE RINGVEI 8",
+    "lat": 58.148571,
+    "lng": 8.021043
+  },
+  {
+    "romnr": "2104",
+    "plasser": 100,
+    "adresse": "ØSTRE STRANDGATE 67",
+    "lat": 58.14818,
+    "lng": 8.00607
+  },
+  {
+    "romnr": "2108",
+    "plasser": 360,
+    "adresse": "ØVRE BRATTBAKKEN 1",
+    "lat": 58.178745,
+    "lng": 8.091321
+  },
+  {
+    "romnr": "2127",
+    "plasser": 235,
+    "adresse": "TANGVALL",
+    "lat": 58.096339,
+    "lng": 7.814258
+  },
+  {
+    "romnr": "2128",
+    "plasser": 133,
+    "adresse": "TANGVALL",
+    "lat": 58.096339,
+    "lng": 7.814258
+  },
+  {
+    "romnr": "2180",
+    "plasser": 235,
+    "adresse": "SKOLEVEGEN 9",
+    "lat": 58.275798,
+    "lng": 7.977302
+  },
+  {
+    "romnr": "2183",
+    "plasser": 75,
+    "adresse": "Drivenesvegen 24",
+    "lat": 58.257678,
+    "lng": 7.96449
+  },
+  {
+    "romnr": "2197",
+    "plasser": 100,
+    "adresse": "BURÅSVEIEN 59",
+    "lat": 58.031973,
+    "lng": 7.434503
+  },
+  {
+    "romnr": "2205",
+    "plasser": 150,
+    "adresse": "HOLBÆK ERIKSENSGATE 10",
+    "lat": 58.029529,
+    "lng": 7.46079
+  },
+  {
+    "romnr": "2224",
+    "plasser": 60,
+    "adresse": "SOMMERKROVEIEN 18",
+    "lat": 58.025063,
+    "lng": 7.472408
+  },
+  {
+    "romnr": "2254",
+    "plasser": 400,
+    "adresse": "SELJEVEIEN 60",
+    "lat": 58.030949,
+    "lng": 7.490133
+  },
+  {
+    "romnr": "2286",
+    "plasser": 30,
+    "adresse": "STÅLESEN BYGG AS-AUTOHALLEN Vanse",
+    "lat": 58.093132,
+    "lng": 6.696178
+  },
+  {
+    "romnr": "2293",
+    "plasser": 100,
+    "adresse": "SVEGESKOGEN 17",
+    "lat": 58.283261,
+    "lng": 6.643847
+  },
+  {
+    "romnr": "2306",
+    "plasser": 220,
+    "adresse": "Urgata 2",
+    "lat": 58.296542,
+    "lng": 6.665636
+  },
+  {
+    "romnr": "2310",
+    "plasser": 190,
+    "adresse": "RAULIVEIEN 2",
+    "lat": 58.295212,
+    "lng": 6.669019
+  },
+  {
+    "romnr": "2344",
+    "plasser": 35,
+    "adresse": "ROSFJORD",
+    "lat": 58.12144,
+    "lng": 7.058312
+  },
+  {
+    "romnr": "2468",
+    "plasser": 160,
+    "adresse": "Myraveien 2 (Brannstasjonen)",
+    "lat": 66.312793,
+    "lng": 14.148941
+  },
+  {
+    "romnr": "2483",
+    "plasser": 230,
+    "adresse": "Kveldssolgata 99 (Hauknes skole - offentlig)",
+    "lat": 66.285491,
+    "lng": 14.054265
+  },
+  {
+    "romnr": "2502",
+    "plasser": 415,
+    "adresse": "Alstadveien 19, Alstad Ungdomsskole",
+    "lat": 67.275052,
+    "lng": 14.486811
+  },
+  {
+    "romnr": "2506",
+    "plasser": 160,
+    "adresse": "Salten gummiservice A/S, Tømrerveien 8",
+    "lat": 67.275244,
+    "lng": 14.400001
+  },
+  {
+    "romnr": "2519",
+    "plasser": 600,
+    "adresse": "Gråholten",
+    "lat": 67.274848,
+    "lng": 14.378414
+  },
+  {
+    "romnr": "2521",
+    "plasser": 340,
+    "adresse": "Torvet, Sjøgaten, Bodø",
+    "lat": 67.284683,
+    "lng": 14.381687
+  },
+  {
+    "romnr": "2522",
+    "plasser": 520,
+    "adresse": "Holstbakken   Alta",
+    "lat": 69.973665,
+    "lng": 23.301057
+  },
+  {
+    "romnr": "2524",
+    "plasser": 1154,
+    "adresse": "Rensås Syd, Bodø",
+    "lat": 67.283731,
+    "lng": 14.40508
+  },
+  {
+    "romnr": "2525",
+    "plasser": 300,
+    "adresse": "Dreyfushammaren, Burøyveien, Bodø",
+    "lat": 67.297966,
+    "lng": 14.395184
+  },
+  {
+    "romnr": "2527",
+    "plasser": 500,
+    "adresse": "Rensås Nord, Parkveien, Bodø",
+    "lat": 67.283004,
+    "lng": 14.400086
+  },
+  {
+    "romnr": "2571",
+    "plasser": 450,
+    "adresse": "Gymnaset, Gymnasveien 5, Fauske",
+    "lat": 67.262641,
+    "lng": 15.375249
+  },
+  {
+    "romnr": "2625",
+    "plasser": 410,
+    "adresse": "Strandgata 20",
+    "lat": 66.314566,
+    "lng": 14.132171
+  },
+  {
+    "romnr": "2645",
+    "plasser": 320,
+    "adresse": "Selfors Barneskole",
+    "lat": 66.326036,
+    "lng": 14.180946
+  },
+  {
+    "romnr": "2662",
+    "plasser": 240,
+    "adresse": "Ytteren Somatiske sykehjem - off.",
+    "lat": 66.340782,
+    "lng": 14.138547
+  },
+  {
+    "romnr": "3247",
+    "plasser": 600,
+    "adresse": "Flintergata 6",
+    "lat": 58.852,
+    "lng": 5.73385
+  },
+  {
+    "romnr": "3249",
+    "plasser": 420,
+    "adresse": "Roald Amundsens gate 28A",
+    "lat": 58.861441,
+    "lng": 5.743324
+  },
+  {
+    "romnr": "3255",
+    "plasser": 155,
+    "adresse": "Nikkelveien 13",
+    "lat": 58.869807,
+    "lng": 5.731055
+  },
+  {
+    "romnr": "3289",
+    "plasser": 20,
+    "adresse": "Sjøveien 4",
+    "lat": 58.88468,
+    "lng": 5.745911
+  },
+  {
+    "romnr": "3325",
+    "plasser": 80,
+    "adresse": "Iglemyrveien 3",
+    "lat": 58.842989,
+    "lng": 5.756204
+  },
+  {
+    "romnr": "3553",
+    "plasser": 138,
+    "adresse": "Moafjæra 1d",
+    "lat": 63.739158,
+    "lng": 11.28213
+  },
+  {
+    "romnr": "3680",
+    "plasser": 110,
+    "adresse": "Wergelandsveien 27",
+    "lat": 63.475072,
+    "lng": 10.914986
+  },
+  {
+    "romnr": "4005",
+    "plasser": 98,
+    "adresse": "Haugen 25",
+    "lat": 58.825497,
+    "lng": 5.726627
+  },
+  {
+    "romnr": "4008",
+    "plasser": 225,
+    "adresse": "Somaveien 4",
+    "lat": 58.872973,
+    "lng": 5.725472
+  },
+  {
+    "romnr": "4013",
+    "plasser": 570,
+    "adresse": "Olabakken 2",
+    "lat": 58.825575,
+    "lng": 5.713484
+  },
+  {
+    "romnr": "4026",
+    "plasser": 241,
+    "adresse": "Luramyrveien 61",
+    "lat": 58.883894,
+    "lng": 5.72666
+  },
+  {
+    "romnr": "4193",
+    "plasser": 230,
+    "adresse": "Samuel J. Sandveds vei 16",
+    "lat": 58.841264,
+    "lng": 5.726108
+  },
+  {
+    "romnr": "4194",
+    "plasser": 200,
+    "adresse": "Smørbukkveien 11",
+    "lat": 58.884866,
+    "lng": 5.734602
+  },
+  {
+    "romnr": "4241",
+    "plasser": 150,
+    "adresse": "Damsgårdsgaten 4A",
+    "lat": 58.453424,
+    "lng": 6.006305
+  },
+  {
+    "romnr": "4291",
+    "plasser": 235,
+    "adresse": "Sam Eydesgt. 163, IINGOLFLAND SKOLE",
+    "lat": 59.879548,
+    "lng": 8.61461
+  },
+  {
+    "romnr": "4303",
+    "plasser": 200,
+    "adresse": "Kaiveien 23",
+    "lat": 58.929458,
+    "lng": 5.851376
+  },
+  {
+    "romnr": "4305",
+    "plasser": 200,
+    "adresse": "Kaiveien 25",
+    "lat": 58.93021,
+    "lng": 5.85128
+  },
+  {
+    "romnr": "4695",
+    "plasser": 100,
+    "adresse": "Skansen kjøpesenter, T. Kveldulvsons gate 24",
+    "lat": 66.022369,
+    "lng": 12.635415
+  },
+  {
+    "romnr": "4703",
+    "plasser": 120,
+    "adresse": "Skole/Samfunnshus, Skolegata 1",
+    "lat": 65.468137,
+    "lng": 12.211094
+  },
+  {
+    "romnr": "4741",
+    "plasser": 736,
+    "adresse": "Mysenhallen/ Smedgata 19",
+    "lat": 59.553801,
+    "lng": 11.333741
+  },
+  {
+    "romnr": "4855",
+    "plasser": 300,
+    "adresse": "Karsches gate 3  \"Tilflukt\"",
+    "lat": 59.668901,
+    "lng": 9.651787
+  },
+  {
+    "romnr": "4908",
+    "plasser": 172,
+    "adresse": "Soknedalsveien 7",
+    "lat": 60.169954,
+    "lng": 10.243451
+  },
+  {
+    "romnr": "4963",
+    "plasser": 537,
+    "adresse": "Betzy Kjelsbergs vei 182",
+    "lat": 59.757079,
+    "lng": 10.131048
+  },
+  {
+    "romnr": "4969",
+    "plasser": 1200,
+    "adresse": "Prins Oscarsgate / Brantenborg.",
+    "lat": 59.74564,
+    "lng": 10.221617
+  },
+  {
+    "romnr": "5463",
+    "plasser": 600,
+    "adresse": "Nedre Tverrgate 1 - Nedre Eiker Samfunnshus",
+    "lat": 59.748786,
+    "lng": 10.012376
+  },
+  {
+    "romnr": "5617",
+    "plasser": 385,
+    "adresse": "Stasjonsgata 24",
+    "lat": 59.770967,
+    "lng": 9.908552
+  },
+  {
+    "romnr": "5630",
+    "plasser": 320,
+    "adresse": "Hellefoss veien 2",
+    "lat": 59.773209,
+    "lng": 9.908353
+  },
+  {
+    "romnr": "5647",
+    "plasser": 220,
+    "adresse": "Skotselvveien 29",
+    "lat": 59.770037,
+    "lng": 9.898972
+  },
+  {
+    "romnr": "5652",
+    "plasser": 14,
+    "adresse": "Havnegt.16",
+    "lat": 64.466916,
+    "lng": 11.494325
+  },
+  {
+    "romnr": "5653",
+    "plasser": 25,
+    "adresse": "Abel Meyers gate 3",
+    "lat": 64.464827,
+    "lng": 11.494884
+  },
+  {
+    "romnr": "5655",
+    "plasser": 60,
+    "adresse": "Overh.vn.8",
+    "lat": 64.469204,
+    "lng": 11.50363
+  },
+  {
+    "romnr": "5656",
+    "plasser": 70,
+    "adresse": "Kirkegt.5",
+    "lat": 64.466466,
+    "lng": 11.49507
+  },
+  {
+    "romnr": "5657",
+    "plasser": 78,
+    "adresse": "Strandvn.7",
+    "lat": 64.468497,
+    "lng": 11.479279
+  },
+  {
+    "romnr": "5658",
+    "plasser": 15,
+    "adresse": "Abel Meyers gate 21",
+    "lat": 64.467607,
+    "lng": 11.497318
+  },
+  {
+    "romnr": "5732",
+    "plasser": 2000,
+    "adresse": "Jarl Hildrums veg 6, Kleppen",
+    "lat": 64.474148,
+    "lng": 11.521925
+  },
+  {
+    "romnr": "5815",
+    "plasser": 400,
+    "adresse": "Sundelinveien 72 (Sandnes Skole)",
+    "lat": 69.668176,
+    "lng": 29.951927
+  },
+  {
+    "romnr": "5832",
+    "plasser": 340,
+    "adresse": "Rådhuset, Sivert Nilsensgate 24",
+    "lat": 65.467761,
+    "lng": 12.205777
+  },
+  {
+    "romnr": "5962",
+    "plasser": 230,
+    "adresse": "Gåsungen Barnehage - Gåsåsen 20",
+    "lat": 58.459572,
+    "lng": 8.747528
+  },
+  {
+    "romnr": "6056",
+    "plasser": 35,
+    "adresse": "Birkenes kommunehus - Smedens Kjerr 30",
+    "lat": 58.335013,
+    "lng": 8.232942
+  },
+  {
+    "romnr": "6074",
+    "plasser": 20,
+    "adresse": "Herefoss Skole - Torsbumoen 14",
+    "lat": 58.519123,
+    "lng": 8.35313
+  },
+  {
+    "romnr": "6157",
+    "plasser": 240,
+    "adresse": "Risør Idrettshall - Caspersens vei 25",
+    "lat": 58.714551,
+    "lng": 9.215199
+  },
+  {
+    "romnr": "6160",
+    "plasser": 470,
+    "adresse": "Risør videregående skole - Sirisveien 8 Blokk A",
+    "lat": 58.720064,
+    "lng": 9.216877
+  },
+  {
+    "romnr": "6206",
+    "plasser": 90,
+    "adresse": "Bjorbekktunet - Off - Bjorbekk - Johan Landmarksve",
+    "lat": 58.440072,
+    "lng": 8.706224
+  },
+  {
+    "romnr": "6207",
+    "plasser": 26,
+    "adresse": "Meny - Off - Stoa - Åsbieveien 2",
+    "lat": 58.458411,
+    "lng": 8.712129
+  },
+  {
+    "romnr": "6222",
+    "plasser": 90,
+    "adresse": "Idrettens Hus - Off - Kåre Eriksen A/S - Åsbievn 1",
+    "lat": 58.458295,
+    "lng": 8.720037
+  },
+  {
+    "romnr": "6342",
+    "plasser": 264,
+    "adresse": "Høvågheimen Bo og aktivitetsenter - Høvåg",
+    "lat": 58.170947,
+    "lng": 8.245039
+  },
+  {
+    "romnr": "6356",
+    "plasser": 28,
+    "adresse": "Lillesand rådhus - Østregate 2",
+    "lat": 58.249877,
+    "lng": 8.378624
+  },
+  {
+    "romnr": "6394",
+    "plasser": 1300,
+    "adresse": "Kulturhuset - Hestetorget,Storgaten 33",
+    "lat": 58.342862,
+    "lng": 8.590396
+  },
+  {
+    "romnr": "6442",
+    "plasser": 228,
+    "adresse": "Eide Skole - Johan Markussens vei 90",
+    "lat": 58.2689,
+    "lng": 8.504973
+  },
+  {
+    "romnr": "6547",
+    "plasser": 50,
+    "adresse": "Oddensenteret (kjeller) - Vesterled 4",
+    "lat": 58.337942,
+    "lng": 8.592678
+  },
+  {
+    "romnr": "6720",
+    "plasser": 400,
+    "adresse": "Froland Idrettshall - Mjølhusmoen - Rislandsvn 10",
+    "lat": 58.515114,
+    "lng": 8.632787
+  },
+  {
+    "romnr": "6749",
+    "plasser": 106,
+    "adresse": "Dønnestadgården - Bibliotekveien 4",
+    "lat": 58.626552,
+    "lng": 8.928732
+  },
+  {
+    "romnr": "6815",
+    "plasser": 2400,
+    "adresse": "Arendalstunnelen - Parkeringstunnell -Torvet/Barb",
+    "lat": 58.4619,
+    "lng": 8.766068
+  },
+  {
+    "romnr": "6819",
+    "plasser": 1800,
+    "adresse": "Birkenlundhallen - Kirkefjell 11",
+    "lat": 58.471025,
+    "lng": 8.791074
+  },
+  {
+    "romnr": "6870",
+    "plasser": 630,
+    "adresse": "Westermannsveita 4 Tidl. Nordre gate 1",
+    "lat": 63.431029,
+    "lng": 10.39903
+  },
+  {
+    "romnr": "6963",
+    "plasser": 265,
+    "adresse": "Dr.Randersgate 5, Askim",
+    "lat": 59.583244,
+    "lng": 11.160927
+  },
+  {
+    "romnr": "6964",
+    "plasser": 260,
+    "adresse": "Dr. Randersgate 2, Askim",
+    "lat": 59.582696,
+    "lng": 11.161255
+  },
+  {
+    "romnr": "6966",
+    "plasser": 260,
+    "adresse": "Rom skole/ Gramveien 63A, Askim",
+    "lat": 59.590274,
+    "lng": 11.128584
+  },
+  {
+    "romnr": "7021",
+    "plasser": 90,
+    "adresse": "endresens vei 4, Varangerbotn",
+    "lat": 70.172576,
+    "lng": 28.558095
+  },
+  {
+    "romnr": "7098",
+    "plasser": 1079,
+    "adresse": "Melløs stadion, Nordahl Griegsgt 22",
+    "lat": 59.420957,
+    "lng": 10.670078
+  },
+  {
+    "romnr": "7103",
+    "plasser": 1000,
+    "adresse": "Blinken/ Jeløgata 3",
+    "lat": 59.433847,
+    "lng": 10.654783
+  },
+  {
+    "romnr": "7105",
+    "plasser": 400,
+    "adresse": "Malakoff vg. skole, Dyreveien 9",
+    "lat": 59.427789,
+    "lng": 10.668657
+  },
+  {
+    "romnr": "7106",
+    "plasser": 250,
+    "adresse": "Reier skole/Brageveien 9",
+    "lat": 59.429391,
+    "lng": 10.63015
+  },
+  {
+    "romnr": "7107",
+    "plasser": 300,
+    "adresse": "Krapfoss skole /Anton Krogsveldsvei 4",
+    "lat": 59.43334,
+    "lng": 10.68175
+  },
+  {
+    "romnr": "7114",
+    "plasser": 450,
+    "adresse": "Parkeringshus Piasenteret/ Møllergata 1",
+    "lat": 59.437466,
+    "lng": 10.667859
+  },
+  {
+    "romnr": "7158",
+    "plasser": 168,
+    "adresse": "Wilh Bugges Veg 5",
+    "lat": 61.221817,
+    "lng": 6.075048
+  },
+  {
+    "romnr": "7254",
+    "plasser": 122,
+    "adresse": "Haugevegen 31",
+    "lat": 59.420374,
+    "lng": 5.26388
+  },
+  {
+    "romnr": "7270",
+    "plasser": 78,
+    "adresse": "Storbukt Skole   Honningsvåg",
+    "lat": 70.995712,
+    "lng": 25.980276
+  },
+  {
+    "romnr": "7409",
+    "plasser": 448,
+    "adresse": "Baksalen Skole  Hammerfest",
+    "lat": 70.657017,
+    "lng": 23.705359
+  },
+  {
+    "romnr": "7411",
+    "plasser": 400,
+    "adresse": "Reindalen skole",
+    "lat": 70.691759,
+    "lng": 23.700513
+  },
+  {
+    "romnr": "7412",
+    "plasser": 228,
+    "adresse": "Bokollektivet  Rypefjord",
+    "lat": 70.637318,
+    "lng": 23.677202
+  },
+  {
+    "romnr": "7413",
+    "plasser": 622,
+    "adresse": "Sivilforsvarets lager Nybakken 9   Hammerfest",
+    "lat": 70.663789,
+    "lng": 23.692801
+  },
+  {
+    "romnr": "7436",
+    "plasser": 211,
+    "adresse": "Porsanger Rådhus   Lakselv",
+    "lat": 70.0522,
+    "lng": 24.956447
+  },
+  {
+    "romnr": "7438",
+    "plasser": 170,
+    "adresse": "Flerbrukshallen Lakselv",
+    "lat": 70.048491,
+    "lng": 24.967036
+  },
+  {
+    "romnr": "7443",
+    "plasser": 280,
+    "adresse": "Helsetun     Lakselv",
+    "lat": 70.052064,
+    "lng": 24.952422
+  },
+  {
+    "romnr": "7464",
+    "plasser": 570,
+    "adresse": "Idrettsanlegg   Honningsvåg",
+    "lat": 70.976089,
+    "lng": 25.979337
+  },
+  {
+    "romnr": "7574",
+    "plasser": 130,
+    "adresse": "Brubakken 2",
+    "lat": 61.118083,
+    "lng": 10.461766
+  },
+  {
+    "romnr": "7856",
+    "plasser": 550,
+    "adresse": "Storgata 10",
+    "lat": 60.794817,
+    "lng": 10.69013
+  },
+  {
+    "romnr": "7956",
+    "plasser": 65,
+    "adresse": "Mattisrudsvingen 9",
+    "lat": 60.783142,
+    "lng": 10.648555
+  },
+  {
+    "romnr": "8044",
+    "plasser": 30,
+    "adresse": "Rosteinvegen 7",
+    "lat": 60.833774,
+    "lng": 10.055507
+  },
+  {
+    "romnr": "8050",
+    "plasser": 550,
+    "adresse": "Prøvenvegen 65",
+    "lat": 60.715098,
+    "lng": 10.605249
+  },
+  {
+    "romnr": "8060",
+    "plasser": 50,
+    "adresse": "Jørstadmovegen 690",
+    "lat": 61.155827,
+    "lng": 10.391659
+  },
+  {
+    "romnr": "8061",
+    "plasser": 250,
+    "adresse": "Gudbrandsdalsvegen 190",
+    "lat": 61.128144,
+    "lng": 10.451822
+  },
+  {
+    "romnr": "8062",
+    "plasser": 150,
+    "adresse": "Nordsetervegen 45",
+    "lat": 61.122977,
+    "lng": 10.470935
+  },
+  {
+    "romnr": "8063",
+    "plasser": 300,
+    "adresse": "Jul Pettersens gate 2",
+    "lat": 61.117916,
+    "lng": 10.462682
+  },
+  {
+    "romnr": "8064",
+    "plasser": 616,
+    "adresse": "Kirkegata 74",
+    "lat": 61.116166,
+    "lng": 10.462264
+  },
+  {
+    "romnr": "8823",
+    "plasser": 650,
+    "adresse": "v/ Seimsdalstunnellen",
+    "lat": 61.236154,
+    "lng": 7.691846
+  },
+  {
+    "romnr": "8825",
+    "plasser": 550,
+    "adresse": "Storevegen 13 (Lykkja )",
+    "lat": 61.311211,
+    "lng": 7.805733
+  },
+  {
+    "romnr": "9067",
+    "plasser": 30,
+    "adresse": "Petter Dassgt 15",
+    "lat": 65.838383,
+    "lng": 13.196375
+  },
+  {
+    "romnr": "9071",
+    "plasser": 40,
+    "adresse": "Strandgt. 31-33 (offentlig)",
+    "lat": 65.836379,
+    "lng": 13.190012
+  },
+  {
+    "romnr": "9092",
+    "plasser": 122,
+    "adresse": "Erling Skjalgssons gate 25",
+    "lat": 59.420405,
+    "lng": 5.265131
+  },
+  {
+    "romnr": "9093",
+    "plasser": 220,
+    "adresse": "Spannavegen 135",
+    "lat": 59.398251,
+    "lng": 5.30368
+  },
+  {
+    "romnr": "9123",
+    "plasser": 200,
+    "adresse": "Kvalamarka 26",
+    "lat": 59.436945,
+    "lng": 5.257778
+  },
+  {
+    "romnr": "9214",
+    "plasser": 265,
+    "adresse": "Skjoldavegen 318",
+    "lat": 59.409628,
+    "lng": 5.32965
+  },
+  {
+    "romnr": "9357",
+    "plasser": 235,
+    "adresse": "Spannavegen 75",
+    "lat": 59.404753,
+    "lng": 5.298133
+  },
+  {
+    "romnr": "9398",
+    "plasser": 220,
+    "adresse": "Marker rådhus/ Storgata 60",
+    "lat": 59.47952,
+    "lng": 11.659117
+  },
+  {
+    "romnr": "9403",
+    "plasser": 2000,
+    "adresse": "Kulås/ Sandesundveien 10C",
+    "lat": 59.280082,
+    "lng": 11.107723
+  },
+  {
+    "romnr": "9404",
+    "plasser": 900,
+    "adresse": "Spikern/ Alvimveien 19",
+    "lat": 59.27118,
+    "lng": 11.089701
+  },
+  {
+    "romnr": "9405",
+    "plasser": 300,
+    "adresse": "Sagahuset/ Sandesundveien 1",
+    "lat": 59.28341,
+    "lng": 11.108994
+  },
+  {
+    "romnr": "9407",
+    "plasser": 477,
+    "adresse": "Skjeberg rådhus/ Rådhusveien 17",
+    "lat": 59.266996,
+    "lng": 11.169627
+  },
+  {
+    "romnr": "9408",
+    "plasser": 89,
+    "adresse": "Dahles bilforretn/ Herbergveien 4",
+    "lat": 59.288717,
+    "lng": 11.087792
+  },
+  {
+    "romnr": "9410",
+    "plasser": 40,
+    "adresse": "Hafslundsøy skole/ Hagastuveien 60",
+    "lat": 59.285791,
+    "lng": 11.146991
+  },
+  {
+    "romnr": "9412",
+    "plasser": 100,
+    "adresse": "Borg bil/ Glomveien 5",
+    "lat": 59.290141,
+    "lng": 11.086135
+  },
+  {
+    "romnr": "9413",
+    "plasser": 183,
+    "adresse": "Tingvollheimen aldersheim/ Tuneveien 70",
+    "lat": 59.294775,
+    "lng": 11.074037
+  },
+  {
+    "romnr": "9474",
+    "plasser": 388,
+    "adresse": "Håreksgt. 13",
+    "lat": 65.835442,
+    "lng": 13.195049
+  },
+  {
+    "romnr": "9505",
+    "plasser": 25,
+    "adresse": "Strandgata 36 (offentlig)",
+    "lat": 65.836672,
+    "lng": 13.190495
+  },
+  {
+    "romnr": "9508",
+    "plasser": 15,
+    "adresse": "C.M. Havigsgt. 28 (offentlig)",
+    "lat": 65.837097,
+    "lng": 13.191516
+  },
+  {
+    "romnr": "9517",
+    "plasser": 310,
+    "adresse": "Fearnleysgt. 14 (Mosjøen viderg.skole- off.)",
+    "lat": 65.837793,
+    "lng": 13.193526
+  },
+  {
+    "romnr": "9521",
+    "plasser": 220,
+    "adresse": "Stortingmannsv. 20 (Kulstad skole - Off.)",
+    "lat": 65.866093,
+    "lng": 13.19978
+  },
+  {
+    "romnr": "9528",
+    "plasser": 172,
+    "adresse": "Olderskog skole - Skule Svendsv. 17",
+    "lat": 65.821638,
+    "lng": 13.217572
+  },
+  {
+    "romnr": "9529",
+    "plasser": 100,
+    "adresse": "Skjervgata 43 - Rådhuset i Vefsn (off.)",
+    "lat": 65.840847,
+    "lng": 13.199839
+  },
+  {
+    "romnr": "9548",
+    "plasser": 222,
+    "adresse": "Torjus Gards veg 7",
+    "lat": 59.428183,
+    "lng": 5.267048
+  },
+  {
+    "romnr": "9550",
+    "plasser": 220,
+    "adresse": "Tittelsnesvegen 332",
+    "lat": 59.468893,
+    "lng": 5.284678
+  },
+  {
+    "romnr": "9670",
+    "plasser": 500,
+    "adresse": "Florvågvegen 3, Løfjell, Kleppestø",
+    "lat": 60.40926,
+    "lng": 5.228349
+  },
+  {
+    "romnr": "9806",
+    "plasser": 65,
+    "adresse": "Kvassnesv. 52                Pb. 157",
+    "lat": 60.544934,
+    "lng": 5.293068
+  },
+  {
+    "romnr": "9852",
+    "plasser": 100,
+    "adresse": "Bu og rehab. senter",
+    "lat": 59.781824,
+    "lng": 5.487335
+  },
+  {
+    "romnr": "9915",
+    "plasser": 233,
+    "adresse": "Strandavegen 334",
+    "lat": 60.658698,
+    "lng": 6.434682
+  },
+  {
+    "romnr": "9952",
+    "plasser": 698,
+    "adresse": "Miltzowsgt. 2",
+    "lat": 60.62794,
+    "lng": 6.419738
+  },
+  {
+    "romnr": "9983",
+    "plasser": 100,
+    "adresse": "Tjørnahaugane 60",
+    "lat": 60.616448,
+    "lng": 6.53663
+  },
+  {
+    "romnr": "10113",
+    "plasser": 360,
+    "adresse": "Elvavegen 2,  Ytre Arna",
+    "lat": 60.460226,
+    "lng": 5.438169
+  },
+  {
+    "romnr": "10212",
+    "plasser": 758,
+    "adresse": "Håkonsgaten 5",
+    "lat": 60.391033,
+    "lng": 5.317545
+  },
+  {
+    "romnr": "10387",
+    "plasser": 600,
+    "adresse": "Kalfarveien 76",
+    "lat": 60.386629,
+    "lng": 5.348543
+  },
+  {
+    "romnr": "10507",
+    "plasser": 500,
+    "adresse": "Nykirkealmenning ovenfor nr 19",
+    "lat": 60.39658,
+    "lng": 5.311787
+  },
+  {
+    "romnr": "10508",
+    "plasser": 1400,
+    "adresse": "Holbergsalm. v/Strandgt 96",
+    "lat": 60.395896,
+    "lng": 5.316398
+  },
+  {
+    "romnr": "10511",
+    "plasser": 650,
+    "adresse": "Dokkeskjærskaien 1",
+    "lat": 60.3882,
+    "lng": 5.310992
+  },
+  {
+    "romnr": "10512",
+    "plasser": 3500,
+    "adresse": "Sydnestunnelen",
+    "lat": 60.389431,
+    "lng": 5.321973
+  },
+  {
+    "romnr": "10516",
+    "plasser": 850,
+    "adresse": "Nordnes, v/ Haugeveien 32",
+    "lat": 60.398272,
+    "lng": 5.30552
+  },
+  {
+    "romnr": "10788",
+    "plasser": 150,
+    "adresse": "Bønesberget 1",
+    "lat": 60.332294,
+    "lng": 5.308605
+  },
+  {
+    "romnr": "11235",
+    "plasser": 150,
+    "adresse": "Søreidtunet 2",
+    "lat": 60.314876,
+    "lng": 5.271363
+  },
+  {
+    "romnr": "11236",
+    "plasser": 175,
+    "adresse": "Nordåsbrotet 2",
+    "lat": 60.305625,
+    "lng": 5.308322
+  },
+  {
+    "romnr": "11284",
+    "plasser": 2000,
+    "adresse": "Haukelandsveien   30",
+    "lat": 60.371759,
+    "lng": 5.360417
+  },
+  {
+    "romnr": "11285",
+    "plasser": 2000,
+    "adresse": "Kronstadhøyden - vis a vis Møllendalsv  nr 8",
+    "lat": 60.379366,
+    "lng": 5.338782
+  },
+  {
+    "romnr": "11289",
+    "plasser": 422,
+    "adresse": "Vilhelm Bjerknes' vei 22",
+    "lat": 60.353994,
+    "lng": 5.360526
+  },
+  {
+    "romnr": "11343",
+    "plasser": 1300,
+    "adresse": "Fageråsveien, vis a vis Fageråsv 20",
+    "lat": 60.359364,
+    "lng": 5.354051
+  },
+  {
+    "romnr": "11424",
+    "plasser": 240,
+    "adresse": "Kanalveien 54",
+    "lat": 60.364797,
+    "lng": 5.346111
+  },
+  {
+    "romnr": "11663",
+    "plasser": 755,
+    "adresse": "Flaktveitsvingane 17",
+    "lat": 60.464215,
+    "lng": 5.35976
+  },
+  {
+    "romnr": "11675",
+    "plasser": 750,
+    "adresse": "Florida-Nygårdsparken, Jahnebakken 5",
+    "lat": 60.382698,
+    "lng": 5.332286
+  },
+  {
+    "romnr": "11677",
+    "plasser": 1800,
+    "adresse": "St. Jørgen - St. Jakob, Danckert Krohnsgt",
+    "lat": 60.392466,
+    "lng": 5.334133
+  },
+  {
+    "romnr": "11681",
+    "plasser": 1050,
+    "adresse": "St. Markus, Damsgårdsveien 70",
+    "lat": 60.379838,
+    "lng": 5.323147
+  },
+  {
+    "romnr": "11686",
+    "plasser": 1500,
+    "adresse": "Rothaugen, Nye Sandviksv v/ 69a",
+    "lat": 60.403998,
+    "lng": 5.321538
+  },
+  {
+    "romnr": "11688",
+    "plasser": 230,
+    "adresse": "Hølbekken 1, Arnatveit",
+    "lat": 60.408358,
+    "lng": 5.478802
+  },
+  {
+    "romnr": "11692",
+    "plasser": 455,
+    "adresse": "Olsvikåsen 49, Olsvik",
+    "lat": 60.381112,
+    "lng": 5.217089
+  },
+  {
+    "romnr": "11741",
+    "plasser": 465,
+    "adresse": "Rådhusgata 4",
+    "lat": 69.472223,
+    "lng": 25.518816
+  },
+  {
+    "romnr": "11754",
+    "plasser": 2000,
+    "adresse": "Fossliåsen",
+    "lat": 63.480034,
+    "lng": 10.933616
+  },
+  {
+    "romnr": "11824",
+    "plasser": 350,
+    "adresse": "Lande skole/ Triangelveien 5",
+    "lat": 59.290321,
+    "lng": 11.104092
+  },
+  {
+    "romnr": "11848",
+    "plasser": 200,
+    "adresse": "Siriusveien 10",
+    "lat": 63.394464,
+    "lng": 10.415986
+  },
+  {
+    "romnr": "12016",
+    "plasser": 200,
+    "adresse": "Torvet 4-6",
+    "lat": 59.284283,
+    "lng": 11.110528
+  },
+  {
+    "romnr": "12021",
+    "plasser": 42,
+    "adresse": "Finn Sørli/ Hundskinnveien 92",
+    "lat": 59.285444,
+    "lng": 11.079418
+  },
+  {
+    "romnr": "12025",
+    "plasser": 87,
+    "adresse": "Erikmarka 3",
+    "lat": 62.44375,
+    "lng": 6.21457
+  },
+  {
+    "romnr": "12072",
+    "plasser": 500,
+    "adresse": "Keiser Wilhelms gate 11",
+    "lat": 62.470973,
+    "lng": 6.153849
+  },
+  {
+    "romnr": "12163",
+    "plasser": 123,
+    "adresse": "Blindheimsgeilane 1",
+    "lat": 62.445808,
+    "lng": 6.363434
+  },
+  {
+    "romnr": "12196",
+    "plasser": 300,
+    "adresse": "Storgata 16",
+    "lat": 62.473695,
+    "lng": 6.158681
+  },
+  {
+    "romnr": "12245",
+    "plasser": 500,
+    "adresse": "Gangstøvikvegen 27",
+    "lat": 62.474085,
+    "lng": 6.227926
+  },
+  {
+    "romnr": "12272",
+    "plasser": 383,
+    "adresse": "Fjellgata 45",
+    "lat": 62.472098,
+    "lng": 6.175169
+  },
+  {
+    "romnr": "12304",
+    "plasser": 315,
+    "adresse": "Torggata 52",
+    "lat": 60.794365,
+    "lng": 11.072283
+  },
+  {
+    "romnr": "12306",
+    "plasser": 216,
+    "adresse": "Parkgata 33",
+    "lat": 60.793351,
+    "lng": 11.079709
+  },
+  {
+    "romnr": "12307",
+    "plasser": 270,
+    "adresse": "Morteruds gate 22 - 24",
+    "lat": 60.795423,
+    "lng": 11.066359
+  },
+  {
+    "romnr": "12308",
+    "plasser": 320,
+    "adresse": "Storhamargata 23 B-C",
+    "lat": 60.794926,
+    "lng": 11.065353
+  },
+  {
+    "romnr": "12309",
+    "plasser": 80,
+    "adresse": "Rollsløkkvegen 19",
+    "lat": 60.800691,
+    "lng": 11.084808
+  },
+  {
+    "romnr": "12311",
+    "plasser": 50,
+    "adresse": "Aslak Bolts gate 42",
+    "lat": 60.797859,
+    "lng": 11.048915
+  },
+  {
+    "romnr": "12312",
+    "plasser": 158,
+    "adresse": "Torggata 31",
+    "lat": 60.793802,
+    "lng": 11.073934
+  },
+  {
+    "romnr": "12313",
+    "plasser": 49,
+    "adresse": "Finsalvegen 3",
+    "lat": 60.804176,
+    "lng": 11.132714
+  },
+  {
+    "romnr": "12314",
+    "plasser": 35,
+    "adresse": "Elvesletta 25",
+    "lat": 60.842298,
+    "lng": 11.094855
+  },
+  {
+    "romnr": "12315",
+    "plasser": 15,
+    "adresse": "Midtstranda 1",
+    "lat": 60.797947,
+    "lng": 11.107548
+  },
+  {
+    "romnr": "12325",
+    "plasser": 200,
+    "adresse": "Øvre Flatåsveg 2 A",
+    "lat": 63.372677,
+    "lng": 10.345811
+  },
+  {
+    "romnr": "12330",
+    "plasser": 45,
+    "adresse": "Øvre Flatåsveg 16",
+    "lat": 63.373192,
+    "lng": 10.333224
+  },
+  {
+    "romnr": "12333",
+    "plasser": 280,
+    "adresse": "Gamle Jonsvannsveien 12",
+    "lat": 63.411511,
+    "lng": 10.452723
+  },
+  {
+    "romnr": "12438",
+    "plasser": 459,
+    "adresse": "Infanteriveien 11, Setermoen brannstasjon",
+    "lat": 68.860116,
+    "lng": 18.354632
+  },
+  {
+    "romnr": "12456",
+    "plasser": 225,
+    "adresse": "Gesellveien 5",
+    "lat": 59.653414,
+    "lng": 9.63991
+  },
+  {
+    "romnr": "12704",
+    "plasser": 1250,
+    "adresse": "Lykkeberg/ St.Croix gate 31",
+    "lat": 59.211252,
+    "lng": 10.941203
+  },
+  {
+    "romnr": "12705",
+    "plasser": 1345,
+    "adresse": "Damyr/ Sportsveien 18",
+    "lat": 59.21285,
+    "lng": 10.948606
+  },
+  {
+    "romnr": "12706",
+    "plasser": 5384,
+    "adresse": "St. hansfjellet/ Farmansgate 16",
+    "lat": 59.214646,
+    "lng": 10.934136
+  },
+  {
+    "romnr": "12707",
+    "plasser": 716,
+    "adresse": "Kongstenhallen",
+    "lat": 59.200707,
+    "lng": 10.961142
+  },
+  {
+    "romnr": "12708",
+    "plasser": 750,
+    "adresse": "Smertu/ Løypeveien 18",
+    "lat": 59.2042,
+    "lng": 10.936221
+  },
+  {
+    "romnr": "12709",
+    "plasser": 1200,
+    "adresse": "Gressvik/ Storveien 103A",
+    "lat": 59.214315,
+    "lng": 10.902453
+  },
+  {
+    "romnr": "12710",
+    "plasser": 97,
+    "adresse": "Aktivitetshuset/ Gressvik torg 13",
+    "lat": 59.216214,
+    "lng": 10.906206
+  },
+  {
+    "romnr": "12711",
+    "plasser": 100,
+    "adresse": "Rolvsøyahallen",
+    "lat": 59.267677,
+    "lng": 10.991211
+  },
+  {
+    "romnr": "13266",
+    "plasser": 165,
+    "adresse": "Bleikerveien 64  (Asker Tennisklubb)",
+    "lat": 59.827695,
+    "lng": 10.447574
+  },
+  {
+    "romnr": "13361",
+    "plasser": 756,
+    "adresse": "Kulturhuset",
+    "lat": 69.231288,
+    "lng": 17.98805
+  },
+  {
+    "romnr": "13469",
+    "plasser": 65,
+    "adresse": "Øvermarka 24",
+    "lat": 60.8436,
+    "lng": 11.043208
+  },
+  {
+    "romnr": "13470",
+    "plasser": 55,
+    "adresse": "Nygata 9",
+    "lat": 60.881794,
+    "lng": 10.939832
+  },
+  {
+    "romnr": "13471",
+    "plasser": 343,
+    "adresse": "Brugata 3",
+    "lat": 60.885432,
+    "lng": 10.939129
+  },
+  {
+    "romnr": "13472",
+    "plasser": 52,
+    "adresse": "Ljøstadvegen 15",
+    "lat": 60.715074,
+    "lng": 11.204224
+  },
+  {
+    "romnr": "13479",
+    "plasser": 1372,
+    "adresse": "Strømsø torg  7",
+    "lat": 59.740131,
+    "lng": 10.200576
+  },
+  {
+    "romnr": "13510",
+    "plasser": 313,
+    "adresse": "Sørreisa Rådhus/Helsesenter",
+    "lat": 69.147198,
+    "lng": 18.1559
+  },
+  {
+    "romnr": "13511",
+    "plasser": 173,
+    "adresse": "Øyjordneset",
+    "lat": 69.154384,
+    "lng": 18.156183
+  },
+  {
+    "romnr": "13513",
+    "plasser": 175,
+    "adresse": "Dyrøy sykehjem, Brøstabotn",
+    "lat": 69.091034,
+    "lng": 17.69045
+  },
+  {
+    "romnr": "13637",
+    "plasser": 1200,
+    "adresse": "Bergstien 37",
+    "lat": 59.748307,
+    "lng": 10.203019
+  },
+  {
+    "romnr": "13649",
+    "plasser": 465,
+    "adresse": "Oscars gate 4",
+    "lat": 70.074624,
+    "lng": 29.749685
+  },
+  {
+    "romnr": "14233",
+    "plasser": 372,
+    "adresse": "Garderobehuset, Narvik stadion, Lillevikveien 9",
+    "lat": 68.442373,
+    "lng": 17.406735
+  },
+  {
+    "romnr": "14249",
+    "plasser": 120,
+    "adresse": "Fotvegen 16",
+    "lat": 59.290624,
+    "lng": 5.288221
+  },
+  {
+    "romnr": "14250",
+    "plasser": 445,
+    "adresse": "Ankenes Bo- og serviceservice Krobakken 5",
+    "lat": 68.422775,
+    "lng": 17.349114
+  },
+  {
+    "romnr": "14279",
+    "plasser": 63,
+    "adresse": "Neptunveien 3-5",
+    "lat": 59.760513,
+    "lng": 10.035751
+  },
+  {
+    "romnr": "14355",
+    "plasser": 18,
+    "adresse": "Austre Veaveg 217",
+    "lat": 59.292976,
+    "lng": 5.226198
+  },
+  {
+    "romnr": "14476",
+    "plasser": 400,
+    "adresse": "Hagebyen skole",
+    "lat": 68.813691,
+    "lng": 16.543533
+  },
+  {
+    "romnr": "14487",
+    "plasser": 400,
+    "adresse": "Rådhuset Harstad OFFENTLIG",
+    "lat": 68.798741,
+    "lng": 16.53915
+  },
+  {
+    "romnr": "14559",
+    "plasser": 281,
+    "adresse": "Stokkeveien 2",
+    "lat": 59.791903,
+    "lng": 10.258624
+  },
+  {
+    "romnr": "14566",
+    "plasser": 850,
+    "adresse": "Kanebogen skole OFFENTLIG",
+    "lat": 68.779884,
+    "lng": 16.55882
+  },
+  {
+    "romnr": "14854",
+    "plasser": 320,
+    "adresse": "Kong Øysteinhall, Rækøyveien 40. Kabelvåg",
+    "lat": 68.207975,
+    "lng": 14.46518
+  },
+  {
+    "romnr": "14855",
+    "plasser": 3300,
+    "adresse": "VåganHallen, Løkthaugveien 10. Svolvær",
+    "lat": 68.237656,
+    "lng": 14.567376
+  },
+  {
+    "romnr": "14871",
+    "plasser": 83,
+    "adresse": "Vesterngata 18",
+    "lat": 60.170464,
+    "lng": 10.268182
+  },
+  {
+    "romnr": "14905",
+    "plasser": 90,
+    "adresse": "Skulegata 29",
+    "lat": 59.652094,
+    "lng": 6.357024
+  },
+  {
+    "romnr": "14908",
+    "plasser": 125,
+    "adresse": "Saudavegen 279",
+    "lat": 59.645393,
+    "lng": 6.310361
+  },
+  {
+    "romnr": "14911",
+    "plasser": 150,
+    "adresse": "Rustå 31",
+    "lat": 59.657841,
+    "lng": 6.380232
+  },
+  {
+    "romnr": "14918",
+    "plasser": 85,
+    "adresse": "Åbødalsveien 79",
+    "lat": 59.656027,
+    "lng": 6.363356
+  },
+  {
+    "romnr": "14959",
+    "plasser": 814,
+    "adresse": "Karl Rasmussens plass 1",
+    "lat": 70.077973,
+    "lng": 29.739217
+  },
+  {
+    "romnr": "14979",
+    "plasser": 600,
+    "adresse": "Skulegata 23",
+    "lat": 59.651065,
+    "lng": 6.357576
+  },
+  {
+    "romnr": "14981",
+    "plasser": 78,
+    "adresse": "Sjøen 45",
+    "lat": 59.640104,
+    "lng": 6.305532
+  },
+  {
+    "romnr": "14984",
+    "plasser": 40,
+    "adresse": "Åbødalsveien 77",
+    "lat": 59.655204,
+    "lng": 6.363873
+  },
+  {
+    "romnr": "15004",
+    "plasser": 100,
+    "adresse": "Sortlandshallen",
+    "lat": 68.696152,
+    "lng": 15.407296
+  },
+  {
+    "romnr": "15005",
+    "plasser": 300,
+    "adresse": "Torvmyrveien 4A",
+    "lat": 59.000947,
+    "lng": 5.619673
+  },
+  {
+    "romnr": "15006",
+    "plasser": 270,
+    "adresse": "Torvmyrveien 40",
+    "lat": 59.008931,
+    "lng": 5.650072
+  },
+  {
+    "romnr": "15059",
+    "plasser": 2000,
+    "adresse": "Storevardvegen",
+    "lat": 58.940876,
+    "lng": 5.578069
+  },
+  {
+    "romnr": "15232",
+    "plasser": 2080,
+    "adresse": "Kirkebakken 18",
+    "lat": 58.968441,
+    "lng": 5.737799
+  },
+  {
+    "romnr": "15236",
+    "plasser": 200,
+    "adresse": "Morgedalsveien 60",
+    "lat": 58.951393,
+    "lng": 5.695886
+  },
+  {
+    "romnr": "15239",
+    "plasser": 220,
+    "adresse": "Jupiterveien 30C",
+    "lat": 58.947103,
+    "lng": 5.700164
+  },
+  {
+    "romnr": "15240",
+    "plasser": 500,
+    "adresse": "Lagårdsveien 77",
+    "lat": 58.958334,
+    "lng": 5.739746
+  },
+  {
+    "romnr": "15243",
+    "plasser": 5000,
+    "adresse": "Nedre Storaberget 1",
+    "lat": 58.896775,
+    "lng": 5.722971
+  },
+  {
+    "romnr": "15245",
+    "plasser": 4000,
+    "adresse": "Nedre Strandgate",
+    "lat": 58.973006,
+    "lng": 5.725801
+  },
+  {
+    "romnr": "15246",
+    "plasser": 380,
+    "adresse": "Olav Liljekransstien 20",
+    "lat": 58.944658,
+    "lng": 5.6981
+  },
+  {
+    "romnr": "15247",
+    "plasser": 380,
+    "adresse": "Hallingstien 38",
+    "lat": 58.946174,
+    "lng": 5.697076
+  },
+  {
+    "romnr": "15250",
+    "plasser": 3930,
+    "adresse": "Skagenkaien 29",
+    "lat": 58.972125,
+    "lng": 5.731132
+  },
+  {
+    "romnr": "15251",
+    "plasser": 3140,
+    "adresse": "Eskelandsveien 35",
+    "lat": 58.986136,
+    "lng": 5.678138
+  },
+  {
+    "romnr": "15255",
+    "plasser": 72,
+    "adresse": "Avaldsnesvegen 72",
+    "lat": 59.291227,
+    "lng": 5.30332
+  },
+  {
+    "romnr": "15258",
+    "plasser": 66,
+    "adresse": "Austre Karmøyveg 120",
+    "lat": 59.280606,
+    "lng": 5.300131
+  },
+  {
+    "romnr": "15260",
+    "plasser": 608,
+    "adresse": "Lotheparkvegen",
+    "lat": 59.421294,
+    "lng": 5.270694
+  },
+  {
+    "romnr": "15347",
+    "plasser": 150,
+    "adresse": "Turist og konferansesenteret, Børøya",
+    "lat": 68.570795,
+    "lng": 14.92446
+  },
+  {
+    "romnr": "15468",
+    "plasser": 420,
+    "adresse": "Søndre Torv 7 B",
+    "lat": 60.165649,
+    "lng": 10.254797
+  },
+  {
+    "romnr": "15471",
+    "plasser": 417,
+    "adresse": "Valhallveien 15",
+    "lat": 60.182025,
+    "lng": 10.196138
+  },
+  {
+    "romnr": "15476",
+    "plasser": 170,
+    "adresse": "Ringeriksgata 13",
+    "lat": 60.157429,
+    "lng": 10.262372
+  },
+  {
+    "romnr": "15481",
+    "plasser": 100,
+    "adresse": "Dronning Åstas gate 12",
+    "lat": 60.153285,
+    "lng": 10.252902
+  },
+  {
+    "romnr": "15597",
+    "plasser": 385,
+    "adresse": "Krokenveien 19",
+    "lat": 60.180368,
+    "lng": 10.259675
+  },
+  {
+    "romnr": "15611",
+    "plasser": 330,
+    "adresse": "Wergelands gate 9",
+    "lat": 59.748398,
+    "lng": 10.19372
+  },
+  {
+    "romnr": "15714",
+    "plasser": 150,
+    "adresse": "Søfteland",
+    "lat": 60.236301,
+    "lng": 5.452205
+  },
+  {
+    "romnr": "15715",
+    "plasser": 550,
+    "adresse": "Rådhus. Idrett og Svømmehall",
+    "lat": 69.314139,
+    "lng": 16.118059
+  },
+  {
+    "romnr": "15717",
+    "plasser": 136,
+    "adresse": "Askviknes Sykehjem",
+    "lat": 60.175597,
+    "lng": 5.382093
+  },
+  {
+    "romnr": "15730",
+    "plasser": 500,
+    "adresse": "Os",
+    "lat": 60.188855,
+    "lng": 5.469691
+  },
+  {
+    "romnr": "15745",
+    "plasser": 150,
+    "adresse": "Betanien Hospital",
+    "lat": 59.209066,
+    "lng": 9.596142
+  },
+  {
+    "romnr": "15746",
+    "plasser": 390,
+    "adresse": "Gampedalen",
+    "lat": 59.20229,
+    "lng": 9.617147
+  },
+  {
+    "romnr": "15748",
+    "plasser": 325,
+    "adresse": "Nedre Hjellegt 9",
+    "lat": 59.206353,
+    "lng": 9.606644
+  },
+  {
+    "romnr": "15749",
+    "plasser": 498,
+    "adresse": "Schweigaards gate 11",
+    "lat": 59.21216,
+    "lng": 9.605392
+  },
+  {
+    "romnr": "15750",
+    "plasser": 400,
+    "adresse": "Tamburlunden Gråtenmoen Terrasse 16",
+    "lat": 59.185667,
+    "lng": 9.616472
+  },
+  {
+    "romnr": "15752",
+    "plasser": 500,
+    "adresse": "Bånnåsen 21",
+    "lat": 59.136651,
+    "lng": 9.660228
+  },
+  {
+    "romnr": "15753",
+    "plasser": 1120,
+    "adresse": "Helleberget, Huken, Crøgerlia 21",
+    "lat": 59.137459,
+    "lng": 9.644709
+  },
+  {
+    "romnr": "15754",
+    "plasser": 490,
+    "adresse": "Klevstrand",
+    "lat": 59.115603,
+    "lng": 9.653274
+  },
+  {
+    "romnr": "15755",
+    "plasser": 540,
+    "adresse": "Lysthusåsen, Kleiva 4",
+    "lat": 59.142081,
+    "lng": 9.644843
+  },
+  {
+    "romnr": "15756",
+    "plasser": 130,
+    "adresse": "Politihuset, Rådhusgt 5",
+    "lat": 59.141775,
+    "lng": 9.657484
+  },
+  {
+    "romnr": "15757",
+    "plasser": 2000,
+    "adresse": "Sentrumstunellen/Porsgrunntunnelen",
+    "lat": 59.135636,
+    "lng": 9.660491
+  },
+  {
+    "romnr": "15758",
+    "plasser": 140,
+    "adresse": "Slottsbrugt 25",
+    "lat": 59.14586,
+    "lng": 9.664885
+  },
+  {
+    "romnr": "15759",
+    "plasser": 1040,
+    "adresse": "Trosvik, Brevik",
+    "lat": 59.054237,
+    "lng": 9.691016
+  },
+  {
+    "romnr": "15760",
+    "plasser": 1000,
+    "adresse": "Renseanlegget, Ytre Strandvei 15",
+    "lat": 58.873599,
+    "lng": 9.414783
+  },
+  {
+    "romnr": "15761",
+    "plasser": 220,
+    "adresse": "Årø skole, Nøkkeldalen 4",
+    "lat": 58.890679,
+    "lng": 9.356234
+  },
+  {
+    "romnr": "15762",
+    "plasser": 55,
+    "adresse": "Kalstad KBO, Kalstadveien 16E",
+    "lat": 58.871025,
+    "lng": 9.388295
+  },
+  {
+    "romnr": "15765",
+    "plasser": 728,
+    "adresse": "Potekjeller tomta, Bøenstomten 10",
+    "lat": 59.879335,
+    "lng": 8.591393
+  },
+  {
+    "romnr": "15766",
+    "plasser": 200,
+    "adresse": "Rjukan politikammer, Sam Eydes gate 71",
+    "lat": 59.878593,
+    "lng": 8.589475
+  },
+  {
+    "romnr": "15767",
+    "plasser": 420,
+    "adresse": "Heddal u/skole, Rogneståvegen 6",
+    "lat": 59.569637,
+    "lng": 9.211249
+  },
+  {
+    "romnr": "15768",
+    "plasser": 1900,
+    "adresse": "Ravnsflog, Tinnesgata 18",
+    "lat": 59.560759,
+    "lng": 9.254197
+  },
+  {
+    "romnr": "15769",
+    "plasser": 700,
+    "adresse": "Storgt 59",
+    "lat": 59.561301,
+    "lng": 9.261608
+  },
+  {
+    "romnr": "15770",
+    "plasser": 180,
+    "adresse": "Stathelle Service Senter",
+    "lat": 59.042874,
+    "lng": 9.692843
+  },
+  {
+    "romnr": "15771",
+    "plasser": 1138,
+    "adresse": "Kvæfjordhallen, Husebyveien 3",
+    "lat": 68.772839,
+    "lng": 16.179076
+  },
+  {
+    "romnr": "16127",
+    "plasser": 465,
+    "adresse": "Nils Leuchsvei 40",
+    "lat": 59.946683,
+    "lng": 10.619218
+  },
+  {
+    "romnr": "16213",
+    "plasser": 1550,
+    "adresse": "Rødskiferveien 1 Kolsås Senter",
+    "lat": 59.916573,
+    "lng": 10.500761
+  },
+  {
+    "romnr": "16352",
+    "plasser": 225,
+    "adresse": "Østerndalen 23 Grini næringspark",
+    "lat": 59.947497,
+    "lng": 10.601794
+  },
+  {
+    "romnr": "16719",
+    "plasser": 1130,
+    "adresse": "St. Hanshaugen, Ullevålsveien",
+    "lat": 59.925364,
+    "lng": 10.738991
+  },
+  {
+    "romnr": "16951",
+    "plasser": 197,
+    "adresse": "Tareveien 7 Tennishallen",
+    "lat": 67.258352,
+    "lng": 15.352302
+  },
+  {
+    "romnr": "16958",
+    "plasser": 255,
+    "adresse": "Tinkeliheia 1, (Finneid nærmiljøsenter)",
+    "lat": 67.259782,
+    "lng": 15.444636
+  },
+  {
+    "romnr": "16973",
+    "plasser": 1750,
+    "adresse": "Tullinsgate 2",
+    "lat": 59.918829,
+    "lng": 10.734887
+  },
+  {
+    "romnr": "17007",
+    "plasser": 214,
+    "adresse": "Løpsmark Skole Nonshaugen 87, 8015 Bodø",
+    "lat": 67.310299,
+    "lng": 14.447098
+  },
+  {
+    "romnr": "17014",
+    "plasser": 400,
+    "adresse": "Bjørndalsveien 14 (Mørkvedmarka skole)",
+    "lat": 67.290673,
+    "lng": 14.588055
+  },
+  {
+    "romnr": "17356",
+    "plasser": 80,
+    "adresse": "Peter Bondes veg 78",
+    "lat": 60.624576,
+    "lng": 6.388838
+  },
+  {
+    "romnr": "17526",
+    "plasser": 320,
+    "adresse": "Risilveien 71, Vestbyhallen",
+    "lat": 59.597822,
+    "lng": 10.709967
+  },
+  {
+    "romnr": "17609",
+    "plasser": 590,
+    "adresse": "Frognhallen, Belsjøveien 2",
+    "lat": 59.668841,
+    "lng": 10.634824
+  },
+  {
+    "romnr": "17676",
+    "plasser": 100,
+    "adresse": "Tjørnahaugane 60",
+    "lat": 60.616448,
+    "lng": 6.53663
+  },
+  {
+    "romnr": "17701",
+    "plasser": 240,
+    "adresse": "Moerveien 1- Skoleveien 1 Ås Rådhus",
+    "lat": 59.664228,
+    "lng": 10.790869
+  },
+  {
+    "romnr": "17829",
+    "plasser": 258,
+    "adresse": "Allbrukshus Langhus, Galmle Vevelstadvei 34",
+    "lat": 59.758799,
+    "lng": 10.841281
+  },
+  {
+    "romnr": "18081",
+    "plasser": 240,
+    "adresse": "Rektor Oldens gate 2",
+    "lat": 58.955198,
+    "lng": 5.692036
+  },
+  {
+    "romnr": "18533",
+    "plasser": 300,
+    "adresse": "Fred Olsensgt 11",
+    "lat": 59.910517,
+    "lng": 10.748667
+  },
+  {
+    "romnr": "18616",
+    "plasser": 7060,
+    "adresse": "Holmlia bad, Holmlia sentervei 34",
+    "lat": 59.834469,
+    "lng": 10.792393
+  },
+  {
+    "romnr": "20209",
+    "plasser": 250,
+    "adresse": "Bentsegt 21-25",
+    "lat": 59.937644,
+    "lng": 10.759794
+  },
+  {
+    "romnr": "20242",
+    "plasser": 230,
+    "adresse": "Grav Gårdsvei 5",
+    "lat": 59.93033,
+    "lng": 10.606651
+  },
+  {
+    "romnr": "21027",
+    "plasser": 40,
+    "adresse": "K.O. Bjerklis veg 9",
+    "lat": 60.807854,
+    "lng": 11.03274
+  },
+  {
+    "romnr": "20243",
+    "plasser": 233,
+    "adresse": "Peter Lorangesvei 1, Stabekk Bosenter",
+    "lat": 59.904457,
+    "lng": 10.586712
+  },
+  {
+    "romnr": "20244",
+    "plasser": 553,
+    "adresse": "Skollerudveien 7, Helset hallen",
+    "lat": 59.942985,
+    "lng": 10.50811
+  },
+  {
+    "romnr": "20245",
+    "plasser": 5500,
+    "adresse": "Vogellund 7, Holmenhallen",
+    "lat": 59.853057,
+    "lng": 10.484846
+  },
+  {
+    "romnr": "20246",
+    "plasser": 250,
+    "adresse": "Veståsen 18, Katolsk kapell",
+    "lat": 59.935334,
+    "lng": 10.60407
+  },
+  {
+    "romnr": "20247",
+    "plasser": 1336,
+    "adresse": "Gml Ringeriksvei 44",
+    "lat": 59.918199,
+    "lng": 10.584347
+  },
+  {
+    "romnr": "20248",
+    "plasser": 260,
+    "adresse": "Bjerkelundsveien 18 A",
+    "lat": 59.929936,
+    "lng": 10.614801
+  },
+  {
+    "romnr": "20249",
+    "plasser": 233,
+    "adresse": "Nedre Toppenhaug 56",
+    "lat": 59.940538,
+    "lng": 10.507814
+  },
+  {
+    "romnr": "20250",
+    "plasser": 4200,
+    "adresse": "Hamangskråningen, Brynsveien 2 Sandvika",
+    "lat": 59.894621,
+    "lng": 10.512613
+  },
+  {
+    "romnr": "20251",
+    "plasser": 243,
+    "adresse": "Sleiverudåsen 3",
+    "lat": 59.945117,
+    "lng": 10.504182
+  },
+  {
+    "romnr": "20253",
+    "plasser": 2800,
+    "adresse": "T-banen - Valkyrien stasjon",
+    "lat": 59.928429,
+    "lng": 10.717619
+  },
+  {
+    "romnr": "20254",
+    "plasser": 5600,
+    "adresse": "Klemetsrud, Lofsrudveien 6",
+    "lat": 59.848756,
+    "lng": 10.829616
+  },
+  {
+    "romnr": "20255",
+    "plasser": 404,
+    "adresse": "Jordalsgt 11",
+    "lat": 59.908953,
+    "lng": 10.785588
+  },
+  {
+    "romnr": "20256",
+    "plasser": 555,
+    "adresse": "Majorstuveien 38",
+    "lat": 59.928313,
+    "lng": 10.714875
+  },
+  {
+    "romnr": "20257",
+    "plasser": 4300,
+    "adresse": "Maridalsveien 14",
+    "lat": 59.92252,
+    "lng": 10.750318
+  },
+  {
+    "romnr": "20258",
+    "plasser": 472,
+    "adresse": "Olav Schousvei 2-8 plan A",
+    "lat": 59.930605,
+    "lng": 10.781977
+  },
+  {
+    "romnr": "20259",
+    "plasser": 385,
+    "adresse": "Nobelsgt 30",
+    "lat": 59.921882,
+    "lng": 10.700768
+  },
+  {
+    "romnr": "20261",
+    "plasser": 486,
+    "adresse": "Vøyensvingen 4",
+    "lat": 59.929862,
+    "lng": 10.752136
+  },
+  {
+    "romnr": "20262",
+    "plasser": 260,
+    "adresse": "Kingosgt 17",
+    "lat": 59.930057,
+    "lng": 10.751484
+  },
+  {
+    "romnr": "20263",
+    "plasser": 2000,
+    "adresse": "T-banen - Jernbanetorget, nedgang Hotell clarion",
+    "lat": 59.912508,
+    "lng": 10.751295
+  },
+  {
+    "romnr": "20264",
+    "plasser": 570,
+    "adresse": "Akersgata 41",
+    "lat": 59.913579,
+    "lng": 10.741865
+  },
+  {
+    "romnr": "20265",
+    "plasser": 3000,
+    "adresse": "Akershus festning - Akershusstranda",
+    "lat": 59.908679,
+    "lng": 10.734938
+  },
+  {
+    "romnr": "20266",
+    "plasser": 250,
+    "adresse": "Fredrik Stangsgt 37",
+    "lat": 59.917852,
+    "lng": 10.70926
+  },
+  {
+    "romnr": "20268",
+    "plasser": 160,
+    "adresse": "Bogstadveien 30",
+    "lat": 59.926167,
+    "lng": 10.720795
+  },
+  {
+    "romnr": "20270",
+    "plasser": 2500,
+    "adresse": "T-banen - Carl Berners plass",
+    "lat": 59.925835,
+    "lng": 10.777908
+  },
+  {
+    "romnr": "20272",
+    "plasser": 3100,
+    "adresse": "T-banen - Enerhaugen - Åkebergveien",
+    "lat": 59.913667,
+    "lng": 10.769125
+  },
+  {
+    "romnr": "20275",
+    "plasser": 330,
+    "adresse": "Fagerheimgt 22",
+    "lat": 59.931105,
+    "lng": 10.770913
+  },
+  {
+    "romnr": "20277",
+    "plasser": 460,
+    "adresse": "Filipstadveien 15",
+    "lat": 59.907938,
+    "lng": 10.713782
+  },
+  {
+    "romnr": "20280",
+    "plasser": 2000,
+    "adresse": "T-banen - Grønland stasjon",
+    "lat": 59.913539,
+    "lng": 10.758469
+  },
+  {
+    "romnr": "20282",
+    "plasser": 700,
+    "adresse": "Hegdehaugsveien 36",
+    "lat": 59.923521,
+    "lng": 10.7254
+  },
+  {
+    "romnr": "20283",
+    "plasser": 3000,
+    "adresse": "T-banen - Nationalteater stasjon",
+    "lat": 59.915064,
+    "lng": 10.733025
+  },
+  {
+    "romnr": "20284",
+    "plasser": 750,
+    "adresse": "Tollbugata 40 / Nedre Vollgate 11",
+    "lat": 59.911594,
+    "lng": 10.738037
+  },
+  {
+    "romnr": "20285",
+    "plasser": 400,
+    "adresse": "T-banen - Oscarsgate 19",
+    "lat": 59.922607,
+    "lng": 10.726896
+  },
+  {
+    "romnr": "20286",
+    "plasser": 1000,
+    "adresse": "Schwensensgt 3/5",
+    "lat": 59.923207,
+    "lng": 10.737924
+  },
+  {
+    "romnr": "20287",
+    "plasser": 7000,
+    "adresse": "T-banen - Stortinget stasjon",
+    "lat": 59.912796,
+    "lng": 10.741858
+  },
+  {
+    "romnr": "20288",
+    "plasser": 760,
+    "adresse": "Thorvald Meyersgate 7",
+    "lat": 59.929734,
+    "lng": 10.758476
+  },
+  {
+    "romnr": "20289",
+    "plasser": 520,
+    "adresse": "Trondheimsveien 80",
+    "lat": 59.924023,
+    "lng": 10.772981
+  },
+  {
+    "romnr": "20290",
+    "plasser": 3340,
+    "adresse": "Torvet 6, Lillestrøm",
+    "lat": 59.956095,
+    "lng": 11.04845
+  },
+  {
+    "romnr": "20292",
+    "plasser": 4600,
+    "adresse": "Tæruddalen 85, Tærudhallen",
+    "lat": 60.013707,
+    "lng": 11.016283
+  },
+  {
+    "romnr": "20293",
+    "plasser": 4000,
+    "adresse": "Nordlifaret 50, Skårerhallen",
+    "lat": 59.923349,
+    "lng": 10.967033
+  },
+  {
+    "romnr": "20296",
+    "plasser": 70,
+    "adresse": "Storgata 11 - Offentlig",
+    "lat": 60.141733,
+    "lng": 11.173662
+  },
+  {
+    "romnr": "20300",
+    "plasser": 580,
+    "adresse": "Vigernesgt, Vigernes skole",
+    "lat": 59.955269,
+    "lng": 11.071618
+  },
+  {
+    "romnr": "20301",
+    "plasser": 100,
+    "adresse": "Engaveien 6 - Vitåsen (Garderåsen)",
+    "lat": 59.942091,
+    "lng": 11.13152
+  },
+  {
+    "romnr": "20302",
+    "plasser": 300,
+    "adresse": "Strømsveien 74, Gamle rådhus",
+    "lat": 59.948457,
+    "lng": 11.01185
+  },
+  {
+    "romnr": "20665",
+    "plasser": 500,
+    "adresse": "Sveavegen 1-25 - Jessheimtunet - Offentlig",
+    "lat": 60.140963,
+    "lng": 11.178132
+  },
+  {
+    "romnr": "20777",
+    "plasser": 444,
+    "adresse": "Bøstad skole, Vikingveien 459. Vestvågøy",
+    "lat": 68.239238,
+    "lng": 13.751838
+  },
+  {
+    "romnr": "20798",
+    "plasser": 650,
+    "adresse": "Kjøpmannsgata 34",
+    "lat": 63.432078,
+    "lng": 10.402295
+  },
+  {
+    "romnr": "20806",
+    "plasser": 357,
+    "adresse": "Hyttegata 2 \"Bjørneparken\"",
+    "lat": 59.666213,
+    "lng": 9.648765
+  },
+  {
+    "romnr": "20837",
+    "plasser": 95,
+    "adresse": "Eidesbråtet 1",
+    "lat": 60.056192,
+    "lng": 6.546916
+  },
+  {
+    "romnr": "20853",
+    "plasser": 2400,
+    "adresse": "Flåtestadveien 5a Fjellhallen",
+    "lat": 59.773247,
+    "lng": 10.803393
+  },
+  {
+    "romnr": "20860",
+    "plasser": 2000,
+    "adresse": "Komsa Fjellanlegg Alta Kommune",
+    "lat": 69.975548,
+    "lng": 23.272662
+  },
+  {
+    "romnr": "20901",
+    "plasser": 300,
+    "adresse": "Statlandvegen 13, Nord Statland",
+    "lat": 64.4965,
+    "lng": 11.142948
+  },
+  {
+    "romnr": "21023",
+    "plasser": 35,
+    "adresse": "Jon Sunds veg 18",
+    "lat": 60.888038,
+    "lng": 11.521303
+  },
+  {
+    "romnr": "21024",
+    "plasser": 73,
+    "adresse": "Munkedamsvegen 5",
+    "lat": 60.878592,
+    "lng": 11.576904
+  },
+  {
+    "romnr": "21025",
+    "plasser": 1540,
+    "adresse": "Torggata 1",
+    "lat": 60.886425,
+    "lng": 11.560943
+  },
+  {
+    "romnr": "21097",
+    "plasser": 100,
+    "adresse": "Industrivegen 17",
+    "lat": 63.110504,
+    "lng": 7.779926
+  },
+  {
+    "romnr": "21148",
+    "plasser": 66,
+    "adresse": "Håkon den godes gate 30",
+    "lat": 63.745956,
+    "lng": 11.299777
+  },
+  {
+    "romnr": "21163",
+    "plasser": 80,
+    "adresse": "Trekanten 2, Levanger",
+    "lat": 63.749125,
+    "lng": 11.309466
+  },
+  {
+    "romnr": "21224",
+    "plasser": 388,
+    "adresse": "Romsdalsvegen 2",
+    "lat": 62.674615,
+    "lng": 8.561965
+  },
+  {
+    "romnr": "21225",
+    "plasser": 91,
+    "adresse": "Ringvegen 13",
+    "lat": 62.672764,
+    "lng": 8.572422
+  },
+  {
+    "romnr": "21257",
+    "plasser": 400,
+    "adresse": "Strandveien 6 Lysaker",
+    "lat": 59.912408,
+    "lng": 10.63909
+  },
+  {
+    "romnr": "21271",
+    "plasser": 700,
+    "adresse": "Tangen. Havnegata",
+    "lat": 59.729705,
+    "lng": 10.231378
+  },
+  {
+    "romnr": "21280",
+    "plasser": 450,
+    "adresse": "Strøket 15A (Trekanten)",
+    "lat": 59.835985,
+    "lng": 10.432986
+  },
+  {
+    "romnr": "25512",
+    "plasser": 300,
+    "adresse": "Tangen verft, Gamle Kragerøvei 12",
+    "lat": 58.875152,
+    "lng": 9.416357
+  },
+  {
+    "romnr": "30651",
+    "plasser": 55,
+    "adresse": "Ulvahaugen 2",
+    "lat": 61.233491,
+    "lng": 7.093621
+  },
+  {
+    "romnr": "30653",
+    "plasser": 80,
+    "adresse": "industrivegen 24",
+    "lat": 61.590675,
+    "lng": 5.001537
+  },
+  {
+    "romnr": "30654",
+    "plasser": 120,
+    "adresse": "Gate 1 110",
+    "lat": 61.934751,
+    "lng": 5.113408
+  },
+  {
+    "romnr": "30655",
+    "plasser": 197,
+    "adresse": "Gate 1 129",
+    "lat": 61.936272,
+    "lng": 5.11416
+  },
+  {
+    "romnr": "30656",
+    "plasser": 155,
+    "adresse": "Slettevollsholten 11",
+    "lat": 61.601989,
+    "lng": 5.132522
+  },
+  {
+    "romnr": "30657",
+    "plasser": 111,
+    "adresse": "Strangata 52",
+    "lat": 61.600053,
+    "lng": 5.035031
+  },
+  {
+    "romnr": "30658",
+    "plasser": 160,
+    "adresse": "Rennekleiva 2",
+    "lat": 61.455153,
+    "lng": 5.902562
+  },
+  {
+    "romnr": "30659",
+    "plasser": 795,
+    "adresse": "Liavegen 35",
+    "lat": 61.449698,
+    "lng": 5.836552
+  },
+  {
+    "romnr": "30660",
+    "plasser": 40,
+    "adresse": "Flåmsdalsvegen16",
+    "lat": 60.85617,
+    "lng": 7.110105
+  },
+  {
+    "romnr": "30667",
+    "plasser": 220,
+    "adresse": "Olav Tryggvasons gate 28",
+    "lat": 63.433433,
+    "lng": 10.396616
+  },
+  {
+    "romnr": "30668",
+    "plasser": 700,
+    "adresse": "Otto Svedrups plass 4 - tidl. Øvre Torv 1",
+    "lat": 59.892038,
+    "lng": 10.526027
+  },
+  {
+    "romnr": "30671",
+    "plasser": 800,
+    "adresse": "Nedre Bakklandet 11 - 41",
+    "lat": 63.428649,
+    "lng": 10.403588
+  },
+  {
+    "romnr": "30672",
+    "plasser": 1740,
+    "adresse": "Strømsveien 9 Vassøyholtet",
+    "lat": 59.941052,
+    "lng": 11.002169
+  },
+  {
+    "romnr": "30673",
+    "plasser": 500,
+    "adresse": "Olav Kyrres gate 6 -Revmatismebygget - St. Olavs H",
+    "lat": 63.421146,
+    "lng": 10.392048
+  },
+  {
+    "romnr": "30677",
+    "plasser": 780,
+    "adresse": "Østre Rosten 39 - Rostenhallen",
+    "lat": 63.359645,
+    "lng": 10.380829
+  },
+  {
+    "romnr": "30678",
+    "plasser": 513,
+    "adresse": "Hasselbakken 5A og 5 C",
+    "lat": 63.436822,
+    "lng": 10.495529
+  },
+  {
+    "romnr": "30679",
+    "plasser": 330,
+    "adresse": "Oppdal Helsesenter",
+    "lat": 62.598982,
+    "lng": 9.692609
+  },
+  {
+    "romnr": "31679",
+    "plasser": 200,
+    "adresse": "T - Senteret, Offentlig T-rom",
+    "lat": 63.687737,
+    "lng": 9.665849
+  },
+  {
+    "romnr": "31749",
+    "plasser": 820,
+    "adresse": "Paradisveien 22",
+    "lat": 58.962347,
+    "lng": 5.741757
+  },
+  {
+    "romnr": "32760",
+    "plasser": 1210,
+    "adresse": "Olav Schousvei 2-8 plan B",
+    "lat": 59.930605,
+    "lng": 10.781977
+  },
+  {
+    "romnr": "36834",
+    "plasser": 1000,
+    "adresse": "Skippergata/ Johan Stangsplass 1",
+    "lat": 59.118183,
+    "lng": 11.390087
+  },
+  {
+    "romnr": "36835",
+    "plasser": 760,
+    "adresse": "Rødsfjellet/ Peder Ankersgt 7B",
+    "lat": 59.122614,
+    "lng": 11.378465
+  },
+  {
+    "romnr": "36836",
+    "plasser": 1000,
+    "adresse": "Oskleiva 18",
+    "lat": 59.127712,
+    "lng": 11.394312
+  },
+  {
+    "romnr": "36837",
+    "plasser": 75,
+    "adresse": "Marker U. skole/ Skolegata 21,Ørje",
+    "lat": 59.478394,
+    "lng": 11.657639
+  },
+  {
+    "romnr": "36838",
+    "plasser": 114,
+    "adresse": "Nordmyrveien 4/ Spydeberg",
+    "lat": 59.615456,
+    "lng": 11.077031
+  },
+  {
+    "romnr": "36839",
+    "plasser": 200,
+    "adresse": "Allaktivitetshuset Spydeberg/ Stasjonsgata 33",
+    "lat": 59.619931,
+    "lng": 11.081442
+  },
+  {
+    "romnr": "36840",
+    "plasser": 118,
+    "adresse": "Grendehusveien 2J/ Saltnes",
+    "lat": 59.295256,
+    "lng": 10.762224
+  },
+  {
+    "romnr": "36841",
+    "plasser": 32,
+    "adresse": "Råde Herredshus/ Skråtorpveien 2A",
+    "lat": 59.351645,
+    "lng": 10.871347
+  },
+  {
+    "romnr": "36842",
+    "plasser": 2000,
+    "adresse": "Øreåsen/Årvollskogen 97",
+    "lat": 59.419264,
+    "lng": 10.696867
+  },
+  {
+    "romnr": "36843",
+    "plasser": 50,
+    "adresse": "Helse og sosialsenter",
+    "lat": 59.488821,
+    "lng": 10.871204
+  },
+  {
+    "romnr": "36844",
+    "plasser": 90,
+    "adresse": "Citadel/ Jernbanegata 4, Mysen",
+    "lat": 59.553859,
+    "lng": 11.324296
+  },
+  {
+    "romnr": "36845",
+    "plasser": 114,
+    "adresse": "Opsahlveien 1, Mysen",
+    "lat": 59.553145,
+    "lng": 11.338877
+  },
+  {
+    "romnr": "36846",
+    "plasser": 124,
+    "adresse": "Rakkestad og Degernes brannkas/ Storgt 13",
+    "lat": 59.426576,
+    "lng": 11.342833
+  },
+  {
+    "romnr": "37868",
+    "plasser": 100,
+    "adresse": "Hunstadsenteret Hunstad Øst, offentlig",
+    "lat": 67.282152,
+    "lng": 14.541747
+  },
+  {
+    "romnr": "37869",
+    "plasser": 100,
+    "adresse": "Jernbanevegen 7",
+    "lat": 60.986082,
+    "lng": 9.237485
+  },
+  {
+    "romnr": "37870",
+    "plasser": 252,
+    "adresse": "Hammersengvegen 62",
+    "lat": 61.132025,
+    "lng": 10.462942
+  },
+  {
+    "romnr": "37879",
+    "plasser": 120,
+    "adresse": "Gullfakse Barnehage - Nordbødalen 12",
+    "lat": 58.473322,
+    "lng": 8.789051
+  },
+  {
+    "romnr": "37891",
+    "plasser": 40,
+    "adresse": "Rådhuset, Leknes",
+    "lat": 68.148173,
+    "lng": 13.611536
+  },
+  {
+    "romnr": "37914",
+    "plasser": 288,
+    "adresse": "Skogbrukets hus, fagerlidal 18",
+    "lat": 69.068362,
+    "lng": 18.524782
+  },
+  {
+    "romnr": "37918",
+    "plasser": 185,
+    "adresse": "Hestmyrvegen 10",
+    "lat": 59.381327,
+    "lng": 5.318218
+  },
+  {
+    "romnr": "38930",
+    "plasser": 856,
+    "adresse": "Fannestrandvegen 49 b",
+    "lat": 62.739478,
+    "lng": 7.182823
+  },
+  {
+    "romnr": "38931",
+    "plasser": 2000,
+    "adresse": "Kirkebakken 4A",
+    "lat": 62.739064,
+    "lng": 7.160307
+  },
+  {
+    "romnr": "38932",
+    "plasser": 1000,
+    "adresse": "Keiser Wilhelms gate 25",
+    "lat": 62.471598,
+    "lng": 6.157978
+  },
+  {
+    "romnr": "38933",
+    "plasser": 70,
+    "adresse": "Kometvegen 5",
+    "lat": 62.742701,
+    "lng": 7.229248
+  },
+  {
+    "romnr": "38934",
+    "plasser": 100,
+    "adresse": "Årøsetervegen 17",
+    "lat": 62.77184,
+    "lng": 7.287253
+  },
+  {
+    "romnr": "38937",
+    "plasser": 150,
+    "adresse": "Høglivegen 8",
+    "lat": 62.786868,
+    "lng": 7.530683
+  },
+  {
+    "romnr": "38938",
+    "plasser": 80,
+    "adresse": "Baklivegen 4",
+    "lat": 62.787672,
+    "lng": 7.537629
+  },
+  {
+    "romnr": "38939",
+    "plasser": 95,
+    "adresse": "Hospitalgata 6 \"gamle sykehus\"",
+    "lat": 70.37382,
+    "lng": 31.09557
+  },
+  {
+    "romnr": "38945",
+    "plasser": 70,
+    "adresse": "Skorgeneset 31 / Møre og Romsdal Kornsilo",
+    "lat": 62.576562,
+    "lng": 7.120198
+  },
+  {
+    "romnr": "38947",
+    "plasser": 48,
+    "adresse": "Tresfjordvegen 215",
+    "lat": 62.558244,
+    "lng": 7.13141
+  },
+  {
+    "romnr": "38950",
+    "plasser": 40,
+    "adresse": "Skulevegen 4",
+    "lat": 62.616826,
+    "lng": 7.089999
+  },
+  {
+    "romnr": "38952",
+    "plasser": 100,
+    "adresse": "Brugata 10",
+    "lat": 62.621345,
+    "lng": 7.089788
+  },
+  {
+    "romnr": "38954",
+    "plasser": 65,
+    "adresse": "Nybøvegen 2",
+    "lat": 62.601077,
+    "lng": 6.931248
+  },
+  {
+    "romnr": "38956",
+    "plasser": 60,
+    "adresse": "Skulebakken 1",
+    "lat": 62.52118,
+    "lng": 7.126657
+  },
+  {
+    "romnr": "38958",
+    "plasser": 75,
+    "adresse": "Neremsvegen 4",
+    "lat": 62.522356,
+    "lng": 7.126872
+  },
+  {
+    "romnr": "38960",
+    "plasser": 35,
+    "adresse": "Remmemsvegen 85",
+    "lat": 62.610433,
+    "lng": 7.098372
+  },
+  {
+    "romnr": "38963",
+    "plasser": 50,
+    "adresse": "Vollan 1",
+    "lat": 62.568252,
+    "lng": 7.688254
+  },
+  {
+    "romnr": "38964",
+    "plasser": 40,
+    "adresse": "Sørsidevegen 747",
+    "lat": 62.501345,
+    "lng": 7.565892
+  },
+  {
+    "romnr": "38966",
+    "plasser": 481,
+    "adresse": "Vollan 8A",
+    "lat": 62.568237,
+    "lng": 7.686245
+  },
+  {
+    "romnr": "38967",
+    "plasser": 20,
+    "adresse": "Prestgardsvegen 140",
+    "lat": 62.906299,
+    "lng": 6.920715
+  },
+  {
+    "romnr": "38969",
+    "plasser": 90,
+    "adresse": "Lundhaugvegen 34",
+    "lat": 62.905197,
+    "lng": 6.915695
+  },
+  {
+    "romnr": "38971",
+    "plasser": 90,
+    "adresse": "Torget 13A",
+    "lat": 62.854445,
+    "lng": 7.163949
+  },
+  {
+    "romnr": "38973",
+    "plasser": 55,
+    "adresse": "Torget 14",
+    "lat": 62.854089,
+    "lng": 7.164361
+  },
+  {
+    "romnr": "38975",
+    "plasser": 20,
+    "adresse": "Malmefjordvegen 18",
+    "lat": 62.83544,
+    "lng": 7.235402
+  },
+  {
+    "romnr": "38976",
+    "plasser": 22,
+    "adresse": "Myrbostadvegen 72",
+    "lat": 62.855367,
+    "lng": 7.188848
+  },
+  {
+    "romnr": "38977",
+    "plasser": 578,
+    "adresse": "Brendhaugen 7",
+    "lat": 62.336748,
+    "lng": 5.876838
+  },
+  {
+    "romnr": "38981",
+    "plasser": 60,
+    "adresse": "Stemsvegen 13",
+    "lat": 62.97589,
+    "lng": 7.163694
+  },
+  {
+    "romnr": "39987",
+    "plasser": 210,
+    "adresse": "Engasveien 27 (Rørvik samfunnshus )",
+    "lat": 64.863633,
+    "lng": 11.242084
+  },
+  {
+    "romnr": "39990",
+    "plasser": 75,
+    "adresse": "Valderøyvegen 1129",
+    "lat": 62.526602,
+    "lng": 6.122574
+  },
+  {
+    "romnr": "39993",
+    "plasser": 143,
+    "adresse": "Sloghaugvegen 3",
+    "lat": 62.440436,
+    "lng": 6.191013
+  },
+  {
+    "romnr": "39995",
+    "plasser": 167,
+    "adresse": "Molværsvegen 74",
+    "lat": 62.437854,
+    "lng": 6.183665
+  },
+  {
+    "romnr": "39997",
+    "plasser": 83,
+    "adresse": "Solavågseidet 76",
+    "lat": 62.427554,
+    "lng": 6.315737
+  },
+  {
+    "romnr": "40000",
+    "plasser": 181,
+    "adresse": "Langmyra 2",
+    "lat": 62.180763,
+    "lng": 6.083106
+  },
+  {
+    "romnr": "40001",
+    "plasser": 100,
+    "adresse": "Torvmyrane 5",
+    "lat": 62.182864,
+    "lng": 6.084978
+  },
+  {
+    "romnr": "40002",
+    "plasser": 257,
+    "adresse": "Vikegata 17",
+    "lat": 62.200507,
+    "lng": 6.12467
+  },
+  {
+    "romnr": "41007",
+    "plasser": 333,
+    "adresse": "Aurdalslia 30, Aurdalslia skole",
+    "lat": 60.307231,
+    "lng": 5.281626
+  },
+  {
+    "romnr": "44298",
+    "plasser": 300,
+    "adresse": "Enggata 37",
+    "lat": 60.730839,
+    "lng": 10.60403
+  },
+  {
+    "romnr": "46455",
+    "plasser": 200,
+    "adresse": "Peder Hiorts gate 18 B, RØROS SKOLE",
+    "lat": 62.57574,
+    "lng": 11.375244
+  },
+  {
+    "romnr": "46465",
+    "plasser": 222,
+    "adresse": "Jærveien 107",
+    "lat": 58.840202,
+    "lng": 5.723413
+  },
+  {
+    "romnr": "48494",
+    "plasser": 450,
+    "adresse": "Mellomveien 5",
+    "lat": 63.437722,
+    "lng": 10.430205
+  },
+  {
+    "romnr": "48512",
+    "plasser": 9,
+    "adresse": "Melkeveien 1",
+    "lat": 63.783681,
+    "lng": 11.455099
+  },
+  {
+    "romnr": "48513",
+    "plasser": 42,
+    "adresse": "Magnus den godes vei 9",
+    "lat": 63.78636,
+    "lng": 11.469815
+  },
+  {
+    "romnr": "48514",
+    "plasser": 49,
+    "adresse": "Hellbakkvegen 6",
+    "lat": 63.774763,
+    "lng": 11.746377
+  },
+  {
+    "romnr": "48515",
+    "plasser": 109,
+    "adresse": "Gamle fergeveg 2",
+    "lat": 63.790091,
+    "lng": 11.469551
+  },
+  {
+    "romnr": "48516",
+    "plasser": 42,
+    "adresse": "Kirkegata 29",
+    "lat": 63.745747,
+    "lng": 11.296884
+  },
+  {
+    "romnr": "48518",
+    "plasser": 75,
+    "adresse": "Håkon den godes gate 17/19",
+    "lat": 63.745562,
+    "lng": 11.298084
+  },
+  {
+    "romnr": "48527",
+    "plasser": 120,
+    "adresse": "Nedregårdsvegen 1",
+    "lat": 62.464238,
+    "lng": 6.363694
+  },
+  {
+    "romnr": "48535",
+    "plasser": 30,
+    "adresse": "Tingvold Park hotell, Gamle Kongeveg 47",
+    "lat": 64.023746,
+    "lng": 11.491063
+  },
+  {
+    "romnr": "48536",
+    "plasser": 205,
+    "adresse": "Guldbergaunet, Svedjanvegen",
+    "lat": 64.017505,
+    "lng": 11.514335
+  },
+  {
+    "romnr": "48537",
+    "plasser": 150,
+    "adresse": "Nedre Sannan",
+    "lat": 64.010981,
+    "lng": 11.499408
+  },
+  {
+    "romnr": "48538",
+    "plasser": 70,
+    "adresse": "Skolegata 22",
+    "lat": 64.013296,
+    "lng": 11.499952
+  },
+  {
+    "romnr": "48561",
+    "plasser": 274,
+    "adresse": "Åkersgata 4/Ticogården",
+    "lat": 62.67298,
+    "lng": 8.565771
+  },
+  {
+    "romnr": "48565",
+    "plasser": 108,
+    "adresse": "Kjøpmannsgata 15",
+    "lat": 62.371386,
+    "lng": 6.027633
+  },
+  {
+    "romnr": "48566",
+    "plasser": 58,
+    "adresse": "Strandgata 72-74",
+    "lat": 62.370041,
+    "lng": 6.028914
+  },
+  {
+    "romnr": "48570",
+    "plasser": 20,
+    "adresse": "Strandgata 106-114",
+    "lat": 62.373511,
+    "lng": 6.029445
+  },
+  {
+    "romnr": "48571",
+    "plasser": 270,
+    "adresse": "Gymnasvegen 2",
+    "lat": 62.14615,
+    "lng": 6.068567
+  },
+  {
+    "romnr": "48572",
+    "plasser": 62,
+    "adresse": "Dalevegen 24",
+    "lat": 62.199003,
+    "lng": 6.134422
+  },
+  {
+    "romnr": "48573",
+    "plasser": 448,
+    "adresse": "Sjøgata 3",
+    "lat": 62.340599,
+    "lng": 5.852242
+  },
+  {
+    "romnr": "48576",
+    "plasser": 22,
+    "adresse": "Spjelkavikvegen 130",
+    "lat": 62.454662,
+    "lng": 6.35807
+  },
+  {
+    "romnr": "48577",
+    "plasser": 40,
+    "adresse": "Skulevegen 16",
+    "lat": 62.440023,
+    "lng": 6.211088
+  },
+  {
+    "romnr": "48578",
+    "plasser": 81,
+    "adresse": "Valderhaug 4",
+    "lat": 62.500696,
+    "lng": 6.134695
+  },
+  {
+    "romnr": "48580",
+    "plasser": 50,
+    "adresse": "Morkafura 8",
+    "lat": 62.171096,
+    "lng": 6.038975
+  },
+  {
+    "romnr": "48604",
+    "plasser": 7000,
+    "adresse": "Fjellanlegg - Tromsø parkering",
+    "lat": 69.650827,
+    "lng": 18.954024
+  },
+  {
+    "romnr": "48632",
+    "plasser": 375,
+    "adresse": "Tømmeråsv. 3 - Svelvik Samfunnshus (off)",
+    "lat": 59.606648,
+    "lng": 10.405089
+  },
+  {
+    "romnr": "48661",
+    "plasser": 0,
+    "adresse": "Mikkelsmyrveien 3B",
+    "lat": 58.028221,
+    "lng": 7.476921
+  },
+  {
+    "romnr": "5826",
+    "plasser": 150,
+    "adresse": "Dr. Wessels gate 7",
+    "lat": 69.727791,
+    "lng": 30.041139
+  }
+]

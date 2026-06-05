@@ -1,0 +1,80 @@
+﻿import { useEffect, useState } from 'react';
+
+export type CookiePrefs = {
+  essential: true;
+  optionalEnabled: boolean;
+};
+
+const COOKIE_PREFS_KEY = 'beredskap101_cookie_prefs_v1';
+
+export function readCookiePrefs(): CookiePrefs | null {
+  try {
+    const raw = localStorage.getItem(COOKIE_PREFS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return {
+      essential: true,
+      optionalEnabled: Boolean(parsed.optionalEnabled)
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function saveCookiePrefs(optionalEnabled: boolean) {
+  const value: CookiePrefs = {
+    essential: true,
+    optionalEnabled
+  };
+  localStorage.setItem(COOKIE_PREFS_KEY, JSON.stringify(value));
+}
+
+export default function CookieBanner({
+  currentLang,
+  onOpenSettings
+}: {
+  currentLang: string;
+  onOpenSettings: () => void;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const existing = readCookiePrefs();
+    setVisible(!existing);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed bottom-4 left-4 right-4 md:right-auto md:max-w-xl z-50 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-xl">
+      <p className="text-xs text-[var(--muted)] mb-3">
+        {currentLang === 'no'
+          ? 'Vi bruker kun nÃ¸dvendige funksjonsinnstillinger lokalt i nettleseren. Ingen analyse- eller markedsfÃ¸ringskapsler.'
+          : 'We only use required functional settings stored locally in your browser. No analytics or advertising cookies.'}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => {
+            saveCookiePrefs(false);
+            setVisible(false);
+          }}
+          className="px-3 py-2 rounded-lg border border-[var(--border)] text-xs font-bold"
+        >
+          {currentLang === 'no' ? 'Avvis valgfri' : 'Reject optional'}
+        </button>
+        <button
+          onClick={() => {
+            saveCookiePrefs(true);
+            setVisible(false);
+          }}
+          className="px-3 py-2 rounded-lg bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-xs font-bold"
+        >
+          {currentLang === 'no' ? 'Godta valgfri' : 'Accept optional'}
+        </button>
+        <button onClick={onOpenSettings} className="px-3 py-2 rounded-lg border border-[var(--border)] text-xs font-bold">
+          {currentLang === 'no' ? 'Innstillinger' : 'Settings'}
+        </button>
+      </div>
+    </div>
+  );
+}

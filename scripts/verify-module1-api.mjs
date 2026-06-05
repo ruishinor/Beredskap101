@@ -1,0 +1,228 @@
+import { spawn } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
+
+const API_BASE_URL = 'http://127.0.0.1:3002';
+const UI_BASE_URL = 'http://127.0.0.1:3011';
+const STARTUP_TIMEOUT_MS = 25000;
+
+function spawnManaged(args, stdio = ['ignore', 'pipe', 'pipe']) {
+  return spawn(process.execPath, args, {
+    stdio,
+    env: process.env,
+  });
+}
+
+function logPass(message) {
+  console.log(`[PASS] ${message}`);
+}
+
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+  logPass(message);
+}
+
+async function fetchJson(url, init) {
+  const response = await fetch(url, init);
+  const text = await response.text();
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    throw new Error(`Expected JSON from ${url}, received: ${text.slice(0, 120)}`);
+  }
+
+  return { response, data };
+}
+
+async function waitForApiReady() {
+  const deadline = Date.now() + STARTUP_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    try {
+      const { response, data } = await fetchJson(`${API_BASE_URL}/api/healthz`);
+      if (response.ok && data && typeof data.status === 'string') return;
+    } catch {
+      // Continue polling until timeout.
+    }
+    await delay(350);
+  }
+  throw new Error('API server did not become ready in time.');
+}
+
+async function waitForUiReady() {
+  const deadline = Date.now() + STARTUP_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetch(UI_BASE_URL);
+      if (response.ok) return;
+    } catch {
+      // Continue polling until timeout.
+    }
+    await delay(350);
+  }
+  throw new Error('UI server did not become ready in time.');
+}
+
+function spawnApiServer() {
+  return spawnManaged(['--import', 'tsx', 'server.js']);
+}
+
+async function stopApiServer(child) {
+  if (!child || child.killed) return;
+
+  const closed = new Promise((resolve) => {
+    child.once('exit', () => resolve());
+  });
+
+  try {
+    child.kill('SIGTERM');
+  } catch {
+    // Ignore termination race.
+  }
+
+  await Promise.race([closed, delay(1200)]);
+
+  if (child.exitCode === null) {
+    try {
+      child.kill('SIGKILL');
+    } catch {
+      // Ignore termination race.
+    }
+  }
+}
+
+async function run() {
+  const apiProcess = spawnApiServer();
+  let stderrBuffer = '';
+
+  apiProcess.stderr.on('data', (chunk) => {
+    stderrBuffer += String(chunk);
+  });
+
+  apiProcess.stdout.on('data', () => {
+    // Keeping stdout attached for startup sequencing; no-op by design.
+  });
+
+  try {
+    await waitForApiReady();
+
+    const { response: healthResponse, data: healthData } = await fetchJson(`${API_BASE_URL}/api/healthz`);
+    assert(healthResponse.status === 200, 'GET /api/healthz returns 200');
+    assert(typeof healthData?.status === 'string', 'GET /api/healthz returns status field');
+
+    const { response: copilotInvalidResponse } = await fetchJson(`${API_BASE_URL}/api/copilot/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    assert(copilotInvalidResponse.status === 400, 'POST /api/copilot/analyze rejects missing history payload');
+
+    const { response: copilotValidResponse, data: copilotValidData } = await fetchJson(`${API_BASE_URL}/api/copilot/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        context: 'Module 1 Backward Compatibility',
+        history: [{ choice: 'Call 113 and coordinate backup', responseTimeSec: 20, scoreChange: 8 }],
+      }),
+    });
+    assert(copilotValidResponse.status === 200, 'POST /api/copilot/analyze accepts valid history payload');
+    assert(typeof copilotValidData?.resilienceScore === 'number', '/api/copilot/analyze returns resilienceScore');
+    assert(typeof copilotValidData?.readinessGrade === 'string', '/api/copilot/analyze returns readinessGrade');
+
+    const { response: sourceResponse, data: sourceData } = await fetchJson(`${API_BASE_URL}/api/source-feeds`);
+    assert(sourceResponse.status === 200, 'GET /api/source-feeds returns 200');
+    assert(typeof sourceData?.fetchedAt === 'string', '/api/source-feeds returns fetchedAt');
+    assert(Array.isArray(sourceData?.sources), '/api/source-feeds returns sources array');
+
+    const { response: norwayResponse, data: norwayData } = await fetchJson(`${API_BASE_URL}/api/norway-news?limit=5`);
+    assert(norwayResponse.status === 200, 'GET /api/norway-news returns 200');
+    assert(Array.isArray(norwayData?.items), '/api/norway-news returns items array');
+    assert(norwayData.items.length <= 5, '/api/norway-news respects limit parameter');
+    assert(Array.isArray(norwayData?.partialFailures), '/api/norway-news returns partialFailures array');
+
+    const { response: contactInvalidResponse, data: contactInvalidData } = await fetchJson(`${API_BASE_URL}/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    assert(contactInvalidResponse.status === 400, 'POST /api/contact rejects missing required fields');
+    assert(Array.isArray(contactInvalidData?.required), 'POST /api/contact returns required fields on 400');
+
+    const { response: contactValidResponse, data: contactValidData } = await fetchJson(`${API_BASE_URL}/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Module1 Audit',
+        email: 'audit@example.com',
+        subject: 'Verification',
+        message: 'Module 1 contact flow verification',
+      }),
+    });
+    assert(contactValidResponse.status === 200, 'POST /api/contact accepts valid payload');
+    assert(
+      typeof contactValidData?.mailto === 'string' &&
+        contactValidData.mailto.startsWith('mailto:info@holf.services'),
+      'POST /api/contact returns mailto handoff to info@holf.services'
+    );
+
+    console.log('[SUCCESS] Module 1 API parity verification completed.');
+  } finally {
+    await stopApiServer(apiProcess);
+  }
+
+  if (stderrBuffer.includes('EADDRINUSE')) {
+    throw new Error('Port 3002 is already in use. Stop conflicting process and rerun verification.');
+  }
+
+  const devProcess = spawnManaged(['scripts/dev-runtime.mjs']);
+
+  let devStdErr = '';
+  devProcess.stderr.on('data', (chunk) => {
+    devStdErr += String(chunk);
+  });
+
+  try {
+    await waitForUiReady();
+
+    const sourceViaUi = await fetchJson(`${UI_BASE_URL}/api/source-feeds`);
+    assert(sourceViaUi.response.status === 200, 'Dev runtime proxies /api/source-feeds via Vite at port 3011');
+
+    const norwayViaUi = await fetchJson(`${UI_BASE_URL}/api/norway-news?limit=3`);
+    assert(norwayViaUi.response.status === 200, 'Dev runtime proxies /api/norway-news via Vite at port 3011');
+    assert(Array.isArray(norwayViaUi.data?.items) && norwayViaUi.data.items.length <= 3, 'Dev runtime limit query remains functional through proxy');
+
+    const contactViaUi = await fetchJson(`${UI_BASE_URL}/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    assert(contactViaUi.response.status === 400, 'Dev runtime proxies /api/contact validation through Vite at port 3011');
+
+    const copilotViaUi = await fetchJson(`${UI_BASE_URL}/api/copilot/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        context: 'Module 1 proxy compatibility',
+        history: [{ text: 'Secure offline backup', responseTimeSec: 25, scoreChange: 4 }],
+      }),
+    });
+    assert(copilotViaUi.response.status === 200, 'Dev runtime proxies /api/copilot/analyze through Vite at port 3011');
+    assert(
+      typeof copilotViaUi.data?.resilienceScore === 'number',
+      'Dev runtime keeps /api/copilot/analyze response contract through proxy'
+    );
+  } finally {
+    await stopApiServer(devProcess);
+  }
+
+  if (devStdErr.includes('EADDRINUSE')) {
+    throw new Error('Port conflict detected while running npm run dev.');
+  }
+}
+
+run().catch((error) => {
+  console.error('[FAIL]', error.message || error);
+  process.exit(1);
+});

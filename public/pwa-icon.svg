@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Beredskap101">
+  <rect width="128" height="128" rx="24" fill="#0d0d0d"/>
+  <path d="M64 14 104 30v28c0 27-17 47-40 56-23-9-40-29-40-56V30l40-16Z" fill="#225c52"/>
+  <path d="M64 28 91 39v20c0 18-10 32-27 40-17-8-27-22-27-40V39l27-11Z" fill="#0d0d0d"/>
+  <path d="M58 42h12v16h16v12H70v16H58V70H42V58h16V42Z" fill="#fff4ed"/>
+</svg>

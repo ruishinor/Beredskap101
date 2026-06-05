@@ -1,0 +1,20 @@
+{
+  "name": "Beredskap101",
+  "short_name": "B101",
+  "description": "Praktisk egenberedskap, førstehjelp, personvern og reisesikkerhet.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#225c52",
+  "lang": "no",
+  "categories": ["education", "health", "utilities"],
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
