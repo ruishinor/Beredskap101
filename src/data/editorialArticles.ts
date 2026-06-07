@@ -114,8 +114,8 @@ export const editorialArticles: EditorialArticle[] = [
   {
     id: 'wilderness-physics-of-survival',
     pillar: 'friluftsliv',
-    title: 'Wilderness Physics: How Nature Kills and How Preparation Changes the Equation',
-    titleNo: 'Villmarksfysikk: Hvordan naturen dreper — og hvordan forberedelse endrer ligningen',
+    title: 'The Laws of the Wilderness: How Nature Kills, and How Preparation Can Change the Situation',
+    titleNo: 'Villmarkens naturlover: Hvordan naturen dreper, og hvordan forberedelser kan endre situasjonen',
     category: 'Outdoor Preparedness',
     estimatedReadMinutes: 7,
     summary: 'A data-driven look at how moving water, falling temperatures, driver fatigue, and navigation failure interact to create wilderness fatalities — and the specific, teachable skills that neutralize each threat.',
@@ -154,15 +154,15 @@ export const editorialArticles: EditorialArticle[] = [
         contentNo: 'Moderne friluftsliv-navigasjon har en systematisk sårbarhet: smarttelefon-kartapper er avhengige av kontinuerlig dataforbindelse for kartlasting. I blindsoner \u2014 som dekker store deler av norsk fjelll\u00e5nde og internasjonal villmark \u2014 viser appen en blank bakgrunn med en bl\u00e5 prikk. L\u00f8sningen har v\u00e6rt tilgjengelig i \u00e5revis og koster ingenting: forh\u00e5ndsnedlasting av offline kartpakker i lokal-f\u00f8rst navigasjonsapper. Organic Maps, OsmAnd og Maps.me gir offline vektorkartlegging med ruteplanlegging uten live karttilkobling. For fjelll\u00e5nde tilbyr Kartverket 1:50 000 topografiske data. Batteristyring fullfj\u00f8rer bildet: flymodus med GPS aktiv forlenger telefonlevetiden 4\u20136x over full LTE-drift. Sviktmodusen som dreper er ikke utstyrssvikt \u2014 det er antagelsen om at utstyr virker.'
       },
       {
-        heading: 'Rucking: The Preparedness Fitness Framework',
-        headingNo: 'Rucking: Beredskapsfitness-rammeverket',
+        heading: 'Rucking: A Framework for Physical Fitness and Endurance',
+        headingNo: 'Rucking: Et rammeverk for fysisk form og utholdenhet',
         content: 'Michael Easter\'s 2026 analysis of rucking (walking with a loaded pack) demonstrates a consistent physiological case: it is the highest-efficiency preparedness fitness modality available to non-professional civilians. Unlike running, it generates minimal impact-related injury rates. Unlike gym training, it translates directly to functional emergency capacity — the ability to carry a 72-hour bag for extended periods, evacuate another person, or sustain physical effort under real-world load. A commonly cited preparedness benchmark (30% body weight over 10 km in under 2 hours) represents a meaningful real-world threshold. The 10-week progressive program (starting at 20% body weight, 30 minutes, 3x per week) requires no equipment beyond a functional pack and the discipline to show up. Combined with systematic foot care — two-layer socks, pre-hike lubrication, immediate hot-spot intervention — it is the single most compressible preparedness investment available.',
         contentNo: 'Michael Easters 2026-analyse av rucking (vandring med lastet sekk) demonstrerer et konsekvent fysiologisk argument: det er den h\u00f8yest-effektivitets beredskapsfitness-modaliteten tilgjengelig for ikke-profesjonelle sivile. I motsetning til l\u00f8ping genererer det minimale skadefrekvenser relatert til belastning. I motsetning til treningssaltrening oversettes det direkte til funksjonell beredskapskapasitet \u2014 evnen til \u00e5 b\u00e6re en 72-timers bag over lengre perioder, evakuere en annen person, eller opprettholde fysisk innsats under reell belastning. Et vanlig referansepunkt for utholdenhetstrening (30 % kroppsvekt over 10 km p\u00e5 under 2 timer) representerer en meningsfull reell-verden terskel. Det 10-ukers progressive programmet (starter p\u00e5 20 % kroppsvekt, 30 minutter, 3x per uke) krever intet utstyr utover en funksjonell sekk og disiplinen til \u00e5 m\u00f8te opp. Kombinert med systematisk fotpleie \u2014 to-lags sokker, f\u00f8rhiking-sm\u00f8ring, umiddelbar varm-flekk-intervensjon \u2014 er det den enkelt mest komprimerte beredskapsinvesteringen tilgjengelig.'
       }
     ],
     printSummary: {
-      title: 'Wilderness Physics: Quick Reference Card',
-      titleNo: 'Villmarksfysikk: Hurtigreferansekort',
+      title: 'Laws of the Wilderness: Quick Reference Card',
+      titleNo: 'Villmarkens naturlover: Referansekort',
       bullets: [
         'WATER: Throw a stick. If it moves faster than walking pace, do NOT cross.',
         'WATER: Unbuckle hip belt and chest strap before wading. Be ready to shed the pack instantly.',
