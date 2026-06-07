@@ -2,10 +2,56 @@ node_modules/
 build/
 dist/
 coverage/
-.DS_Store
-*.log
+
+# Environment and secrets
 .env*
 !.env.example
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+*.sublime-project
+*.sublime-workspace
+
+# Development tools and agent configurations
+.agent/
+.agents/
+.bmad/
+.bmad-custom/
+.bmad-config/
+.bmad-output/
+.claude/
+.qwen/
+.opencode/
+.github/agent-config/
+
+# Temporary and scratch files
+*.tmp
+*.temp
+tmp_*
+.temp_
+scratch/
+
+# Archive artifacts
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.codex*
+
+# Editor temporary files
+*.log
 
 # Ingestion report artifacts (review locally before publishing curated dataset)
 src/data/processedAssets.rejected.json
@@ -16,6 +62,10 @@ src/data/processedAssets.ingest-report.json
 *.crdownload
 *_files/
 
-# Browser automation artifacts
+# Debug/backup files
+.debug/
+*.bak
+*.backup
+*.orig
 playwright-report/
 test-results/playwright/
