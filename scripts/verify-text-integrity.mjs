@@ -3,11 +3,37 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const TARGET_DIRS = ['src', 'scripts', 'tests'];
-const TARGET_FILES = ['index.html'];
-const TARGET_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.html']);
+const TARGET_FILES = ['index.html', 'scratch/process_uorganisert.py'];
+const TARGET_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.html', '.py']);
 const FILE_EXCLUSIONS = new Set(['scripts/verify-text-integrity.mjs', 'scripts/verify-localization.mjs']);
 
 const MOJIBAKE_PATTERN = /[\uFFFD]|\u00C3[\u0080-\uFFFF]|\u00C2[\u0080-\uFFFF]|\u00E2[\u0080-\uFFFF]{1,2}/u;
+const SUSPICIOUS_SEGMENT_PATTERNS = [
+  { pattern: /\?n/u, reason: 'broken "én" substitution' },
+  { pattern: /\?C/u, reason: 'broken degree-symbol substitution' },
+  { pattern: /kaf\?/u, reason: 'broken accented-word substitution' },
+  { pattern: /M\?rk/u, reason: 'broken Norwegian UI label' },
+  { pattern: /St\?tte/u, reason: 'broken Norwegian UI label' },
+  { pattern: /lokals\?k/u, reason: 'broken Norwegian UI label' },
+  { pattern: /S\?ker/u, reason: 'broken Norwegian UI label' },
+  { pattern: /S\?k/u, reason: 'broken Norwegian UI label' },
+  { pattern: /f\?rstehjelp/u, reason: 'broken Norwegian UI label' },
+  { pattern: /spr\?k/u, reason: 'broken Norwegian UI label' },
+  { pattern: /H\?y/u, reason: 'broken Norwegian UI label' },
+  { pattern: /Pr\?v/u, reason: 'broken Norwegian UI label' },
+  { pattern: /f\?rre/u, reason: 'broken Norwegian UI label' },
+  { pattern: /\?pne/u, reason: 'broken Norwegian UI label' },
+  { pattern: /L\?r/u, reason: 'broken Norwegian UI label' },
+  { pattern: /fullf\?rt/u, reason: 'broken Norwegian UI label' },
+  { pattern: /Beslutningstr\?r/u, reason: 'broken Norwegian UI label' },
+  { pattern: /Bruksvilk\?r/u, reason: 'broken Norwegian UI label' },
+  { pattern: /N\?v\?rende/u, reason: 'broken Norwegian UI label' },
+  { pattern: /klargj\?ringssteg/u, reason: 'broken Norwegian UI label' },
+  { pattern: /st\?tteverkt\?y/u, reason: 'broken Norwegian UI label' },
+  { pattern: /\?det kunne vært verre\?/u, reason: 'broken quote substitution' },
+  { pattern: /\?Det du opplevde var alvorlig/u, reason: 'broken quote substitution' },
+  { pattern: /ðŸ/u, reason: 'broken emoji sequence' },
+];
 
 const FORBIDDEN_FRAGMENTS = [
   'Lag husstandsoevning',
@@ -79,6 +105,11 @@ function pushFinding(findings, relativePath, lineNumber, reason, line) {
   });
 }
 
+function splitQuotedSegments(line) {
+  const matches = line.match(/['"`]([^'"`]+)['"`]/g) || [];
+  return matches.map((segment) => segment.slice(1, -1));
+}
+
 function scanFile(filePath, findings) {
   const relativePath = path.relative(ROOT, filePath).replace(/\\/g, '/');
   const text = fs.readFileSync(filePath, 'utf8');
@@ -92,6 +123,13 @@ function scanFile(filePath, findings) {
     for (const fragment of FORBIDDEN_FRAGMENTS) {
       if (line.includes(fragment)) {
         pushFinding(findings, relativePath, index + 1, 'forbidden transliteration fragment "' + fragment + '"', line);
+      }
+    }
+
+    const segments = [line, ...splitQuotedSegments(line)];
+    for (const { pattern, reason } of SUSPICIOUS_SEGMENT_PATTERNS) {
+      if (segments.some((segment) => pattern.test(segment))) {
+        pushFinding(findings, relativePath, index + 1, reason, line);
       }
     }
   });

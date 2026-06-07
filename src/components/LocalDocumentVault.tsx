@@ -3,6 +3,7 @@ import { AlertTriangle, Download, FileText, FolderOpen, PlusCircle, Search, Shie
 import { useTranslation } from 'react-i18next';
 import type { VaultDocument, VaultDocumentAttachment, VaultDocumentCategory } from '../types/offline';
 import { formatOsloDateTime } from '../utils/dateTime';
+import type { ThemeType } from '../types';
 import {
   buildFullLocalDataExportBundle,
   deleteVaultDocument,
@@ -83,7 +84,7 @@ function categoryLabel(category: VaultDocumentCategory, currentLang: 'en' | 'no'
   return labels[category][currentLang];
 }
 
-export default function LocalDocumentVault({ theme }: { theme: 'dark' | 'light' }) {
+export default function LocalDocumentVault({ theme }: { theme: ThemeType }) {
   const { i18n } = useTranslation();
   const currentLang = (i18n.language || 'en') === 'no' ? 'no' : 'en';
 
@@ -97,13 +98,13 @@ export default function LocalDocumentVault({ theme }: { theme: 'dark' | 'light' 
   const importInputRef = useRef<HTMLInputElement | null>(null);
 
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
-    bodyText: theme === 'dark' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
-    btnPrimary: theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105',
-    btnSecondary: theme === 'dark' ? 'bg-neutral-950 text-neutral-300 border-neutral-700 hover:border-neutral-500' : 'bg-slate-50 text-slate-700 border-slate-300 hover:border-slate-400',
-    inputField: theme === 'dark' ? 'bg-black border-neutral-700 text-[var(--accent)] placeholder:text-neutral-500' : 'bg-slate-50 border-slate-300 text-slate-800 placeholder:text-slate-400',
-    warningBox: theme === 'dark' ? 'bg-red-950/20 border-red-500/40 text-red-300' : 'bg-amber-50 border-amber-300 text-amber-900',
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    bodyText: theme !== 'light' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
+    btnPrimary: theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105',
+    btnSecondary: theme !== 'light' ? 'bg-neutral-950 text-neutral-300 border-neutral-700 hover:border-neutral-500' : 'bg-slate-50 text-slate-700 border-slate-300 hover:border-slate-400',
+    inputField: theme !== 'light' ? 'bg-black border-neutral-700 text-[var(--accent)] placeholder:text-neutral-500' : 'bg-slate-50 border-slate-300 text-slate-800 placeholder:text-slate-400',
+    warningBox: theme !== 'light' ? 'bg-red-950/20 border-red-500/40 text-red-300' : 'bg-amber-50 border-amber-300 text-amber-900',
   };
 
   const refreshDocuments = async () => {

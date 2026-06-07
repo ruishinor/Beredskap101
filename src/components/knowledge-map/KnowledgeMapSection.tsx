@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, AlertTriangle, Play, Lock, Unlock } from 'lucide-react';
 import { PillarId } from '../../types';
+import type { ThemeType } from '../../types';
 import { pillarsDataEn, pillarsDataNo } from '../../data/pillarsData';
 import { knowledgePillars } from '../../data/knowledgeMapData';
 import KnowledgeMapHeader from './KnowledgeMapHeader';
@@ -13,7 +14,7 @@ import FeatureStrip from './FeatureStrip';
 
 interface KnowledgeMapSectionProps {
   currentLang: string;
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   setActiveTab: (tab: 'manual' | 'scenarios' | 'flowcharts' | 'checklists' | 'library') => void;
   setSelectedPillarId: (id: PillarId | null) => void;
   setActiveArticleId: (id: string | null) => void;
@@ -365,7 +366,9 @@ export default function KnowledgeMapSection({
           {/* Lock Override Actions panel */}
           <div className="bg-[var(--bg-panel)] border border-[var(--border-muted)] rounded-[var(--radius-md)] p-4 flex items-center justify-between shadow-sm select-none">
             <span className="text-[12px] font-mono font-bold text-[var(--text-main)] flex items-center gap-1.5">
-              <span>{lockOverride ? 'ðŸ”“' : 'ðŸ”’'}</span>
+              <span aria-hidden="true">
+                {lockOverride ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+              </span>
               <span>{currentLang === 'no' ? 'Systemlås' : 'System Lock State'}</span>
             </span>
             
@@ -479,7 +482,7 @@ export default function KnowledgeMapSection({
             </div>
           ) : (
             <div className="bg-black/10 border border-dashed border-[var(--border-muted)] rounded-[var(--radius-md)] p-6 text-center flex flex-col justify-center items-center flex-grow py-8 text-[var(--text-dim)] font-mono select-none">
-              <span className="text-[20px] mb-2 opacity-50">ðŸ§­</span>
+              <Lock className="w-5 h-5 mb-2 opacity-50" aria-hidden="true" />
               <p className="text-[12px] max-w-[25ch] leading-relaxed">
                 {currentLang === 'no'
                   ? 'Velg en av søylene på kartet for å låse opp temaer.'

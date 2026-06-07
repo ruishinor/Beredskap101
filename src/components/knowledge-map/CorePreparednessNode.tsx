@@ -1,9 +1,10 @@
 ﻿import React from 'react';
 import { Shield } from 'lucide-react';
+import type { ThemeType } from '../../types';
 
 interface CorePreparednessNodeProps {
   currentLang: string;
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   currentStep: 'core' | 'category' | 'topics' | 'guides' | 'actions';
   onClick: () => void;
   x: number; // Center X

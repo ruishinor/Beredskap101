@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { ThemeType } from '../types';
 import {
   FileText,
   ListChecks,
@@ -85,7 +86,7 @@ interface ExtendedAssetViewerProps {
   key?: string;
   assetId: string;
   asset?: ProcessedAsset;
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   onBack: () => void;
   currentLang: string;
   initialTab?: 'article' | 'guide' | 'checklist' | 'protocol' | 'module' | 'stats';
@@ -319,22 +320,22 @@ ${notesText || 'Ingen notater lagret.'}
 
   // Visual Styling Mappings
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
-    bodyText: theme === 'dark' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
-    tabActive: theme === 'dark' ? 'bg-[var(--accent-solid)]/15 text-[var(--accent)] border-[var(--accent)] font-bold' : 'bg-teal-50 text-teal-900 border-teal-600 font-bold',
-    tabInactive: theme === 'dark' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
-    badge: theme === 'dark' ? 'border-[var(--accent)]/20 bg-[var(--accent-solid)]/10 text-[var(--accent)]' : 'border-teal-500/20 bg-teal-500/5 text-teal-700',
-    progressBar: theme === 'dark' ? 'bg-[var(--accent-solid)]' : 'bg-teal-600'
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    bodyText: theme !== 'light' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
+    tabActive: theme !== 'light' ? 'bg-[var(--accent-solid)]/15 text-[var(--accent)] border-[var(--accent)] font-bold' : 'bg-teal-50 text-teal-900 border-teal-600 font-bold',
+    tabInactive: theme !== 'light' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
+    badge: theme !== 'light' ? 'border-[var(--accent)]/20 bg-[var(--accent-solid)]/10 text-[var(--accent)]' : 'border-teal-500/20 bg-teal-500/5 text-teal-700',
+    progressBar: theme !== 'light' ? 'bg-[var(--accent-solid)]' : 'bg-teal-600'
   };
 
   // Helper to map pillarId to friendly name
   const getPillarName = (pId: string) => {
     switch (pId) {
-      case 'førstehjelp': return currentLang === 'no' ? 'Førstehjelp & Trauma' : 'First Aid & Trauma';
+      case 'førstehjelp': return currentLang === 'no' ? 'Førstehjelp & Traumer' : 'First Aid & Trauma';
       case 'friluftsliv': return currentLang === 'no' ? 'Friluftsliv' : 'Wilderness Survival';
       case 'egensikkerhet': return currentLang === 'no' ? 'Egensikkerhet' : 'Personal Safety';
-      case 'egenberedskap': return currentLang === 'no' ? 'Husholdning & Egenberedskap' : 'Household Preparedness';
+      case 'egenberedskap': return currentLang === 'no' ? 'Husholdning, Hjemmet & Egenberedskap' : 'Household, Home & Personal Preparedness';
       case 'personvern': return currentLang === 'no' ? 'Digitalt Personvern' : 'Digital Privacy';
       case 'reisesikkerhet': return currentLang === 'no' ? 'Reisesikkerhet' : 'Travel Security';
       default: return pId;
@@ -382,7 +383,7 @@ ${notesText || 'Ingen notater lagret.'}
       <div className={`p-6 rounded-xl border ${styles.cardBg}`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className={`text-2xl md:text-3xl font-black ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+            <h2 className={`text-2xl md:text-3xl font-black ${theme !== 'light' ? 'text-white' : 'text-neutral-900'}`}>
               {optimizeTitle(asset.title, currentLang)}
             </h2>
             <p className="text-[11px] font-mono text-[var(--muted)] mt-1.5 flex items-center gap-2">
@@ -390,10 +391,10 @@ ${notesText || 'Ingen notater lagret.'}
             </p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs font-mono">
-            <span className={`px-3 py-1 rounded-md border ${theme === 'dark' ? 'bg-neutral-950 border-neutral-800' : 'bg-slate-100 border-slate-200'}`}>
+            <span className={`px-3 py-1 rounded-md border ${theme !== 'light' ? 'bg-neutral-950 border-neutral-800' : 'bg-slate-100 border-slate-200'}`}>
               Size: {asset.metadata.fileSizeKb.toFixed(2)} KB
             </span>
-            <span className={`px-3 py-1 rounded-md border ${theme === 'dark' ? 'bg-neutral-950 border-neutral-800' : 'bg-slate-100 border-slate-200'}`}>
+            <span className={`px-3 py-1 rounded-md border ${theme !== 'light' ? 'bg-neutral-950 border-neutral-800' : 'bg-slate-100 border-slate-200'}`}>
               Assessment: {reviewStatusLabel}
             </span>
           </div>
@@ -466,7 +467,7 @@ ${notesText || 'Ingen notater lagret.'}
           <div className="space-y-6">
             <div className="space-y-2">
               <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">Overview</span>
-              <p className={`text-sm md:text-base leading-relaxed ${theme === 'dark' ? 'text-neutral-200' : 'text-neutral-800'}`}>
+              <p className={`text-sm md:text-base leading-relaxed ${theme !== 'light' ? 'text-neutral-200' : 'text-neutral-800'}`}>
                 {asset.article.overview}
               </p>
             </div>
@@ -478,7 +479,7 @@ ${notesText || 'Ingen notater lagret.'}
                   {asset.article.centralKnowledge.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-[var(--accent)] font-extrabold">&bull;</span>
-                      <span className={theme === 'dark' ? 'text-neutral-300' : 'text-slate-800'}>{item}</span>
+                      <span className={theme !== 'light' ? 'text-neutral-300' : 'text-slate-800'}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -490,7 +491,7 @@ ${notesText || 'Ingen notater lagret.'}
                 <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">{t('lbl_key_elements')}</span>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {asset.keyElements.map((el, idx) => (
-                    <div key={idx} className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-neutral-950/40 border-neutral-800/80' : 'bg-slate-50 border-slate-200'}`}>
+                    <div key={idx} className={`p-4 rounded-xl border ${theme !== 'light' ? 'bg-neutral-950/40 border-neutral-800/80' : 'bg-slate-50 border-slate-200'}`}>
                       <h4 className={`text-xs font-mono font-extrabold uppercase text-[var(--accent)] mb-1`}>{el.element}</h4>
                       <p className="text-xs leading-relaxed opacity-85">{el.description}</p>
                     </div>
@@ -500,7 +501,7 @@ ${notesText || 'Ingen notater lagret.'}
             )}
 
             {asset.article.context && (
-              <div className={`p-4 rounded-xl border-l-4 ${theme === 'dark' ? 'bg-neutral-950/20 border-[var(--accent)]/50' : 'bg-slate-50 border-teal-600/50'} text-xs leading-relaxed`}>
+              <div className={`p-4 rounded-xl border-l-4 ${theme !== 'light' ? 'bg-neutral-950/20 border-[var(--accent)]/50' : 'bg-slate-50 border-teal-600/50'} text-xs leading-relaxed`}>
                 <span className="font-bold block mb-1">Context & Background</span>
                 <p className="opacity-80">{asset.article.context}</p>
               </div>
@@ -627,10 +628,10 @@ ${notesText || 'Ingen notater lagret.'}
                       onClick={() => toggleCheckItem(idx)}
                       className={`flex items-start gap-3.5 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
                         isChecked
-                          ? theme === 'dark'
+                          ? theme !== 'light'
                             ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]/30'
                             : 'bg-teal-50/40 border-teal-500/30 text-slate-500 line-through opacity-85'
-                          : theme === 'dark'
+                          : theme !== 'light'
                           ? 'bg-neutral-950/20 hover:bg-neutral-950/40 border-neutral-800 hover:border-neutral-700'
                           : 'bg-slate-50/20 hover:bg-slate-50/80 border-slate-200'
                       }`}
@@ -643,7 +644,7 @@ ${notesText || 'Ingen notater lagret.'}
                         )}
                       </div>
                       <p className={`text-sm leading-snug font-medium transition-colors ${
-                        isChecked ? 'opacity-80' : theme === 'dark' ? 'text-neutral-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'
+                        isChecked ? 'opacity-80' : theme !== 'light' ? 'text-neutral-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'
                       } ${theme !== 'dark' && !isChecked ? '!text-neutral-800' : ''}`}>
                         {item}
                       </p>
@@ -660,7 +661,7 @@ ${notesText || 'Ingen notater lagret.'}
           <div className="space-y-6">
             <div className="space-y-2">
               <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">Test Purpose</span>
-              <p className={`text-sm md:text-base leading-relaxed ${theme === 'dark' ? 'text-neutral-200' : 'text-neutral-800'}`}>
+              <p className={`text-sm md:text-base leading-relaxed ${theme !== 'light' ? 'text-neutral-200' : 'text-neutral-800'}`}>
                 {asset.protocol.purpose}
               </p>
             </div>
@@ -671,7 +672,7 @@ ${notesText || 'Ingen notater lagret.'}
                 <ul className="space-y-3 text-xs md:text-sm">
                   {asset.protocol.procedures.map((proc, idx) => (
                     <li key={idx} className={`p-3 rounded-lg border flex items-start gap-2.5 ${
-                      theme === 'dark' 
+                      theme !== 'light' 
                         ? 'bg-neutral-950/30 border-neutral-800/60 text-neutral-300' 
                         : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}>
@@ -689,7 +690,7 @@ ${notesText || 'Ingen notater lagret.'}
                 <ul className="space-y-3 text-xs md:text-sm">
                   {asset.protocol.requirements.map((req, idx) => (
                     <li key={idx} className={`p-3 rounded-lg border flex items-start gap-2 ${
-                      theme === 'dark' 
+                      theme !== 'light' 
                         ? 'bg-neutral-950/30 border-neutral-800/60 text-neutral-300' 
                         : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}>
@@ -722,7 +723,7 @@ ${notesText || 'Ingen notater lagret.'}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {asset.courseModule.learningGoals.map((goal, idx) => (
                   <div key={idx} className={`p-3 rounded-lg border flex items-start gap-2 ${
-                    theme === 'dark' 
+                    theme !== 'light' 
                       ? 'bg-neutral-950/40 border-neutral-800/80 text-white' 
                         : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}>
@@ -736,7 +737,7 @@ ${notesText || 'Ingen notater lagret.'}
             {/* Theory */}
             <div className="space-y-2 pt-2">
               <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">{t('lbl_theory')}</span>
-              <div className={`p-5 rounded-xl border ${theme === 'dark' ? 'bg-neutral-950/50 border-neutral-800 text-neutral-200' : 'bg-slate-50 border-slate-200 text-slate-800'} text-xs md:text-sm leading-relaxed`}>
+              <div className={`p-5 rounded-xl border ${theme !== 'light' ? 'bg-neutral-950/50 border-neutral-800 text-neutral-200' : 'bg-slate-50 border-slate-200 text-slate-800'} text-xs md:text-sm leading-relaxed`}>
                 {asset.courseModule.theory}
               </div>
             </div>
@@ -758,7 +759,7 @@ ${notesText || 'Ingen notater lagret.'}
                         placeholder="Write your study notes/reflection here (automatically saved offline)..."
                         rows={3}
                         className={`w-full p-3 rounded-lg border text-xs md:text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)]/50 ${
-                          theme === 'dark'
+                          theme !== 'light'
                             ? 'bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-600'
                             : 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400'
                         }`}
@@ -781,7 +782,7 @@ ${notesText || 'Ingen notater lagret.'}
               </button>
 
               {showModuleMetadata && (
-                <div className={`mt-3 p-3 rounded-lg border text-xs ${theme === 'dark' ? 'bg-neutral-950/40 border-neutral-800 text-neutral-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
+                <div className={`mt-3 p-3 rounded-lg border text-xs ${theme !== 'light' ? 'bg-neutral-950/40 border-neutral-800 text-neutral-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
                   <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">Module Identifier</p>
                   <p className="font-mono break-all">{asset.courseModule.moduleId}</p>
                 </div>

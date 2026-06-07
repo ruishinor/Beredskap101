@@ -8,7 +8,7 @@ import { sourceRegistry } from '../src/data/sourceRegistry.ts';
 import sheltersData from '../src/data/shelters.json' with { type: 'json' };
 
 const ROOT = process.cwd();
-const TITLE_BAD_PATTERN = /[\uFFFD]|\u00C3[\u0080-\uFFFF]|\u00C2[\u0080-\uFFFF]|\u00E2[\u0080-\uFFFF]{1,2}|handlingsrekkefolge|husstandsoevning|naermeste|forstehjelp|soker|innblasninger/u;
+const TITLE_BAD_PATTERN = /[\uFFFD]|\u00C3[\u0080-\uFFFF]|\u00C2[\u0080-\uFFFF]|\u00E2[\u0080-\uFFFF]{1,2}|handlingsrekkefolge|husstandsoevning|naermeste|forstehjelp|soker|innblasninger|\?n|\?C|kaf\?|\?[A-Za-zÆØÅæøå]{2,}/u;
 const EXACT_TITLE_ALLOWLIST = new Set([
   'CPR, AED and Emergency Dispatch Discipline',
   'CPR, AED and Emergency Dispatch Discipline / HLR, hjertestarter og nødvarsling',
@@ -27,6 +27,10 @@ function assert(condition, message) {
   console.log(`[PASS] ${message}`);
 }
 
+function pass(message) {
+  console.log(`[PASS] ${message}`);
+}
+
 function loadProcessedAssetsPayload() {
   const payload = JSON.parse(readText('src/data/processedAssets.json'));
   if (Array.isArray(payload)) {
@@ -41,6 +45,31 @@ function loadProcessedAssetsPayload() {
 function assertCleanNorwegianText(value, label) {
   assert(Boolean(value && value.trim()), `${label} is populated.`);
   assert(!TITLE_BAD_PATTERN.test(value), `${label} is free of mojibake and blocked transliterations.`);
+}
+
+function ensureCleanNorwegianText(value, label) {
+  if (!value || !String(value).trim()) return;
+  if (TITLE_BAD_PATTERN.test(String(value))) {
+    fail(`${label} is free of mojibake and blocked transliterations.`);
+  }
+}
+
+function walkStringLeaves(value, visitor, trail = []) {
+  if (typeof value === 'string') {
+    visitor(value, trail.join('.'));
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => walkStringLeaves(entry, visitor, [...trail, String(index)]));
+    return;
+  }
+
+  if (value && typeof value === 'object') {
+    for (const [key, entry] of Object.entries(value)) {
+      walkStringLeaves(entry, visitor, [...trail, key]);
+    }
+  }
 }
 
 function assertTitlePair(noTitle, enTitle, label, requireDistinct = true) {
@@ -108,9 +137,21 @@ function verifyProcessedAssets() {
     assertTitlePair(asset.locales.no.title, asset.locales.en.title, `Processed asset ${asset.id}`, false);
     assertCleanNorwegianText(asset.locales.no.category, `Processed asset ${asset.id} category`);
     assertCleanNorwegianText(asset.locales.no.article.overview, `Processed asset ${asset.id} article overview`);
+    walkStringLeaves(asset.locales.no, (value, trail) => {
+      ensureCleanNorwegianText(value, `Processed asset ${asset.id} ${trail}`);
+    }, ['locales', 'no']);
+    pass(`Processed asset ${asset.id} Norwegian locale passes recursive text-integrity scan.`);
   });
 
   return processedPayload;
+}
+
+function verifySourceRegistry() {
+  assert(sourceRegistry.length > 0, 'Official source registry exists.');
+  sourceRegistry.forEach((source) => {
+    assertCleanNorwegianText(source.nameNo, `Source registry ${source.id} Norwegian name`);
+    assertCleanNorwegianText(source.summaryNo, `Source registry ${source.id} Norwegian summary`);
+  });
 }
 
 function verifyOfflineKnowledge(processedPayload) {
@@ -143,12 +184,32 @@ function verifyOfflineKnowledge(processedPayload) {
   }
 }
 
+function verifyGlossaryCoverage() {
+  const normalizedTerms = new Set(
+    glossaryData.flatMap((item) => [item.term.toLowerCase(), item.termNo.toLowerCase()])
+  );
+
+  for (const requiredTerm of [
+    'article 17 erasure',
+    'article 20 portability',
+    'pmtiles',
+    'dsb',
+    'nve',
+    'sivilforsvaret',
+    'lokal ki-kjører',
+  ]) {
+    assert(normalizedTerms.has(requiredTerm), `Glossary includes ${requiredTerm}.`);
+  }
+}
+
 function main() {
   verifyPillars();
   verifyChecklists();
   verifyEditorialArticles();
+  verifySourceRegistry();
   const processedPayload = verifyProcessedAssets();
   verifyOfflineKnowledge(processedPayload);
+  verifyGlossaryCoverage();
   console.log('\n[SUCCESS] Localization verification completed with no errors or flags.');
 }
 

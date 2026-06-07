@@ -2,9 +2,12 @@
   "version": 8,
   "name": "Beredskap101 Norway Basemap",
   "sources": {
-    "norway": {
-      "type": "vector",
+    "norway-raster": {
+      "type": "raster",
       "url": "pmtiles:///maps/norway.pmtiles",
+      "tileSize": 256,
+      "minzoom": 0,
+      "maxzoom": 3,
       "attribution": "Beredskap101 local public package"
     }
   },
@@ -17,35 +20,11 @@
       }
     },
     {
-      "id": "norway-fill",
-      "type": "fill",
-      "source": "norway",
-      "source-layer": "norway",
+      "id": "norway-raster",
+      "type": "raster",
+      "source": "norway-raster",
       "paint": {
-        "fill-color": "#d5e6d4",
-        "fill-opacity": 0.95
-      }
-    },
-    {
-      "id": "norway-outline",
-      "type": "line",
-      "source": "norway",
-      "source-layer": "norway",
-      "paint": {
-        "line-color": "#587e57",
-        "line-width": 2
-      }
-    },
-    {
-      "id": "norway-cities",
-      "type": "circle",
-      "source": "norway",
-      "source-layer": "cities",
-      "paint": {
-        "circle-radius": 4,
-        "circle-color": "#a24335",
-        "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#ffffff"
+        "raster-opacity": 1
       }
     }
   ]

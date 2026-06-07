@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { Protocol } from 'pmtiles';
 import sheltersData from '../data/shelters.json';
 import { Compass, Search, MapPin, Navigation, AlertTriangle, ExternalLink, Layers } from 'lucide-react';
+import type { ThemeType } from '../types';
 import {
   getFallbackProviderState,
   markShelterMapProviderFailure,
@@ -23,7 +24,7 @@ interface Shelter {
 
 interface ShelterMapProps {
   currentLang: string;
-  theme: 'dark' | 'light';
+  theme: ThemeType;
 }
 
 type LeafletShelterMarker = {
@@ -91,16 +92,16 @@ function getMapPackageStatusLabel(
   currentLang: string
 ): string {
   if (providerState.packageStatus === 'installed') {
-    return currentLang === 'no' ? 'Kartpakke installert' : 'Map package installed';
+    return currentLang === 'no' ? 'Offline-pakke klar' : 'Offline package ready';
   }
   if (providerState.packageStatus === 'stale') {
-    return currentLang === 'no' ? 'Kartpakke utdatert' : 'Map package stale';
+    return currentLang === 'no' ? 'Offline-pakke utdatert' : 'Offline package stale';
   }
   if (providerState.packageStatus === 'failed-to-load') {
-    return currentLang === 'no' ? 'Kartpakke feilet' : 'Map package failed';
+    return currentLang === 'no' ? 'Offline-pakke feilet' : 'Offline package failed';
   }
 
-  return currentLang === 'no' ? 'Kartpakke ikke installert' : 'Map package not installed';
+  return currentLang === 'no' ? 'Offline-pakke utilgjengelig' : 'Offline package unavailable';
 }
 
 function getMapPackageModeLabel(
@@ -108,13 +109,13 @@ function getMapPackageModeLabel(
   currentLang: string
 ): string {
   if (providerState.packageMode === 'local-public-file') {
-    return currentLang === 'no' ? 'Lokal offentlig fil' : 'Local public file';
+    return currentLang === 'no' ? 'Innebygd lokal fil' : 'Bundled local file';
   }
   if (providerState.packageMode === 'cached-download') {
     return currentLang === 'no' ? 'Bufret nedlasting' : 'Cached download';
   }
 
-  return currentLang === 'no' ? 'Innebygd reserve' : 'Built-in fallback';
+  return currentLang === 'no' ? 'Reservebakgrunn' : 'Reserve background';
 }
 
 function getRequestedLeafletCandidateOrder(
@@ -150,13 +151,13 @@ function readPersistedMapLayerMode(): MapLayerMode {
 
   return getDefaultMapLayerMode();
 }
-function buildShelterPopupContent(shelter: Shelter, theme: 'dark' | 'light', currentLang: string): string {
+function buildShelterPopupContent(shelter: Shelter, theme: ThemeType, currentLang: string): string {
   const capacityLabel = currentLang === 'no' ? 'Kapasitet' : 'Capacity';
   const roomLabel = currentLang === 'no' ? 'Romnummer' : 'Shelter ID';
   const addressLabel = currentLang === 'no' ? 'Hentet adresse' : 'Retrieved address';
 
   return `
-    <div style="font-family: sans-serif; padding: 4px; color: ${theme === 'dark' ? '#fff' : '#111'};">
+    <div style="font-family: sans-serif; padding: 4px; color: ${theme !== 'light' ? '#fff' : '#111'};">
       <h4 style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold; line-height: 1.2;">
         ${shelter.adresse}
       </h4>
@@ -249,8 +250,8 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
     if (providerState.config) return;
     setMapLayerNotice(
       currentLang === 'no'
-        ? 'Offline-pakken er ikke installert i denne kopien. Legg til pmtiles-manifest.json under public/maps for å aktivere den.'
-        : 'The offline package is not installed in this copy. Add pmtiles-manifest.json under public/maps to enable it.'
+        ? 'Den innebygde offline-pakken er ikke tilgjengelig i denne kopien. Appen bruker reservebakgrunn i stedet.'
+        : 'The bundled offline package is unavailable in this copy. The app is using the reserve background instead.'
     );
     setMapLayerMode(getDefaultMapLayerMode());
   }, [currentLang, mapLayerMode, providerState.config]);
@@ -332,7 +333,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
         source: MAPLIBRE_FUTURE_POI_SOURCE_ID,
         paint: {
           'circle-radius': 5,
-          'circle-color': theme === 'dark' ? '#8fd3c7' : '#225c52',
+          'circle-color': theme !== 'light' ? '#8fd3c7' : '#225c52',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff',
           'circle-opacity': 0.85,
@@ -380,7 +381,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
       type: 'line',
       source: MAPLIBRE_ROUTE_SOURCE_ID,
       paint: {
-        'line-color': theme === 'dark' ? '#8fd3c7' : '#225c52',
+        'line-color': theme !== 'light' ? '#8fd3c7' : '#225c52',
         'line-width': 3,
         'line-opacity': 0.85,
         'line-dasharray': [2, 2],
@@ -470,7 +471,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
           processedShelters.forEach((shelter) => {
             const markerElement = document.createElement('div');
             markerElement.className = 'maplibre-shelter-marker';
-            markerElement.style.backgroundColor = theme === 'dark' ? '#8fd3c7' : '#225c52';
+            markerElement.style.backgroundColor = theme !== 'light' ? '#8fd3c7' : '#225c52';
             markerElement.style.width = '12px';
             markerElement.style.height = '12px';
             markerElement.style.borderRadius = '9999px';
@@ -481,7 +482,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
             const popup = new maplibregl.Popup({
               closeButton: false,
               maxWidth: '260px',
-              className: theme === 'dark' ? 'dark-maplibre-popup' : 'light-maplibre-popup',
+              className: theme !== 'light' ? 'dark-maplibre-popup' : 'light-maplibre-popup',
               offset: 14,
             }).setHTML(buildShelterPopupContent(shelter, theme, currentLang));
 
@@ -508,7 +509,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
             `;
 
             const userPopup = new maplibregl.Popup({ closeButton: false, offset: 10 }).setHTML(
-              `<div style="font-family: sans-serif; font-size: 12px; font-weight: bold; color: ${theme === 'dark' ? '#fff' : '#111'};">${currentLang === 'no' ? 'Din posisjon' : 'Your position'}</div>`
+              `<div style="font-family: sans-serif; font-size: 12px; font-weight: bold; color: ${theme !== 'light' ? '#fff' : '#111'};">${currentLang === 'no' ? 'Din posisjon' : 'Your position'}</div>`
             );
 
             mapLibreUserMarkerRef.current = new maplibregl.Marker({ element: userMarkerEl, anchor: 'center' })
@@ -627,7 +628,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
 
     const defaultIcon = L.divIcon({
       className: 'custom-shelter-icon',
-      html: `<div style="background-color: ${theme === 'dark' ? '#8fd3c7' : '#225c52'}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.4);"></div>`,
+      html: `<div style="background-color: ${theme !== 'light' ? '#8fd3c7' : '#225c52'}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.4);"></div>`,
       iconSize: [12, 12],
       iconAnchor: [6, 6],
     });
@@ -636,7 +637,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
       const marker = L.marker([shelter.lat, shelter.lng], { icon: defaultIcon })
         .addTo(map)
         .bindPopup(buildShelterPopupContent(shelter, theme, currentLang), {
-          className: theme === 'dark' ? 'dark-popup' : 'light-popup',
+          className: theme !== 'light' ? 'dark-popup' : 'light-popup',
           closeButton: false,
         });
 
@@ -658,7 +659,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
       leafletUserMarkerRef.current = L.marker([userCoords.lat, userCoords.lng], { icon: userIcon })
         .addTo(map)
         .bindPopup(
-          `<div style="font-family: sans-serif; font-size: 12px; font-weight: bold; color: ${theme === 'dark' ? '#fff' : '#111'};">${currentLang === 'no' ? 'Din posisjon' : 'Your position'}</div>`
+          `<div style="font-family: sans-serif; font-size: 12px; font-weight: bold; color: ${theme !== 'light' ? '#fff' : '#111'};">${currentLang === 'no' ? 'Din posisjon' : 'Your position'}</div>`
         );
     }
 
@@ -690,7 +691,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
             [shelter.lat, shelter.lng],
           ],
           {
-            color: theme === 'dark' ? '#8fd3c7' : '#225c52',
+            color: theme !== 'light' ? '#8fd3c7' : '#225c52',
             weight: 3,
             opacity: 0.8,
             dashArray: '6, 6',
@@ -769,8 +770,8 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
     if (mode === 'offline-package' && !isPmtilesAvailable) {
       setMapLayerNotice(
         currentLang === 'no'
-          ? 'Offline-pakken er ikke installert i denne kopien. Legg til pmtiles-manifest.json under public/maps for å aktivere den.'
-          : 'The offline package is not installed in this copy. Add pmtiles-manifest.json under public/maps to enable it.'
+          ? 'Den innebygde offline-pakken er ikke tilgjengelig i denne kopien. Appen bruker reservebakgrunn i stedet.'
+          : 'The bundled offline package is unavailable in this copy. The app is using the reserve background instead.'
       );
       return;
     }
@@ -801,9 +802,15 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
         ? `PMTiles feilet, ${getLeafletBasemapLabel(leafletBasemapId, currentLang)}`
         : `PMTiles failed, ${getLeafletBasemapLabel(leafletBasemapId, currentLang)}`
       : getLeafletBasemapLabel(leafletBasemapId, currentLang);
+  const mapAuthorityBadgeLabel = currentLang === 'no'
+    ? 'Orientering, ikke ruting'
+    : 'Orientation only, not routing';
+  const mapAuthorityHelperText = currentLang === 'no'
+    ? 'Den innebygde offline-pakken er kun for orientering. Bruk tilfluktsromlisten, romnummeret og offisielle kart eller lokal kjennskap før du beveger deg.'
+    : 'The bundled offline package is for orientation only. Use the shelter list, shelter ID, and official maps or local knowledge before moving.';
   const mapLayerHelperText = mapLayerNotice || (currentLang === 'no'
-    ? 'Gatekart er standard. Bruk Offline-pakke bare når du trenger kartbakgrunn uten nett.'
-    : 'Street is the default. Use Offline package only when you need map background without internet.');
+    ? 'Gatekart er standard. Bytt til Offline-pakke for å beholde en innebygd orienteringsbakgrunn når nettet faller ut.'
+    : 'Street is the default. Switch to Offline package to keep a bundled orientation basemap when the network drops.');
   const shouldShowOfflineCanvas =
     mapLayerMode === 'offline-grid' ||
     (leafletBasemapId === 'offline-grid' && typeof navigator !== 'undefined' && !navigator.onLine);
@@ -842,12 +849,19 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
             <span className="rounded-full border border-blue-500/25 bg-blue-950/20 px-3 py-1 text-blue-300">
               {mapModeLabel}
             </span>
+            <span className="rounded-full border border-amber-500/30 bg-amber-950/20 px-3 py-1 text-amber-300">
+              {mapAuthorityBadgeLabel}
+            </span>
           </div>
           <p className="mt-3 text-[11px] text-[var(--text-dim)] max-w-[70ch] leading-relaxed">
             {currentLang === 'no'
-              ? 'For de fleste brukere fungerer kartet automatisk på nett. Offline-kartpakke er bare nødvendig hvis du vil beholde kartbakgrunnen uten internett.'
-              : 'For most people the map works automatically while online. An offline map package matters only if you want the map background to keep working without internet.'}
+              ? 'For de fleste brukere fungerer kartet automatisk på nett. Denne appen leveres også med en innebygd offline-pakke som kan holde kartbakgrunnen synlig hvis internett faller ut.'
+              : 'For most people the map works automatically while online. This app also ships with a bundled offline package that can keep the map background visible if internet access drops.'}
           </p>
+          <div className="mt-3 inline-flex max-w-[72ch] items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-950/15 px-3 py-2 text-[11px] leading-relaxed text-amber-200/95">
+            <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+            <span>{mapAuthorityHelperText}</span>
+          </div>
           {providerState.config?.packageId && (
             <p className="mt-2 text-[10px] font-mono uppercase tracking-wide text-[var(--text-dim)]">
               {currentLang === 'no' ? 'Kartpakke-ID' : 'Map package ID'}: {providerState.config.packageId}
@@ -910,6 +924,9 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
             </div>
             <p className="mt-2 text-[11px] text-[var(--text-dim)] leading-relaxed">
               {mapLayerHelperText}
+            </p>
+            <p className="mt-2 text-[11px] text-amber-200/95 leading-relaxed">
+              {mapAuthorityHelperText}
             </p>
           </div>
 

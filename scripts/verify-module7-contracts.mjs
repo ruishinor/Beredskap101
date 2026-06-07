@@ -109,6 +109,13 @@ function runRuntimeSourceChecks() {
   const viteConfig = readText('vite.config.ts');
   assert(viteConfig.includes('VitePWA'), 'Vite config includes the PWA plugin.');
   assert(viteConfig.includes("strategies: 'injectManifest'"), 'Vite PWA uses injectManifest strategy.');
+  assert(viteConfig.includes('manualChunks'), 'Vite build config uses manualChunks for better startup splitting.');
+  assert(viteConfig.includes('chunkSizeWarningLimit: 1100'), 'Vite build config keeps chunk-size warnings within a stricter limit.');
+
+  const appTsx = readText('src/App.tsx');
+  assert(!appTsx.includes("import processedAssetsData from './data/processedAssets.json';"), 'App no longer statically imports processedAssets into the bootstrap path.');
+  assert(appTsx.includes("import('./data/processedAssets.json')"), 'App dynamically imports processedAssets after bootstrap.');
+  assert(appTsx.includes('lazy(() => import(') && appTsx.includes('<Suspense'), 'App uses lazy-loaded route or panel components with Suspense fallbacks.');
 
   const packageJson = readJson('package.json');
   assert(packageJson.scripts['preview:lan'] === 'vite preview --host 0.0.0.0 --port 4173', 'Package script exposes preview:lan for self-hosted LAN validation.');

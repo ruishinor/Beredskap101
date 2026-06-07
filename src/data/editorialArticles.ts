@@ -44,24 +44,24 @@ export const editorialArticles: EditorialArticle[] = [
     id: 'the-3-minute-window',
     pillar: 'førstehjelp',
     title: 'The 3-Minute Window: Why Bystander Response Saves More Lives Than Ambulances',
-    titleNo: '3-minuttersvinduet: Hvorfor tilfeldig forbi redder flere liv enn ambulansen',
+    titleNo: '3-minutters-vinduet: Hvorfor hjelp fra forbipasserende redder flere liv enn ambulanser',
     category: 'Emergency Medicine',
     estimatedReadMinutes: 6,
     summary: 'Norwegian and international data confirms that bystander CPR and hemorrhage control in the first 3–5 minutes after cardiac arrest or severe bleeding determines survival outcome — before any emergency service can arrive.',
     summaryNo: 'Norske og internasjonale data bekrefter at HLR og blødningskontroll fra forbipasserende i de første 3–5 minuttene etter hjertestans eller alvorlig blødning avgjør overlevelsesutfallet — lenge før noen nødtjeneste kan ankomme.',
     keyTakeaways: [
       'Annually 3,500 Norwegians suffer cardiac arrest outside hospital; early bystander CPR could save 200 additional lives per year.',
-      'A trauma victim with arterial hemorrhage can exsanguinate in 3–5 minutes — faster than median EMS response in most urban areas.',
-      'Half of Norwegians surveyed are unsure whether they can perform CPR correctly. 1 in 5 over 50 would wait for the ambulance rather than intervene.',
+      ' trauma victim with arterial bleeding can bleed to death in 3–5 minutes — faster than the average response time for ambulance services in most urban areas.”',
+      'Half of Norwegians surveyed are unsure whether they can perform CPR correctly. 1 person in 5 over 50 would wait for the ambulance rather than intervene.',
       'The gap between knowledge and action is bridged by regular, deliberate practice — not by reading guidelines once.',
       'An IFAK (Individual First Aid Kit) costs less than a dinner out, fits in a jacket pocket, and can arrest fatal bleeding with one hand.'
     ],
     keyTakeawaysNo: [
       'Hvert år rammes 3 500 nordmenn av hjertestans utenfor sykehus; tidlig HLR fra forbipasserende kan redde 200 ekstra liv per år.',
-      'Et traumaoffer med arteriell blødning kan blø i hjel på 3–5 minutter — raskere enn median ambulanseresponstid i de fleste byområder.',
-      'Halvparten av spurte nordmenn er usikre på om de kan utføre HLR korrekt. Hver femte over 50 år ville ventet på ambulansen i stedet for å gripe inn.',
+      'Et traumeoffer med arterieblødning kan blø ihjel på 3–5 minutter – raskere enn gjennomsnittlig responstid for ambulansetjenesten i de fleste byområder.',
+      'Halvparten av spurte nordmenn er usikre på om de kan utføre HLR korrekt. Hver femte person over 50 år ville ventet på ambulansen i stedet for å gripe inn.',
       'Gapet mellom kunnskap og handling tettes av regelmessig, bevisst øving — ikke ved å lese retningslinjer én gang.',
-      'Et IFAK (individuelt førstehjelpsett) koster mindre enn en middag ute, passer i en jakkefrakke og kan stanse dødelig blødning med én hånd.'
+      'Et IFAK (personlig førstehjelpskit for hverdagsbruk) koster mindre enn en middag ute, passer i en jakkefrakke og kan stoppe livstruende blødninger med én hånd.'
     ],
     body: [
       {

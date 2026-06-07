@@ -1,6 +1,7 @@
 ﻿import { useMemo, useState } from 'react';
 import { AlertTriangle, Bot, CheckCircle2, Eraser, RefreshCw, Search, ServerCrash, ShieldAlert } from 'lucide-react';
 import type { LocalAiSettings, SearchDocument } from '../types/offline';
+import type { ThemeType } from '../types';
 import {
   DEFAULT_LOCAL_AI_SETTINGS,
   clearLocalAiSettings,
@@ -21,7 +22,7 @@ type AssistantResult = {
 const TASK_LABELS: Record<AssistantTask, { en: string; no: string }> = {
   'checklist-explainer': { en: 'Explain checklist', no: 'Forklar sjekkliste' },
   'content-summary': { en: 'Summarize local content', no: 'Oppsummer lokalt innhold' },
-  'household-drill': { en: 'Generate household drill', no: 'Lag husstandsøvelse' },
+  'household-drill': { en: 'Generate household drill', no: 'Lag scenarioøvelse for hjemmet' },
   'scenario-analysis': { en: 'Analyze scenario history', no: 'Analyser scenariohistorikk' },
 };
 
@@ -121,7 +122,7 @@ function deterministicHouseholdDrill(profile: string, currentLang: 'en' | 'no'):
   const profileLabel = normalized || (currentLang === 'no' ? 'standard husstand' : 'standard household');
   if (currentLang === 'no') {
     return [
-      `Husstandsøvelse (${profileLabel})`,
+      `Scenarioøvelse for hjemmet (${profileLabel})`,
       '1. Varsling (2 min): Simuler mobilbrudd. Alle finner avtalt motepunkt.',
       '2. Ressurssjekk (5 min): Vann, varme, lys, radio, medisiner, kontanter.',
       '3. Kommunikasjon (5 min): Test reservekanal (SMS, PMR, fysisk lapp).',
@@ -195,7 +196,7 @@ function deterministicAssistiveResponse(
   if (task === 'household-drill') {
     return {
       provider: 'deterministic-local',
-      title: currentLang === 'no' ? 'Husstandsøvelse' : 'Household drill',
+      title: currentLang === 'no' ? 'Scenarioøvelse for hjemmet' : 'Household drill',
       body: deterministicHouseholdDrill(payload, currentLang),
       contextDocIds: contextDocs.map((doc) => doc.id),
     };
@@ -269,7 +270,7 @@ export default function LocalAiAssistant({
   currentLang,
   searchDocuments,
 }: {
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   currentLang: string;
   searchDocuments: SearchDocument[];
 }) {
@@ -282,12 +283,12 @@ export default function LocalAiAssistant({
   const [busy, setBusy] = useState(false);
 
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
-    bodyText: theme === 'dark' ? 'text-neutral-300 font-mono' : 'text-slate-700 font-sans',
-    btnPrimary: theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105',
-    btnSecondary: theme === 'dark' ? 'bg-neutral-950 text-neutral-300 border-neutral-700 hover:border-neutral-500' : 'bg-slate-50 text-slate-700 border-slate-300 hover:border-slate-400',
-    inputField: theme === 'dark' ? 'bg-black border-neutral-700 text-[var(--accent)]' : 'bg-slate-50 border-slate-300 text-slate-800',
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    bodyText: theme !== 'light' ? 'text-neutral-300 font-mono' : 'text-slate-700 font-sans',
+    btnPrimary: theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105',
+    btnSecondary: theme !== 'light' ? 'bg-neutral-950 text-neutral-300 border-neutral-700 hover:border-neutral-500' : 'bg-slate-50 text-slate-700 border-slate-300 hover:border-slate-400',
+    inputField: theme !== 'light' ? 'bg-black border-neutral-700 text-[var(--accent)]' : 'bg-slate-50 border-slate-300 text-slate-800',
   };
 
   const contextDocs = useMemo(() => pickContextDocuments(taskInput, searchDocuments, 6), [searchDocuments, taskInput]);
@@ -370,7 +371,7 @@ export default function LocalAiAssistant({
           type: 'error',
           text:
             lang === 'no'
-              ? `Lokal AI-endepunkt svarte med status ${response.status}.`
+              ? `Lokal KI-endepunkt svarte med status ${response.status}.`
               : `Local AI endpoint returned status ${response.status}.`,
         });
       }
@@ -410,8 +411,8 @@ export default function LocalAiAssistant({
         type: 'info',
         text:
           lang === 'no'
-            ? 'Lokal modell utilgjengelig. Viser deterministisk fallback.'
-            : 'Local model unavailable. Showing deterministic fallback.',
+            ? 'Lokal modell utilgjengelig. Ved feil returneres et bestemt lokalt svar.'
+            : 'Local model unavailable. Showing specific local response as fallback.',
       });
     }
     setBusy(false);
@@ -419,7 +420,7 @@ export default function LocalAiAssistant({
 
   return (
     <div className="space-y-6" id="local-ai-assistant">
-      <section className={`p-4 rounded-xl border ${theme === 'dark' ? 'border-amber-500/30 bg-amber-500/5' : 'border-amber-300 bg-amber-50'}`}>
+      <section className={`p-4 rounded-xl border ${theme !== 'light' ? 'border-amber-500/30 bg-amber-500/5' : 'border-amber-300 bg-amber-50'}`}>
         <div className="flex items-start gap-2">
           <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <p className="text-xs leading-relaxed">
@@ -433,7 +434,7 @@ export default function LocalAiAssistant({
       <section className={`p-6 rounded-xl border-2 shadow-sm ${styles.cardBg}`}>
         <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${styles.titleText}`}>
           <Bot className="w-5 h-5" />
-          {lang === 'no' ? 'Lokal AI-innstillinger' : 'Local AI settings'}
+          {lang === 'no' ? 'Innstillinger for lokal KI' : 'Settings for local AI'}
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -496,9 +497,9 @@ export default function LocalAiAssistant({
         </div>
       </section>
 
-      <section className={`p-6 rounded-xl border ${theme === 'dark' ? 'border-neutral-800 bg-neutral-950/60' : 'border-slate-200 bg-slate-50/90'}`}>
+      <section className={`p-6 rounded-xl border ${theme !== 'light' ? 'border-neutral-800 bg-neutral-950/60' : 'border-slate-200 bg-slate-50/90'}`}>
         <h3 className={`text-lg font-bold mb-3 ${styles.titleText}`}>
-          {lang === 'no' ? 'ELI5: slik kobler du til lokal AI' : 'ELI5: how to connect local AI'}
+          {lang === 'no' ? 'Slik kobler du til lokal KI' : 'How to connect local AI'}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <article className="rounded-lg border border-[var(--border)] bg-[var(--bg-alt)] p-3">
@@ -537,8 +538,8 @@ export default function LocalAiAssistant({
             </p>
             <p className={`text-xs leading-relaxed ${styles.bodyText}`}>
               {lang === 'no'
-                ? 'Bare på/av-valget, lokal URL og modellnavn lagres i nettleseren. Modellfilene blir i den lokale kjøreren. Ved feil brukes deterministisk lokal fallback uten sky.'
-                : 'Only the on/off toggle, local URL, and model name are stored in your browser. The model files stay in the local runner. If it fails, deterministic local fallback is used with no cloud call.'}
+                ? 'Bare på/av-valget, lokal URL og modellnavn lagres i nettleseren. Modellfilene blir i den lokale kjøreren. Ved feil returneres et bestemt lokalt svar.'
+                : 'Only the on/off toggle, local URL, and model name are stored in your browser. The model files stay in the local runner. If it fails, a specific local response is returned with no cloud call.'}
             </p>
           </article>
         </div>
@@ -552,7 +553,7 @@ export default function LocalAiAssistant({
       <section className={`p-6 rounded-xl border-2 shadow-sm ${styles.cardBg}`}>
         <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${styles.titleText}`}>
           <Search className="w-5 h-5" />
-          {lang === 'no' ? 'Assistive lokal AI' : 'Assistive local AI'}
+          {lang === 'no' ? 'Local AI Assistant' : 'Lokal KI-Assistent'}
         </h3>
 
         <div className="flex flex-wrap gap-2 mb-4">
@@ -654,8 +655,8 @@ export default function LocalAiAssistant({
           <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <span>
             {lang === 'no'
-              ? 'Ingen skylokal fallback brukes. Ved feil returneres deterministisk lokal respons.'
-              : 'No cloud fallback is used. If local AI fails, deterministic local output is returned.'}
+              ? 'Det benyttes ingen skybasert reserve. Ved feil returneres et bestemt lokalt svar.'
+              : 'No cloud-based backup is used. In the event of an error, a specific local response is returned.'}
           </span>
         </div>
       </section>

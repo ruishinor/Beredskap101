@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { generateCustomChecklist, GeneratedChecklist, GeneratedChecklistItem } from '../utils/checklistGenerator';
 import { saveProgressState, loadProgressState } from '../utils/saveSystem';
 import { CheckSquare, Square, RefreshCw, Printer, AlertCircle } from 'lucide-react';
+import type { ThemeType } from '../types';
 
-export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'light' }) {
+export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) {
   const { t, i18n } = useTranslation();
   const currentLang = (i18n.language || 'en') as 'en' | 'no';
 
@@ -87,13 +88,13 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
 
   // Custom styling mappings
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
-    bodyText: theme === 'dark' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
-    btnActive: theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-[var(--accent)] font-black' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-[var(--accent-solid)] font-semibold',
-    btnSecondary: theme === 'dark' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
-    inputField: theme === 'dark' ? 'bg-black border-neutral-800 text-[var(--accent)] font-mono focus:border-[var(--accent)]' : 'bg-slate-50 border-slate-200 text-slate-800 font-sans focus:border-teal-500',
-    progressBar: theme === 'dark' ? 'bg-[var(--accent-solid)]' : 'bg-teal-600'
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    bodyText: theme !== 'light' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
+    btnActive: theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-[var(--accent)] font-black' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-[var(--accent-solid)] font-semibold',
+    btnSecondary: theme !== 'light' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
+    inputField: theme !== 'light' ? 'bg-black border-neutral-800 text-[var(--accent)] font-mono focus:border-[var(--accent)]' : 'bg-slate-50 border-slate-200 text-slate-800 font-sans focus:border-teal-500',
+    progressBar: theme !== 'light' ? 'bg-[var(--accent-solid)]' : 'bg-teal-600'
   };
 
   return (
@@ -153,7 +154,7 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
               >
                 <option value="urban">{currentLang === 'no' ? 'Urban (By / Leilighet)' : 'Urban (City / Apartment)'}</option>
                 <option value="rural">{currentLang === 'no' ? 'Rural (Landlig / Avsides)' : 'Rural (Countryside / Remote)'}</option>
-                <option value="subzero">{currentLang === 'no' ? 'Kulde / Vinter (Under 0?C)' : 'Subzero / Winter (Below 0?C)'}</option>
+                <option value="subzero">{currentLang === 'no' ? 'Kulde / Vinter (Under 0°C)' : 'Subzero / Winter (Below 0°C)'}</option>
               </select>
             </div>
 
@@ -194,7 +195,7 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
             <button
               type="submit"
               className={`w-full py-4 rounded-lg font-extrabold uppercase tracking-wide text-base active:scale-[0.99] transition-transform cursor-pointer min-h-[56px] ${
-                theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105'
+                theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105'
               }`}
             >
               {currentLang === 'no' ? 'GENERER BEREDSKAPSLISTE' : 'GENERATE ADAPTIVE KIT LIST'}
@@ -226,7 +227,7 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
               <span className="opacity-70">{currentLang === 'no' ? 'Fullført' : 'Completed'}</span>
               <span className="font-bold">{checkedCount} {t('lbl_of')} {totalCount} ({progressPercent}%)</span>
             </div>
-            <div className={`w-full h-2 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-neutral-950' : 'bg-slate-100'}`}>
+            <div className={`w-full h-2 rounded-full overflow-hidden ${theme !== 'light' ? 'bg-neutral-950' : 'bg-slate-100'}`}>
               <div
                 className={`h-full transition-all duration-300 ${styles.progressBar}`}
                 style={{ width: `${progressPercent}%` }}
@@ -243,17 +244,17 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
                 onClick={() => toggleItem(itm.id)}
                 className={`flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
                   itm.checked
-                      ? theme === 'dark'
+                      ? theme !== 'light'
                         ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]/30 text-neutral-400'
                         : 'bg-teal-50/40 border-teal-500/30 text-slate-600 line-through opacity-90'
-                    : theme === 'dark'
+                    : theme !== 'light'
                     ? 'bg-neutral-950/20 hover:bg-neutral-950/40 border-neutral-800 hover:border-neutral-700'
                     : 'bg-slate-50/20 hover:bg-slate-50/80 border-slate-200 text-slate-800'
                 }`}
               >
                 <div className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
                   {itm.checked ? (
-                    <CheckSquare className={`w-5 h-5 ${theme === 'dark' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
+                    <CheckSquare className={`w-5 h-5 ${theme !== 'light' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
                   ) : (
                     <Square className="w-5 h-5 text-neutral-500" />
                   )}
@@ -271,7 +272,7 @@ export default function DynamicGearListBuilder({ theme }: { theme: 'dark' | 'lig
               <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <div>
                 {currentLang === 'no' 
-                  ? 'KULDE ADVARSEL: Frostsikre vannrør og ha alternativ oppvarming som ikke krever strøm. Vann fryser ved 0?C.'
+                  ? 'KULDE ADVARSEL: Frostsikre vannrør og ha alternativ oppvarming som ikke krever strøm. Vann fryser ved 0°C.'
                   : 'SUBZERO WARNING: Keep your water storage from freezing and ensure non-electric ventilation if burning backup fuels.'}
               </div>
             </div>

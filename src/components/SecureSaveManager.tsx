@@ -13,12 +13,13 @@ import {
   saveVaultDocuments,
 } from '../utils/saveSystem';
 import { readLocalAiSettings, saveLocalAiSettings } from '../utils/localAiSettings';
+import type { ThemeType } from '../types';
 
 export default function SecureSaveManager({
   theme,
   onStateRestored,
 }: {
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   onStateRestored?: () => void;
 }) {
   const { i18n } = useTranslation();
@@ -225,14 +226,14 @@ export default function SecureSaveManager({
   };
 
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800 text-neutral-200' : 'bg-white border-slate-200 text-slate-800',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
     btnSecondary:
-      theme === 'dark'
+      theme !== 'light'
         ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700'
         : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
     inputField:
-      theme === 'dark'
+      theme !== 'light'
         ? 'bg-black border-neutral-800 text-[var(--accent)] focus:border-[var(--accent)]'
         : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-teal-500',
   };
@@ -300,7 +301,7 @@ export default function SecureSaveManager({
           <button
             onClick={handleShare}
             className={`py-3.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 min-h-[54px] cursor-pointer ${
-              theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105 font-extrabold' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105 font-semibold'
+              theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105 font-extrabold' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105 font-semibold'
             }`}
           >
             <Share2 className="w-4 h-4" />
@@ -389,7 +390,7 @@ export default function SecureSaveManager({
           <button
             onClick={handleImport}
             className={`py-4 rounded-lg font-extrabold uppercase tracking-wide text-base transition-transform cursor-pointer min-h-[56px] ${
-              theme === 'dark' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105'
+              theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105'
             }`}
           >
             {currentLang === 'no' ? 'Gjenopprett data' : 'Restore data'}

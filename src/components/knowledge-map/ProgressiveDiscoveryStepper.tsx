@@ -36,7 +36,7 @@ export default function ProgressiveDiscoveryStepper({
             PROGRESSIVE DISCOVERY
           </h4>
           <p className="text-[12px] text-[var(--text-muted)] mt-0.5 font-mono">
-            {currentLang === 'no' ? 'Din vei til kunnskap' : 'Your path through knowledge'}
+            {currentLang === 'no' ? 'Din vei til kunnskap' : 'Your path to knowledge'}
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export default function ProgressiveDiscoveryStepper({
             PROGRESSIVE DISCOVERY
           </h4>
           <p className="text-[12px] text-[var(--text-muted)] mt-0.5 font-mono">
-            {currentLang === 'no' ? 'Din vei til kunnskap' : 'Your path through knowledge'}
+            {currentLang === 'no' ? 'Din vei til kunnskap' : 'Your path to knowledge'}
           </p>
         </div>
       </div>

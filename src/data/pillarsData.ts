@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -23,7 +23,7 @@ export const pillarsDataEn: Pillar[] = [
         title: 'Heat Stroke: Identification and Treatment',
         shortSummary: 'How to recognize and treat life-threatening hyperthermia under extreme temperature conditions.',
         situationContext: 'Subject experiences soaring environmental conditions, displaying severe overheating, disorientation, or collapse following exertion.',
-        corePrinciple: 'Heat stroke is a lethal medical emergency where the core temperature exceeds 40?C. Immediate external evaporative cooling holds critical priority to prevent brain swelling and organ death.',
+        corePrinciple: 'Heat stroke is a lethal medical emergency where the core temperature exceeds 40°C. Immediate external evaporative cooling holds critical priority to prevent brain swelling and organ death.',
         procedureSteps: [
           'Contact local emergency dispatch system immediately.',
           'Position the individual into a shaded, cool sector with active air circulation.',
@@ -47,7 +47,7 @@ export const pillarsDataEn: Pillar[] = [
         corePrinciple: 'An arterial rupture can cause exsanguination in less than 3 minutes. Applying immediate manual pressure and a certified windlass tourniquet is the single highest priority.',
         procedureSteps: [
           'Apply firm, steady manual pressure directly onto the wound site (use gloves and sterile gauze packing if possible).',
-          'If extremity bleeding remains unchecked, apply a windlass tourniquet 5?8 cm proximal to the laceration zone (never directly on a joint).',
+          'If extremity bleeding remains unchecked, apply a windlass tourniquet 5-8 cm proximal to the laceration zone (never directly on a joint).',
           'Tighten the windlass rod firmly until active bleeding terminates completely and a distal pulse can no longer be detected.',
           'Secure the windlass rod in its locked anchor and record the precise military time of application on the band (e.g., "T 14:32").',
           'Elevate the damaged limb, swaddle the patient in heat-reflective blankets, and proactively treat for shock.'
@@ -84,40 +84,40 @@ export const pillarsDataEn: Pillar[] = [
         id: 'ptsd-recognition-first-responder',
         title: 'Post-Traumatic Stress: Recognition and Immediate Support',
         shortSummary: 'Recognize PTSD symptoms in yourself and others after traumatic events and apply evidence-based immediate support techniques.',
-        situationContext: 'Following a traumatic event ? accident, violence, natural disaster, or witnessed medical emergency ? a person begins showing persistent re-experiencing, avoidance, or hyperarousal symptoms.',
+        situationContext: 'Following a traumatic event - accident, violence, natural disaster, or witnessed medical emergency - a person begins showing persistent re-experiencing, avoidance, or hyperarousal symptoms.',
         corePrinciple: 'PTSD is not weakness. It is a physiological stress response to life-threatening events. Early recognition and appropriate support dramatically improve long-term recovery outcomes. Flashbacks can be triggered by sounds, smells, and images weeks or months after the event.',
         procedureSteps: [
           'Recognize the four core symptom clusters: re-experiencing (flashbacks, nightmares), avoidance (refusing reminders, emotional numbness), hyperarousal (constant alertness, sleep disruption, angry outbursts), and negative cognition (hopelessness, feeling unsafe).',
           'In the immediate aftermath of trauma, apply psychological first aid: ensure physical safety first, then offer calm, non-intrusive presence without forcing the person to talk.',
           'Speak slowly and clearly. Avoid minimizing language like "you are fine" or "it could have been worse". Validate the reaction: "What you experienced was serious. Your response is understandable."',
           'Help ground the person in the present if they dissociate: name five things they can see, four they can touch, three they can hear.',
-          'Connect them with professional mental health support. In Norway: contact your GP, the local psychiatric emergency team (DPS akutt), or crisis hotline (116 123 ? Kirkens SOS).',
+          'Connect them with professional mental health support. In Norway: contact your GP, the local psychiatric emergency team (DPS akutt), or crisis hotline (116 123 - Kirkens SOS).',
           'For first responders and helpers: self-monitor for delayed onset symptoms in the weeks following a traumatic incident and proactively seek peer support or debriefing.'
         ],
         warnings: [
           'Do not force a traumatized person to relive the event in detail immediately after. Premature forced recounting can intensify trauma rather than resolve it.',
           'Do not diagnose or label someone with PTSD informally. Formal diagnosis requires a qualified mental health professional using structured clinical criteria.',
-          'Do not interpret emotional numbness or calm after a traumatic event as evidence that the person is fine ? delayed reactions are common and can emerge days or weeks later.'
+          'Do not interpret emotional numbness or calm after a traumatic event as evidence that the person is fine - delayed reactions are common and can emerge days or weeks later.'
         ],
         relatedTopics: ['CPR, AED and Emergency Dispatch Discipline', 'Situational Awareness and Focus Management']
       },
       {
         id: 'edc-trauma-kit-assembly',
-        title: 'Everyday Carry Trauma Kit: Assembly and Use',
+        title: 'Every day Carry Trauma Kit: Assembly and Use',
         shortSummary: 'Build and carry a pocket-sized trauma kit for arterial bleeding control in real-world everyday situations.',
-        situationContext: 'A bystander at a trail, workplace, road accident, or public event where professional EMS response will take more than 3?5 minutes.',
-        corePrinciple: 'A trauma victim with severe arterial hemorrhage will be clinically dead within 3?5 minutes without intervention. Bystander bleeding control using a proper kit is the highest-ROI life-saving skill a civilian can possess. Equipment without training is inert plastic.',
+        situationContext: 'A bystander at a trail, workplace, road accident, or public event where professional EMS response will take more than 3-5 minutes.',
+        corePrinciple: 'A trauma victim with severe arterial hemorrhage will be clinically dead within 3-5 minutes without intervention. Bystander bleeding control using a proper kit is the highest-ROI life-saving skill a civilian can possess. Equipment without training is inert plastic.',
         procedureSteps: [
           'Assemble a minimum viable trauma kit: windlass tourniquet (CAT or SOFTT-W), hemostatic gauze (QuikClot or Celox), pressure bandage (Israeli bandage), nitrile gloves, and a marker for noting tourniquet application time.',
           'Package the kit in a vacuum-sealed pouch no larger than a pair of sunglasses. It should fit in a jacket pocket, daypack side pocket, or car glove box.',
           'Pre-stage kits in your: primary bag, car, home, and workplace. A kit that is not accessible within 10 seconds during an emergency is not a kit.',
           'Train application on yourself and others until tourniquet use takes under 30 seconds with one hand. Practice monthly.',
-          'For outdoor solo trips: supplement with a headlamp, spare batteries, and a multitool ? the EDC triad for trauma and wilderness scenarios.',
+          'For outdoor solo trips: supplement with a headlamp, spare batteries, and a multitool - the EDC triad for trauma and wilderness scenarios.',
           'When using it: call emergency services first (put phone on speaker), then apply direct pressure. Escalate to a tourniquet only if direct pressure fails to control severe bleeding within 60 seconds.'
         ],
         warnings: [
           'Do not use improvised materials (belts, shoelaces, zip ties) as tourniquets. They create a venous tourniquet effect that traps blood and worsens hemorrhage while causing tissue necrosis.',
-          'Do not apply a tourniquet over a joint. Correct placement is 5?8 cm proximal to the wound on the upper arm or upper thigh.',
+          'Do not apply a tourniquet over a joint. Correct placement is 5-8 cm proximal to the wound on the upper arm or upper thigh.',
           'Do not remove or loosen a tourniquet once applied. Time of application must be marked on the band and transferred to EMS personnel verbally.'
         ],
         relatedTopics: ['Severe Arterial Bleeding and Tourniquets', 'CPR, AED and Emergency Dispatch Discipline']
@@ -131,14 +131,14 @@ export const pillarsDataEn: Pillar[] = [
         procedureSteps: [
           'Footwear fit: buy hiking boots or sturdy walking shoes with a thumb-width of space at the toebox. Feet swell up to a full shoe size during prolonged activity. Size for swollen feet.',
           'Sock system: wear a thin moisture-wicking liner sock beneath a padded wool or synthetic outer sock. This two-layer system transfers friction shear from skin to the sock interface.',
-          'Pre-harden skin over 4?6 weeks before major events by training in the same footwear under progressively heavier load. Toughen hot spots with antiperspirant or methylated spirits.',
-          'Before longer outings: apply a thin layer of petroleum jelly (Vaseline) or trail butter to all blister-prone areas ? heel, ball of foot, and pinky toe lateral edge.',
+          'Pre-harden skin over 4-6 weeks before major events by training in the same footwear under progressively heavier load. Toughen hot spots with antiperspirant or methylated spirits.',
+          'Before longer outings: apply a thin layer of petroleum jelly (Vaseline) or trail butter to all blister-prone areas - heel, ball of foot, and pinky toe lateral edge.',
           'Treat hot spots immediately when first felt; do not wait for a blister to form. Apply athletic tape (Leukotape P or Kinesio) directly over the hot spot.',
           'If a blister forms: drain with a sterile needle at the lowest edge, leave the roof intact as a biological bandage, apply antibiotic ointment, and cover with a donut-shaped moleskin pad.'
         ],
         warnings: [
           'Do not ignore nail blackening under a toenail after heavy loading. Subungual hematoma can become infected. Drain by heating a needle and pressing through the nail at the center of the dark area.',
-          'Do not cut corns, calluses, or infected skin with non-sterile instruments while away from care ? infection in extremities heals slowly and can become severe under continued load.',
+          'Do not cut corns, calluses, or infected skin with non-sterile instruments while away from care - infection in extremities heals slowly and can become severe under continued load.',
           'Do not use cotton socks for extended physical activity. Cotton absorbs moisture and holds it against the skin, dramatically increasing blister formation rates.'
         ],
         relatedTopics: ['Everyday Carry Trauma Kit: Assembly and Use', 'Safe Stream and River Crossing Protocols']
@@ -222,17 +222,17 @@ export const pillarsDataEn: Pillar[] = [
         title: 'Emergency Snow Shelter: Quinzhee, Snow Cave, and Igloo',
         shortSummary: 'Build a thermally effective snow shelter from available materials to prevent fatal hypothermia during winter emergencies.',
         situationContext: 'Caught outdoors in winter conditions with falling temperatures and no access to existing shelter. Core temperature is at risk without immediate insulation from wind and cold.',
-        corePrinciple: 'Snow is an outstanding thermal insulator. The interior of a properly built snow shelter stabilizes at ?1?C to ?3?C regardless of outdoor temperature, turning a lethal exposure scenario into a survivable bivouac. Internal temperature stays below freezing to prevent ceiling drip, which wets sleeping equipment.',
+        corePrinciple: 'Snow is an outstanding thermal insulator. The interior of a properly built snow shelter stabilizes at -1°C to -3°C regardless of outdoor temperature, turning a lethal exposure scenario into a survivable bivouac. Internal temperature stays below freezing to prevent ceiling drip, which wets sleeping equipment.',
         procedureSteps: [
-          'Site selection: find a wind-sheltered spot at the base of a steep cornice or deep drift. Probe snow depth with a ski pole ? you need at least 1.5 m for a snow cave, 0.5 m for a quinzhee mound.',
+          'Site selection: find a wind-sheltered spot at the base of a steep cornice or deep drift. Probe snow depth with a ski pole - you need at least 1.5 m for a snow cave, 0.5 m for a quinzhee mound.',
           'For a snow cave (fastest): dig horizontally into a compacted snowbank at roughly body height and shoulder-width. Curve the tunnel slightly upward to trap warm air in the sleeping area above the entry. Keep ceiling thickness at least 30 cm.',
           'For a quinzhee: pile loose snow into a mound 2 m high, insert 30 cm marker sticks all around, let sintering (bonding) occur for 90 minutes, then hollow from inside using the sticks as wall-thickness gauges.',
           'Ventilation is critical: punch a 10 cm ventilation hole through the ceiling with a ski pole before sleeping. Block doorways with a snow block or pack, never seal completely.',
           'Interior setup: sleep on an elevated platform (avoids cold-air pooling at floor level), use an insulating mat between body and snow, and place gear bags at the entry to prevent body heat loss through the door gap.',
-          'Never run stoves, heaters, or candles inside without confirmed ventilation ? carbon monoxide accumulation is fatal and odorless.'
+          'Never run stoves, heaters, or candles inside without confirmed ventilation - carbon monoxide accumulation is fatal and odorless.'
         ],
         warnings: [
-          'Never build a snow shelter below an unstable cornice, on a slope exceeding 20?, or in an avalanche runout zone. Site choice is a primary life-safety decision.',
+          'Never build a snow shelter below an unstable cornice, on a slope exceeding 20°, or in an avalanche runout zone. Site choice is a primary life-safety decision.',
           'Never sleep in wet clothing inside a snow shelter. Wet insulation loses 90% of its thermal value. Change into dry layers before entering the shelter.',
           'Always mark the entrance with a visible pole or colored object so rescuers or companions can locate the shelter entrance under fresh snowfall or in reduced visibility.'
         ],
@@ -242,18 +242,18 @@ export const pillarsDataEn: Pillar[] = [
         id: 'driver-fatigue-prevention',
         title: 'Driver Fatigue: Recognition, Prevention, and Emergency Response',
         shortSummary: 'Identify the physiological signs of fatal microsleep events and apply evidence-based countermeasures before losing vehicle control.',
-        situationContext: 'Long-distance driving, post-shift driving, or any journey after fewer than 6 hours of sleep ? including routine commutes after irregular sleep patterns.',
-        corePrinciple: 'Driver fatigue accounts for approximately 20% of road fatalities annually. Being awake for 17 continuous hours impairs driving equivalently to a BAC of 0.05. Fatal microsleep episodes ? where the driver loses consciousness for 4?30 seconds ? give no warning signal. The only cure is sleep.',
+        situationContext: 'Long-distance driving, post-shift driving, or any journey after fewer than 6 hours of sleep - including routine commutes after irregular sleep patterns.',
+        corePrinciple: 'Driver fatigue accounts for approximately 20% of road fatalities annually. Being awake for 17 continuous hours impairs driving equivalently to a BAC of 0.05. Fatal microsleep episodes - where the driver loses consciousness for 4-30 seconds - give no warning signal. The only cure is sleep.',
         procedureSteps: [
           'Before the journey: secure at least 8 hours of sleep the night before. Do not begin a long drive between 10 PM and 6 AM when circadian dip is deepest.',
           'Recognize early warning signs: yawning, heavy eyelids, difficulty maintaining lane position, missing road signs, restlessness, and making fewer but larger steering corrections.',
-          'At the first sign of fatigue: exit the road safely and take a 20-minute power nap. Set a timer. Do not continue driving on caffeine alone ? it delays rather than eliminates impairment.',
-          'Wait 30 minutes after waking before resuming driving. Sleep inertia (residual cognitive impairment immediately post-sleep) lasts 15?30 minutes and is a genuine crash risk.',
+          'At the first sign of fatigue: exit the road safely and take a 20-minute power nap. Set a timer. Do not continue driving on caffeine alone - it delays rather than eliminates impairment.',
+          'Wait 30 minutes after waking before resuming driving. Sleep inertia (residual cognitive impairment immediately post-sleep) lasts 15-30 minutes and is a genuine crash risk.',
           'Plan breaks every 2 hours regardless of fatigue level. Use designated rest areas or service stations. Share driving duties where possible.',
           'Stay hydrated; dehydration accelerates fatigue onset. Avoid alcohol, heavy fatty meals, and excessive sugar before or during driving.'
         ],
         warnings: [
-          'Do not trust stimulant countermeasures (coffee, energy drinks, loud music, cold air) as substitutes for sleep. These delay impairment by 20?30 minutes at most and create false confidence.',
+          'Do not trust stimulant countermeasures (coffee, energy drinks, loud music, cold air) as substitutes for sleep. These delay impairment by 20-30 minutes at most and create false confidence.',
           'Do not ignore the microsleep warning sign of "head snapping" or nodding. A 4-second microsleep at 100 km/h covers 110 meters with zero driver control.',
           'Do not plan high-fatigue routes during holiday travel periods without checking rest area locations and building mandatory sleep stops into the itinerary.'
         ],
@@ -271,7 +271,7 @@ export const pillarsDataEn: Pillar[] = [
           'For mountain terrain: use Kartverket (Norway) or Fatmap/AllTrails with offline packs. Download the specific trail corridor plus a 10 km buffer.',
           'Backup physical map: carry a waterproof 1:50,000 topographic map of any mountain or wilderness area. Know how to take a bearing with a baseplate compass.',
           'Save key waypoints as GPS pins before departing: trailhead, camp, nearest road, emergency shelter, and the closest town with a medical facility.',
-          'Phone battery management: enable airplane mode with GPS only active during navigation. This extends battery life 4?6x compared to full LTE operation.'
+          'Phone battery management: enable airplane mode with GPS only active during navigation. This extends battery life 4-6x compared to full LTE operation.'
         ],
         warnings: [
           'Do not assume cached road maps cover detailed topography. Many offline road tiles show roads and buildings, not terrain contours. Use a dedicated topo app for mountain navigation.',
@@ -290,8 +290,8 @@ export const pillarsDataEn: Pillar[] = [
           'Start with a 10-week progression: begin with 20% of body weight in the pack over 30-minute walks, 3x per week. Add 5 minutes per session each week.',
           'Pack setup: load weight close to the spine and high in the bag. Use rigid books, weight plates, or sand bags. A poorly loaded pack shifts the center of gravity forward and causes injury.',
           'Footwear: break in your hiking boots or sturdy footwear during rucking progression. Do not start rucking in new boots.',
-          'Posture: maintain neutral spine ? do not lean forward excessively. Tighten the hip belt so 60?70% of load rests on hips, not shoulders.',
-          'Nutrition and hydration: consume 500?750 ml of water per hour during rucking. Carry a simple carbohydrate source (dried fruit, energy gel) for sessions exceeding 90 minutes.',
+          'Posture: maintain neutral spine - do not lean forward excessively. Tighten the hip belt so 60-70% of load rests on hips, not shoulders.',
+          'Nutrition and hydration: consume 500-750 ml of water per hour during rucking. Carry a simple carbohydrate source (dried fruit, energy gel) for sessions exceeding 90 minutes.',
           'Progression goal: reach 30% body weight carried over 10 km in under 2 hours. This is a meaningful real-world preparedness benchmark.'
         ],
         warnings: [
@@ -670,7 +670,7 @@ export const pillarsDataNo: Pillar[] = [
         title: 'Heteslag: Identifisering og behandling',
         shortSummary: 'Hvordan gjenkjenne og behandle livstruende heteslag under høye temperaturer.',
         situationContext: 'Befinner seg i varme omgivelser, pasienten viser tegn på alvorlig overoppheting etter fysisk anstrengelse eller soleksponering.',
-        corePrinciple: 'Heteslag er en akutt medisinsk nødssituasjon der kroppens temperatur overstiger 40?C. Rask ekstern nedkjøling er kritisk for å hindre hjerneskade og organsvikt.',
+        corePrinciple: 'Heteslag er en akutt medisinsk nødssituasjon der kroppens temperatur overstiger 40°C. Rask ekstern nedkjøling er kritisk for å hindre hjerneskade og organsvikt.',
         procedureSteps: [
           'Ring 113 (eller nødnummeret der du er) umiddelbart.',
           'Flytt pasienten til et skyggefullt og kjølig område med god luftsirkulasjon.',
@@ -681,7 +681,7 @@ export const pillarsDataNo: Pillar[] = [
         ],
         warnings: [
           'IKKE senk en bevisstløs pasient ned i et iskaldt isbad umiddelbart; dette kan utløse sirkulasjonssjokk og kraftig vasokonstriksjon som faktisk stenger varmen inne i kjernen.',
-          'IKKE gi pasienten febernedsettende medisiner (som Paracet el.l.) ? det hjelper ikke mot miljøbetinget hypertermi og kan skade leveren.',
+          'IKKE gi pasienten febernedsettende medisiner (som Paracet el.l.) - det hjelper ikke mot miljøbetinget hypertermi og kan skade leveren.',
           'IKKE tving pasienten til å drikke store mengder væske hvis de er desorienterte eller har nedsatt bevissthet (risiko for kvelning og oppkast).'
         ],
         relatedTopics: ['Dehydrering', 'Hypotermi', 'Hjerte-lunge-redning']
@@ -694,7 +694,7 @@ export const pillarsDataNo: Pillar[] = [
         corePrinciple: 'Ved arterielle blødninger kan en person blø i hjel på under tre minutter. Direkte trykk og rask påføring av godkjent tourniquet (årepresse) redder liv.',
         procedureSteps: [
           'Legg umiddelbart hardt, direkte trykk på såret med hendene (bruk hansker eller trykkbandasje hvis tilgjengelig).',
-          'Hvis blødningen ikke stopper på et ben eller arm, påfør en tourniquet 5?8 cm over sårstedet (aldri direkte over et ledd).',
+          'Hvis blødningen ikke stopper på et ben eller arm, påfør en tourniquet 5-8 cm over sårstedet (aldri direkte over et ledd).',
           'Stram tourniqueten ved å vri strammepinnen til blødningen har stoppet helt og du ikke lenger kan føle pulsen distalt.',
           'Lås strammepinnen på plass og skriv det nøyaktige klokkeslettet for påføring på båndet (f.eks. "T 14:32").',
           'Hev den blødende ekstremiteten om mulig, hold pasienten varm, og forebygg sirkulasjonssjokk.'
@@ -725,18 +725,18 @@ export const pillarsDataNo: Pillar[] = [
           'Ikke berør pasienten under analyse eller støt fra hjertestarter.',
           'Ikke avslutt samtalen før 113 har nøyaktig adresse, adkomst, etasje og møtepunkt.'
         ],
-        relatedTopics: ['Alvorlige Blødninger og Tourniquet', '?n uke strømbrudd og krisekommunikasjon']
+        relatedTopics: ['Alvorlige Blødninger og Tourniquet', 'én uke strømbrudd og krisekommunikasjon']
       },
       {
         id: 'ptsd-recognition-first-responder',
         title: 'Posttraumatisk stress: Gjenkjenning og umiddelbar støtte',
         shortSummary: 'Gjenkjenn symptomer på PTSD hos deg selv og andre etter traumatiske hendelser, og bruk kunnskapsbaserte støttemetoder.',
-        situationContext: 'Etter en traumatisk hendelse ? ulykke, vold, naturkatastrofe eller witnessing av medisinsk nødsituasjon ? viser en person vedvarende gjenopplevelse, unngåelse eller hyperaktivering.',
+        situationContext: 'Etter en traumatisk hendelse - ulykke, vold, naturkatastrofe eller witnessing av medisinsk nødsituasjon - viser en person vedvarende gjenopplevelse, unngåelse eller hyperaktivering.',
         corePrinciple: 'PTSD er ikke svakhet. Det er en fysiologisk stressreaksjon på livstruende hendelser. Tidlig gjenkjenning og riktig støtte gir dramatisk bedre langtidsprognose. Flashbacks kan utløses av lyder, lukter og bilder uker eller måneder etter hendelsen.',
         procedureSteps: [
           'Gjenkjenn de fire kjernesymptomene: gjenopplevelse (flashbacks, mareritt), unngåelse (å unngå påminnelser, følelsesmessig nummenhet), hyperaktivering (konstant årvåkenhet, søvnproblemer, sinneutbrudd) og negativ kognisjon (håpløshet, utrygghet).',
           'I den umiddelbare etterkant av traumer, bruk psykologisk førstehjelp: sikre fysisk trygghet først, deretter tilby rolig, ikke-påtrengende nærvær uten å tvinge personen til å snakke.',
-          'Snakk sakte og tydelig. Unngå bagatellisering som ?du er fint? eller ?det kunne vært verre?. Valider reaksjonen: ?Det du opplevde var alvorlig. Din reaksjon er forståelig.?',
+          'Snakk sakte og tydelig. Unngå bagatellisering som "du er fint" eller "det kunne vært verre". Valider reaksjonen: "Det du opplevde var alvorlig. Din reaksjon er forståelig."',
           'Hjelp personen å grunne seg i nåtid ved dissosiasjon: nevn fem ting de kan se, fire de kan røre, tre de kan høre.',
           'Koble dem til faglig psykisk helsestøtte. I Norge: kontakt fastlege, lokalt DPS akutt, eller kristelefon 116 123 (Kirkens SOS).',
           'For førsterespondere og hjelpere: følg med på egne forsinkede symptomer i ukene etter en traumatisk hendelse og søk proaktivt kollegastøtte eller debriefing.'
@@ -744,27 +744,27 @@ export const pillarsDataNo: Pillar[] = [
         warnings: [
           'Ikke tving en traumatisert person til å gjenoppleve hendelsen i detalj umiddelbart etterpå. Tvungen tidlig gjennomgang kan forsterke traumet i stedet for å løse det.',
           'Ikke diagnoser eller stemple noen med PTSD uformelt. Formell diagnose krever kvalifisert psykisk helsepersonell med strukturerte kliniske kriterier.',
-          'Ikke tolke emosjonell nummenhet eller ro etter en traumatisk hendelse som bevis på at personen har det bra ? forsinkede reaksjoner er vanlige og kan dukke opp dager eller uker senere.'
+          'Ikke tolke emosjonell nummenhet eller ro etter en traumatisk hendelse som bevis på at personen har det bra - forsinkede reaksjoner er vanlige og kan dukke opp dager eller uker senere.'
         ],
         relatedTopics: ['HLR, hjertestarter og nødvarsling', 'Situasjonsforståelse og fokusstyring']
       },
       {
         id: 'edc-trauma-kit-assembly',
-        title: 'Lommeformat traumasett: Montering og bruk',
-        shortSummary: 'Bygg og bær et lommestort traumasett for blødningskontroll i hverdagssituasjoner.',
-        situationContext: 'En tilfeldig forbipasserende ved sti, arbeidsplass, trafikkulykke eller offentlig arrangement der profesjonell responstid er mer enn 3?5 minutter.',
-        corePrinciple: 'Et traumaoffer med alvorlig arteriell blødning er klinisk død innen 3?5 minutter uten intervensjon. Blødningskontroll fra tilfeldig forbi er den høyest-avkastende livreddende ferdigheten en sivil kan ha. Utstyr uten trening er inert plast.',
+        title: 'Traumekit til hverdagsbruk: Innhold og bruk',
+        shortSummary: 'Bygg og bær et lommestort traumekit for blødningskontroll i hverdagssituasjoner.',
+        situationContext: 'En tilfeldig forbipasserende ved sti, arbeidsplass, trafikkulykke eller offentlig arrangement der profesjonell responstid er mer enn 3-5 minutter.',
+        corePrinciple: 'Et traumeoffer med alvorlig arteriell blødning er klinisk død innen 3-5 minutter uten intervensjon. Blødningskontroll fra tilfeldig forbi er den høyest-avkastende livreddende ferdigheten en sivil kan ha. Utstyr uten trening er inert plast.',
         procedureSteps: [
-          'Sett sammen et minimalt traumasett: windlass tourniquet (CAT eller SOFTT-W), hemostatisk kompresse (QuikClot eller Celox), trykkbandasje (israelsk bandasje), nitrilhansker og en markør for å skrive tourniquettid.',
-          'Pakk settet i en vakuumforseglet pose på størrelse med et par solbriller. Det skal passe i en jakkefrakke, dagsekkens sidelomme eller i bilens hanskerom.',
-          'Pre-plasser sett i: primærbag, bil, hjem og arbeidsplass. Et sett som ikke er tilgjengelig innen 10 sekunder under en nødsituasjon, er ikke et sett.',
-          'Tren på deg selv og andre til tourniquet-påføring tar under 30 sekunder med ?n hånd. Tørrtren månedlig.',
-          'For solo-turer utendørs: supplement med hodelykt, reservebatterier og multiverktøy ? EDC-triaden for traume og villmarkssituasjoner.',
+          'Sett sammen et minimalt traumekit: windlass tourniquet (CAT eller SOFTT-W), hemostatisk kompresse (QuikClot eller Celox), trykkbandasje (israelsk bandasje), nitrilhansker og en markør for å skrive tourniquettid.',
+          'Pakk kitet i en vakuumforseglet pose på størrelse med et par solbriller. Det skal passe i en jakkefrakke, dagsekkens sidelomme eller i bilens hanskerom.',
+          'Forhåndsplasser kit i: primærbag, bil, hjem og arbeidsplass. Et sett som ikke er tilgjengelig innen 10 sekunder under en nødsituasjon, er ikke et sett.',
+          'Tren på deg selv og andre til tourniquet-påføring tar under 30 sekunder med én hånd. Tørrtren månedlig.',
+          'For solo-turer utendørs: supplement med hodelykt, reservebatterier og multiverktøy - EDC-triaden for traume og villmarkssituasjoner.',
           'Ved utrykning: ring nødtelefon først (sett på høyttaler), deretter påfør direkte trykk. Eskaler til tourniquet kun hvis direkte trykk ikke stopper arteriell ekstremitetsblødning innen 60 sekunder.'
         ],
         warnings: [
           'Ikke bruk improviserte materialer (belter, skolisser, kabelbånd) som tourniquet. De skaper en venøs tourniquet-effekt som fanger blod og forverrer blødningen mens de skaper vevsnekrose.',
-          'Ikke påfør tourniquet over et ledd. Korrekt plassering er 5?8 cm proksimalt fra såret på overarm eller øvre lår.',
+          'Ikke påfør tourniquet over et ledd. Korrekt plassering er 5-8 cm proksimalt fra såret på overarm eller øvre lår.',
           'Ikke fjern eller løsne en påført tourniquet. Påføringstidspunktet skal skrives på båndet og overleveres til ambulansepersonell verbalt.'
         ],
         relatedTopics: ['Alvorlige blødninger og tourniquet', 'HLR, hjertestarter og nødvarsling']
@@ -778,17 +778,17 @@ export const pillarsDataNo: Pillar[] = [
         procedureSteps: [
           'Skopassform: kjøp solide sko (f.eks. tursko) med en tommelfingerbreds plass ved tærne. Føtter sveller opp til en hel skostørrelse under langvarig aktivitet. Velg størrelse for hovne føtter.',
           'Sokksystem: bruk en tynn fuktighetsavledende innersokk under en polstret ull- eller syntetisk yttersokk. Dette to-lags systemet overfører friksjonskreftene fra huden til sokkegrensesnittet.',
-          'Forherd huden 4?6 uker før store arrangement ved å trene i samme fottøy med gradvis tyngre last. Tøff hotspots med antiperspirant eller metylert sprit.',
-          'Før lange turer: påfør et tynt lag vaselin eller fotsalve på alle blemme-utsatte områder ? hæl, fotsåle og ytterside av lille tå.',
+          'Forherd huden 4-6 uker før store arrangement ved å trene i samme fottøy med gradvis tyngre last. Tøff hotspots med antiperspirant eller metylert sprit.',
+          'Før lange turer: påfør et tynt lag vaselin eller fotsalve på alle blemme-utsatte områder - hæl, fotsåle og ytterside av lille tå.',
           'Behandl varme flekker umiddelbart når de først kjennes; ikke vent til det oppstår en blemme. Påfør idrettstape (Leukotape P eller Kinesio) direkte over det varme punktet.',
           'Hvis en blemme oppstår: tøm med steril nål ved laveste punkt, la taket sitte intakt som biologisk bandasje, påfør antibiotikasalve og dekk med et ringformet moleskin-/gnagsårplaster.'
         ],
         warnings:[
           'Ikke ignorer mørkning under en tånegl etter tung belastning. Underneglshematom kan bli infisert. Tøm ved å varme en nål og trykke gjennom negleplaten i midten av det mørke området.',
-          'Ikke skjær vorter, liktorn eller infisert hud med ikke-sterile instrumenter underveis ? infeksjoner i ekstremiteter leges sakte og kan bli alvorlige under fortsatt belastning.',
+          'Ikke skjær vorter, liktorn eller infisert hud med ikke-sterile instrumenter underveis - infeksjoner i ekstremiteter leges sakte og kan bli alvorlige under fortsatt belastning.',
           'Ikke bruk bomullssokker for langvarig fysisk aktivitet. Bomull absorberer fuktighet og holder den mot huden, noe som dramatisk øker blemmedannelse.'
         ],
-        relatedTopics: ['Lommeformat traumasett: Montering og bruk', 'Sikker kryssing av elv og strøm']
+        relatedTopics: ['Lommeformat traumekit: Innhold og bruk', 'Sikker kryssing av elv og strøm']
       }
     ]
   },
@@ -811,7 +811,7 @@ export const pillarsDataNo: Pillar[] = [
           'Kast en liten pinne ut i vannet for å måle hastigheten. Hvis den flyter raskere enn du klarer å gå rolig ved siden av, er elven sannsynligvis for stri til å krysses.',
           'Løsne hoftebeltet og brystremmen på ryggsekken før du går ut i vannet. Hvis du faller, må sekken kunne kastes av på et sekund.',
           'Bruk en solid vandrestav på oppstrøms side for å beholde tre kontaktpunkter med bunnen til enhver tid (trefots-prinsippet).',
-          'Gå skrått nedstrøms i en vinkel på ca. 45 grader. Se framover og flytt ?n fot av gangen, føl deg fram på bunnen før du legger tyngden på foten.',
+          'Gå skrått nedstrøms i en vinkel på ca. 45 grader. Se framover og flytt én fot av gangen, føl deg fram på bunnen før du legger tyngden på foten.',
           'Ved gruppekryssing: Gå parallelt på linje der den sterkeste personen står øverst i strømmen (skaper en strømskygge for de bak).'
         ],
         warnings: [
@@ -861,24 +861,24 @@ export const pillarsDataNo: Pillar[] = [
           'Ikke la toppfeber, gruppepress eller allerede investert tid overstyre snuregelen.',
           'Ikke baser navigasjonen kun på telefon i kulde, regn eller lavt batteri.'
         ],
-        relatedTopics: ['Sikker Kryssing av Elv og Strøm', '?n uke strømbrudd og krisekommunikasjon']
+        relatedTopics: ['Sikker Kryssing av Elv og Strøm', 'én uke strømbrudd og krisekommunikasjon']
       },
       {
         id: 'snow-shelter-construction',
         title: 'Nødovernatting i snø: Snøhule, quinzhee og igloo',
         shortSummary: 'Bygg et termisk effektivt snøly av tilgjengelige materialer for å hindre dødelig hypotermi under vintervær.',
         situationContext: 'Fanget utendørs i vinterforhold med fallende temperatur og uten tilgang til eksisterende ly. Kjernetemperatur er i fare uten umiddelbar isolasjon fra vind og kulde.',
-        corePrinciple: 'Snø er en fremragende varmeisolator. Innvendig temperatur i et korrekt bygget snøhus stabiliseres på ?1 ?C til ?3 ?C uavhengig av utetemperatur, og gjør et potensielt dødelig eksponeringsscenario til et overlevbart bivuakk. Temperaturen holdes under frysepunktet for å unngå takdrypp som våter sovemat.',
+        corePrinciple: 'Snø er en fremragende varmeisolator. Innvendig temperatur i et korrekt bygget snøhus stabiliseres på -1 °C til -3 °C uavhengig av utetemperatur, og gjør et potensielt dødelig eksponeringsscenario til et overlevbart bivuakk. Temperaturen holdes under frysepunktet for å unngå takdrypp som våter sovemat.',
         procedureSteps: [
-          'Valg av sted: finn et vindskjermet sted ved foten av en stor snøskavl eller i et dypt snødrift. Sond snødybden med en skistav ? du trenger minst 1,5 m for snøhule, 0,5 m for quinzhee-haug.',
+          'Valg av sted: finn et vindskjermet sted ved foten av en stor snøskavl eller i et dypt snødrift. Sond snødybden med en skistav - du trenger minst 1,5 m for snøhule, 0,5 m for quinzhee-haug.',
           'For snøhule (raskeste): grav horisontalt inn i en kompakt snøbank i ca. kroppshøyde og skulderbredde. Kurv tunnelen litt oppover for å fange varm luft i soveplassen over inngangen. Hold taket minst 30 cm tykt.',
           'For quinzhee: stable løs snø i en 2 m høy haug, stikk 30 cm merkepinner rundt, la sintering (herding) skje i 90 minutter, deretter hul ut innenfra ved hjelp av pinnene som veggtykkelsesmålere.',
           'Ventilasjon er avgjørende: lag et 10 cm ventilasjonshull gjennom taket med en skistav før du sover. Blokker dørene med en snøblokk eller sekk, aldri forsegl helt.',
           'Innvendig oppsett: sov på en hevet plattform (unngår kaldluftsansamling på gulvnivå), bruk isolerende underlag mellom kropp og snø, og plasser utstyrsbager ved inngangen for å hindre varmetap gjennom dørsprekken.',
-          'Kjør aldri ovner, varmeapparater eller lys innendørs uten bekreftet ventilasjon ? karbonmonoksid-ansamling er dødelig og luktfri.'
+          'Kjør aldri ovner, varmeapparater eller lys innendørs uten bekreftet ventilasjon - karbonmonoksid-ansamling er dødelig og luktfri.'
         ],
         warnings: [
-          'Bygg aldri snøhus under ustabil skavl, i skråning brattere enn 20?, eller i skredutsatt sone. Stedsvalg er en primær livssikkerhetsbeslutning.',
+          'Bygg aldri snøhus under ustabil skavl, i skråning brattere enn 20°, eller i skredutsatt sone. Stedsvalg er en primær livssikkerhetsbeslutning.',
           'Sov aldri i våte klær inne i et snøhus. Våt isolasjon mister 90 % av sin termiske verdi. Skift til tørre lag før du går inn i ly.',
           'Merk alltid inngangen med en synlig stake eller farget gjenstand slik at redningsmannskaper eller følgesvenner kan finne ly-inngangen under nysnø eller i dårlig sikt.'
         ],
@@ -888,19 +888,19 @@ export const pillarsDataNo: Pillar[] = [
         id: 'driver-fatigue-prevention',
         title: 'Tretthet bak rattet: Gjenkjenning, forebygging og beredskap',
         shortSummary: 'Identifiser de fysiologiske tegnene på dødelig mikrosøvn og bruk kunnskapsbaserte mottiltak før du mister kjøretøykontrollen.',
-        situationContext: 'Langkjøring, kjøring etter skiftarbeid, eller enhver tur etter færre enn 6 timer søvn ? inkludert vanlige pendlerturer etter uregelmessige søvnmønstre.',
-        corePrinciple: 'Tretthet bak rattet utgjør omtrent 20 % av trafikkomkomne årlig. Å være våken i 17 sammenhengende timer svekker kjøring tilsvarende en promille på 0,05. Dødelige mikrosøvnepisoder ? der sjåføren mister bevisstheten i 4?30 sekunder ? gir ingen advarselssignal. Den eneste kuren er søvn.',
+        situationContext: 'Langkjøring, kjøring etter skiftarbeid, eller enhver tur etter færre enn 6 timer søvn - inkludert vanlige pendlerturer etter uregelmessige søvnmønstre.',
+        corePrinciple: 'Tretthet bak rattet utgjør omtrent 20 % av trafikkomkomne årlig. Å være våken i 17 sammenhengende timer svekker kjøring tilsvarende en promille på 0,05. Dødelige mikrosøvnepisoder - der sjåføren mister bevisstheten i 4-30 sekunder - gir ingen advarselssignal. Den eneste kuren er søvn.',
         procedureSteps: [
           'Før kjøreturen: sikre minst 8 timer søvn natten før. Ikke start en langtur mellom kl. 22 og 06 når det døgnfysiologiske nedgangspunktet er dypest.',
           'Gjenkjenn tidlige varseltegn: gjesping, tunge øyelokk, problemer med å holde filposisjonen, å misse veiskilt, uro og å gjøre færre men større styringskorreksjoner.',
-          'Ved første tegn til tretthet: kjør trygt av veien og ta en 20 minutters lur. Sett vekker. Ikke fortsett på koffein alene ? det forsinker, men eliminerer ikke, svekkelsen.',
-          'Vent 30 minutter etter oppvåkning før du gjenopptar kjøringen. Søvntryghet (resterende kognitiv svekkelse rett etter søvn) varer 15?30 minutter og er en reell ulykkesrisiko.',
+          'Ved første tegn til tretthet: kjør trygt av veien og ta en 20 minutters lur. Sett vekker. Ikke fortsett på koffein alene - det forsinker, men eliminerer ikke, svekkelsen.',
+          'Vent 30 minutter etter oppvåkning før du gjenopptar kjøringen. Søvntryghet (resterende kognitiv svekkelse rett etter søvn) varer 15-30 minutter og er en reell ulykkesrisiko.',
           'Planlegg pauser hvert 2. time uavhengig av trøtthetsnivå. Bruk godkjente hvileområder eller servicestasjoner. Del kjøringen med reisefølge der det er mulig.',
           'Hold deg hydrert; dehydrering akselererer tretthetsutvikling. Unngå alkohol, tung fettmat og overdreven sukker før eller under kjøring.'
         ],
         warnings: [
-          'Stol ikke på stimulanser (kaffe, energidrikk, høy musikk, kald luft) som erstatning for søvn. Disse forsinker svekkelsen med 20?30 minutter og skaper falsk trygghet.',
-          'Ikke ignorer mikrosøvnadvarselstegnet ?hodejerk? eller nikkende hodebevegelse. En 4-sekunders mikrosøvn ved 100 km/t tilsvarer 110 meter med null sjåførkontroll.',
+          'Stol ikke på stimulanser (kaffe, energidrikk, høy musikk, kald luft) som erstatning for søvn. Disse forsinker svekkelsen med 20-30 minutter og skaper falsk trygghet.',
+          'Ikke ignorer mikrosøvnadvarselstegnet "hodejerk" eller nikkende hodebevegelse. En 4-sekunders mikrosøvn ved 100 km/t tilsvarer 110 meter med null sjåførkontroll.',
           'Ikke planlegg høy-tretthetsruter i ferietidsperioder uten å sjekke hvileområder og bygge obligatoriske søvnstopp inn i reiseplanen.'
         ],
         relatedTopics: ['Sikker kryssing av elv og strøm', 'Situasjonsforståelse og fokusstyring']
@@ -917,11 +917,11 @@ export const pillarsDataNo: Pillar[] = [
           'For fjellterreng: bruk Kartverket (Norge) eller Fatmap/AllTrails med offline-pakker. Last ned den spesifikke turkorridoren pluss 10 km buffer.',
           'Fysisk reservekart: bær et vanntett 1:50 000 topografisk kart for ethvert fjell- eller villmarksområde. Lær å ta en peiling med et baselatekompass.',
           'Lagre nøkkelveipunkter som GPS-pinner før avreise: trailhead, leir, nærmeste vei, nødly og nærmeste by med legetjeneste.',
-          'Batteristyring på telefon: aktiver flymodus med bare GPS aktiv under navigasjon. Dette forlenger batteritid 4?6x sammenlignet med full LTE-drift.'
+          'Batteristyring på telefon: aktiver flymodus med bare GPS aktiv under navigasjon. Dette forlenger batteritid 4-6x sammenlignet med full LTE-drift.'
         ],
         warnings: [
           'Ikke anta at bufrede veikart dekker detaljert topografi. Mange offline veikart viser veier og bygninger, ikke terrengkonturer. Bruk dedikert topo-app for fjellnavigasjon.',
-          'Ikke stol på ?n enkelt enhet. Bær en liten strømbank som kan lade telefonen to ganger, eller en dedikert GPS-enhet som backup i flerdag-villmarkskontekster.',
+          'Ikke stol på én enkelt enhet. Bær en liten strømbank som kan lade telefonen to ganger, eller en dedikert GPS-enhet som backup i flerdag-villmarkskontekster.',
           'Ikke forsøm å oppdatere offline-kartpakker før større turer. Bufrede kart eldre enn 6 måneder kan mangle nye veier, stenginger eller endrede nødfasiliteters beliggenhet.'
         ],
         relatedTopics: ['Vær, (Varsom/NVE - værvarsel) og turens gå/ikke-gå-beslutning', 'Dokumenter, betaling og ambassadefallback']
@@ -929,19 +929,19 @@ export const pillarsDataNo: Pillar[] = [
       {
         id: 'rucking-load-bearing-fitness',
         title: 'Rucking: Lastbæring for beredskap',
-        shortSummary: 'Bygg bærekraftig styrke, kondisjon og fottøffhet gjennom systematisk lastbæring ? en praktisk treningsmetode for hverdagsberedskap.',
-        situationContext: 'Ethvert beredkapsscenario der fysisk kapasitet til å bære forsyninger, evakuere til fots eller opprettholde innsats under belastning kan bli nødvendig ? fra en 72-timers sekk til lengre turer eller støtteoppgaver.',
+        shortSummary: 'Bygg bærekraftig styrke, kondisjon og fottøffhet gjennom systematisk lastbæring - en praktisk treningsmetode for hverdagsberedskap.',
+        situationContext: 'Ethvert beredkapsscenario der fysisk kapasitet til å bære forsyninger, evakuere til fots eller opprettholde innsats under belastning kan bli nødvendig - fra en 72-timers sekk til lengre turer eller støtteoppgaver.',
         corePrinciple: 'Rucking (vandring med lastet sekk) er en effektiv måte å bygge generell fysisk beredskap på uten unødvendig belastning på leddene. I motsetning til løping er det bærekraftig på tvers av aldersgrupper, vær og terreng. Det bygger postural styrke, kondisjon, mental robusthet og fottøffhet samtidig.',
         procedureSteps: [
           'Start med en 10-ukers progresjon: begynn med 20 % av kroppsvekten i sekken over 30-minutters turer, 3 ganger per uke. Legg til 5 minutter per økt hver uke.',
           'Sekkoppsett: last vekten nær ryggraden og høyt i sekken. Bruk stive bøker, vektplater eller sandsekker. En dårlig lastet sekk forskyver tyngdepunktet fremover og forårsaker skader.',
           'Fottøy: gå inn nye turgåerstøvler eller annet solid fottøy under opptreningen. Ikke start med nye støvler på en lang økt.',
-          'Holdning: oppretthold nøytral ryggrad ? ikke len deg for mye fremover. Stram hoftebeltet slik at 60?70 % av lasten hviler på hoftene, ikke skuldrene.',
-          'Ernæring og hydrering: innta 500?750 ml vann per time under rucking. Bær en enkel karbohydratkilde (tørket frukt, energigele) for økter over 90 minutter.',
+          'Holdning: oppretthold nøytral ryggrad - ikke len deg for mye fremover. Stram hoftebeltet slik at 60-70 % av lasten hviler på hoftene, ikke skuldrene.',
+          'Ernæring og hydrering: innta 500-750 ml vann per time under rucking. Bær en enkel karbohydratkilde (tørket frukt, energigele) for økter over 90 minutter.',
           'Progresjonsmål: nå 30 % kroppsvekt over 10 km på under 2 timer. Dette er et praktisk utholdenhetsmål og et nyttig referansepunkt for hverdagsberedskap.'
         ],
         warnings: [
-          'Ikke øk belastning og distanse i samme uke. Progresjon bare ?n variabel om gangen for å forhindre overbelastningsskader (skinnbeinsbetennelse, plantar fasciitt, IT-båndsyndrom).',
+          'Ikke øk belastning og distanse i samme uke. Progresjon bare én variabel om gangen for å forhindre overbelastningsskader (skinnbeinsbetennelse, plantar fasciitt, IT-båndsyndrom).',
           'Ikke gå tur med rammeløs eller lavkvalitets sekk ved bæring av mer enn 10 kg. Dårlig vektfordeling konsentrerer vekten på å skjære gjennom ved skulder- og lendekontaktpunkter.',
           'Ikke ignorer fotsmerte. Rucking-relaterte fotskader forverres raskt under belastning og kan sette deg ut av spill i uker. Behandle varme flekker før de blir blemmer.',
           'Det er aldri for sent å snu eller søke ly.'
@@ -989,7 +989,7 @@ export const pillarsDataNo: Pillar[] = [
           'Bruk åpne hender, lav stemme, korte setninger og ikke-anklagende formuleringer som "jeg hører deg" eller "jeg går nå".',
           'Gi plass. Gå skrått bort i stedet for rett bakover hvis personen lukker avstanden.',
           'Skap et vitnelag ved å bevege deg mot ansatte, lys, kameraer eller andre trygge voksne.',
-          'Hvis personen blokkerer veien, sett grensen tydelig ?n gang og velg tryggeste tilgjengelige rute ut.',
+          'Hvis personen blokkerer veien, sett grensen tydelig én gang og velg tryggeste tilgjengelige rute ut.',
           'Etterpå: noter tid, sted, beskrivelse, vitner og konkrete trusler mens minnet er ferskt.'
         ],
         warnings: [
@@ -1071,10 +1071,10 @@ export const pillarsDataNo: Pillar[] = [
       },
       {
         id: 'one-week-blackout-communication',
-        title: '?n uke strømbrudd og krisekommunikasjon',
-        shortSummary: 'Forbered bortfall av strøm, vann, betaling og mobilnett uten å bli avhengig av ?n sårbar kanal.',
+        title: 'én uke strømbrudd og krisekommunikasjon',
+        shortSummary: 'Forbered bortfall av strøm, vann, betaling og mobilnett uten å bli avhengig av én sårbar kanal.',
         situationContext: 'Langvarig strømbrudd, cyberhendelse, ekstremvær eller regional infrastruktursvikt påvirker normale tjenester.',
-        corePrinciple: 'Robust husholdning er lagvis: vann, varme, mat, medisiner, informasjon, betaling og nabohjelp må fungere også når appene ikke gjør det.',
+        corePrinciple: 'En robust husholdning er basert på flere lag: vann, varme, mat, medisiner, informasjon, betaling og nabohjelp må fungere også når appene ikke gjør det.',
         procedureSteps: [
           'Lagre rundt 20 liter drikkevann per person og roter det etter en enkel kalender.',
           'Ha mat som tåler romtemperatur, manuell boksåpner, trygg kokemulighet og drivstoff tilpasset boligen.',
@@ -1112,7 +1112,7 @@ export const pillarsDataNo: Pillar[] = [
       },
       {
         id: 'emergency-prep-72h',
-        title: '72-timers basis egenberedskap',
+        title: '72-timers (3-dagers) basis egenberedskap',
         shortSummary: 'De mest kritiske forsyningene og rutinene for å klare husholdningen i de første tre dagene av en krisesituasjon.',
         situationContext: 'Plutselig bortfall av strøm, vann eller varme på grunn av uvær, teknisk svikt eller eksterne hendelser.',
         corePrinciple: 'Fokuser på de mest grunnleggende fysiologiske behovene: vann, mat, varme, kommunikasjon og førstehjelp.',
@@ -1136,7 +1136,7 @@ export const pillarsDataNo: Pillar[] = [
         title: '7-dagers utvidet egenberedskap (1 uke)',
         shortSummary: 'Et utvidet beredskapsnivå i tråd med myndighetenes nye anbefalinger om å klare seg selv i en hel uke.',
         situationContext: 'Langvarig strømbrudd, større forsyningssvikt, cyberangrep mot infrastruktur eller isolasjon på grunn av ekstremvær.',
-        corePrinciple: 'Bygg langsiktig robusthet i husholdningen gjennom alternativ oppvarming, trygg vannrensing, nødhygiene og nabosamarbeid.',
+        corePrinciple: 'Langsiktig robusthet i husholdningen kan bygges gjennom alternativ oppvarming, trygg vannrensing, nødhygiene og nabosamarbeid.',
         procedureSteps: [
           'Vann: Lagre minst 21 liter vann per person (3 liter per dag i 7 dager), rotert årlig, og ha enkle verktøy for vannrensing.',
           'Mat: Ha mat for 7 dager og et trygt kokeapparat (f.eks. stormkjøkken) med nok brensel.',
@@ -1244,7 +1244,7 @@ export const pillarsDataNo: Pillar[] = [
           'Moren ber ikke om penger, men ber deg i stedet kjøpe en spesifikk boks med morsmelkerstatning i en utvalgt butikk rett rundt hjørnet.',
           'Når du går inn i butikken, viser det seg ofte at prisen er svært høy for boksen.',
           'Etter at du har betalt og forlatt stedet, blir boksen returnert og pengene deles mellom de som står bak svindelen.',
-          'Gjenkjenn faresignalet: En person som bare vil at du skal kjøpe i ?n bestemt butikk og ikke tar imot annen hjelp.'
+          'Gjenkjenn faresignalet: En person som bare vil at du skal kjøpe i én bestemt butikk og ikke tar imot annen hjelp.'
         ],
         warnings: [
           'IKKE la deg rive med av kraftige emosjonelle scener i gata. Ta et skritt tilbake og vurder dynamikken objektivt.',
@@ -1278,7 +1278,7 @@ export const pillarsDataNo: Pillar[] = [
         title: 'Dokumenter, betaling og ambassadefallback',
         shortSummary: 'Bygg redundans for pass, forsikring, penger, resepter og offisiell hjelp før reisen går galt.',
         situationContext: 'Internasjonal reise der tyveri, sykdom, grenseforsinkelse, uro, sperret kort eller tapt telefon kan sette deg fast.',
-        corePrinciple: 'Reiserobusthet er separasjon. ?n bag, ?n telefon, ett bankkort eller ?n skykonto må aldri bli alt du har.',
+        corePrinciple: 'Reiserobusthet er separasjon. én bag, én telefon, ett bankkort eller én skykonto må aldri bli alt du har.',
         procedureSteps: [
           'Ha pass, ID-kopi, reiseforsikring, resepter og bookingreferanser tilgjengelig både offline og på papir.',
           'Del betalingsmidler mellom kropp, dagsekk og hotellsafe; ha litt lokal valuta eller bredt akseptert valuta.',
@@ -1639,7 +1639,7 @@ export const scenariosDataNo: Scenario[] = [
         choices: []
       },
       'cash-purchase': {
-        text: 'Du har kjøpt en enkel telefon og et SIM-kort med kontanter. Du sitter på en kaf? 5 kilometer hjemmefra. Hva gjør du nå for å sette den opp?',
+        text: 'Du har kjøpt en enkel telefon og et SIM-kort med kontanter. Du sitter på en kafé 5 kilometer hjemmefra. Hva gjør du nå for å sette den opp?',
         choices: [
           {
             text: 'Koble telefonen til kafeens åpne WiFi, logg kjapt på din personlige e-postkonto for å laste ned Signal-appen.',
@@ -1772,7 +1772,7 @@ export const checklistsDataEn: ChecklistGroup[] = [
 export const checklistsDataNo: ChecklistGroup[] = [
   {
     id: 'emergency-72h',
-    title: '72-timers basis egenberedskap',
+    title: '72-timers (3-dagers) basis egenberedskap',
     icon: 'Home',
     items: [
       { id: 'water-3d', text: 'Vann: Minst 9 liter rent drikkevann per person (3 liter per dag i 3 dager)', checked: false, category: 'water' },
@@ -1803,7 +1803,7 @@ export const checklistsDataNo: ChecklistGroup[] = [
   },
   {
     id: 'urban-first-aid-kit',
-    title: 'Urban førstehjelpssett (IFAK + hjemmelager)',
+    title: 'Personlig førstehjelpskit for hverdagsbruk (IFAK + hjemmelager)',
     icon: 'Shield',
     items: [
       { id: 'ifak-tourniquet', text: 'Ha en godkjent windlass-tourniquet (CAT eller SOFTT-W) og tren på bruk med én hånd.', checked: false, category: 'medical' },
@@ -1815,7 +1815,7 @@ export const checklistsDataNo: ChecklistGroup[] = [
       { id: 'ifak-cpr-mask', text: 'Ha en kompakt HLR-barrieremaske for tryggere innblåsninger.', checked: false, category: 'medical' },
       { id: 'ifak-marker', text: 'Legg til permanent tusj for å notere tourniquet-tid og handoff-info.', checked: false, category: 'medical' },
       { id: 'ifak-thermal-blanket', text: 'Pakk varmeteppe for å redusere varmetap etter traume mens man venter på hjelp.', checked: false, category: 'medical' },
-      { id: 'ifak-maintenance', text: 'Kjør månedlig sjekk av utløp og forseglinger, og erstatt brukt eller utgått innhold straks.', checked: false, category: 'safety' }
+      { id: 'ifak-maintenance', text: 'Kjør månedlig sjekk av ventiler og forseglinger, og erstatt brukt eller utgått innhold så snart som mulig.', checked: false, category: 'safety' }
     ]
   },
   {
@@ -1826,14 +1826,14 @@ export const checklistsDataNo: ChecklistGroup[] = [
       { id: 'passport-val', text: 'Sjekk at passet er gyldig i minst 6 måneder etter hjemreisedato', checked: false, category: 'docs' },
       { id: 'insurance-pdf', text: 'Lagre kopi av reiseforsikringsbeviset offline på mobilen og skriv ut fysisk', checked: false, category: 'docs' },
       { id: 'cash-split', text: 'Del opp reisekassa: oppbevar kort/kontanter på tre ulike steder (lomme, sekk, safe)', checked: false, category: 'payment' },
-      { id: 'itinerary-share', text: 'Del reiseruten og hotelladresser med minst ?n pålitelig kontakt hjemme', checked: false, category: 'safety' },
+      { id: 'itinerary-share', text: 'Del reiseruten og hotelladresser med minst én pålitelig kontakt hjemme', checked: false, category: 'safety' },
       { id: 'emergency-numbers', text: 'Lagre nummeret til UD (Utenriksdepartementets krisepunkt: +47 23 95 00 00) og lokal ambassade', checked: false, category: 'safety' },
       { id: 'biometric-off', text: 'Deaktiver ansikts- og fingeravtrykk-opplåsing på flyplasser/grenseoverganger (krever kun PIN)', checked: false, category: 'privacy' }
     ]
   },
   {
     id: 'digital-privacy-audit',
-    title: 'Månedlig digital personvernaudit',
+    title: 'Månedlig gjennomgang av personvern og digital sikkerhet',
     icon: 'Shield',
     items: [
       { id: 'pwd-mgr', text: 'Aktiver og flytt alle passord til en desentralisert passordbehandler (f.eks. Bitwarden)', checked: false, category: 'accounts' },

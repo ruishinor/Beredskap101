@@ -1931,7 +1931,7 @@
     },
     {
       "id": "f-rstehjelp-edc-txt-c6cfb49d",
-      "title": "Førstehjelp - Every-Day Carry (EDC)",
+      "title": "Førstehjelp som hverdagsutstyr(EDC)",
       "category": "First Aid and Emergency Medicine",
       "pillarId": "førstehjelp",
       "metadata": {
@@ -2025,7 +2025,7 @@
       },
       "locales": {
         "en": {
-          "title": "Førstehjelp - Every-Day Carry (EDC)",
+          "title": "First Aid - Every-Day Carry (EDC)",
           "category": "First Aid and Emergency Medicine",
           "keyElements": [
             {

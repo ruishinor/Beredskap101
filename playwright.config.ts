@@ -11,7 +11,7 @@ export default defineConfig({
   outputDir: 'test-results/playwright',
   reporter: [['list']],
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: 'http://127.0.0.1:4178',
     headless: true,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -25,9 +25,9 @@ export default defineConfig({
       timeout: 60_000,
     },
     {
-      command: 'npm run preview -- --host 127.0.0.1 --port 4173',
-      url: 'http://127.0.0.1:4173',
-      reuseExistingServer: true,
+      command: 'npm run preview -- --host 127.0.0.1 --port 4178',
+      url: 'http://127.0.0.1:4178',
+      reuseExistingServer: false,
       timeout: 60_000,
     },
   ],

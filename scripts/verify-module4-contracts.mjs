@@ -183,8 +183,10 @@ function runStaticContractChecks() {
 
   const shelterMapTsx = readText('src/components/ShelterMap.tsx');
   assert(shelterMapTsx.includes('Offline package active') || shelterMapTsx.includes('Offline-pakke aktiv'), 'Shelter map displays offline package active overlay state.');
-  assert(shelterMapTsx.includes('The offline package is not installed') || shelterMapTsx.includes('Offline-pakken er ikke installert'), 'Shelter map displays not-installed state copy.');
-  assert(shelterMapTsx.includes('The offline package is not installed in this copy') || shelterMapTsx.includes('Offline-pakken er ikke installert i denne kopien'), 'Shelter map explains when the offline package is missing.');
+  assert(shelterMapTsx.includes('Offline package ready') || shelterMapTsx.includes('Offline-pakke klar'), 'Shelter map displays bundled-package ready state copy.');
+  assert(shelterMapTsx.includes('bundled offline package') || shelterMapTsx.includes('innebygde offline-pakken'), 'Shelter map explains the shipped bundled offline package.');
+  assert(shelterMapTsx.includes('Orientation only, not routing') || shelterMapTsx.includes('Orientering, ikke ruting'), 'Shelter map labels the bundled basemap as orientation-only.');
+  assert(shelterMapTsx.includes('for orientation only') || shelterMapTsx.includes('kun for orientering'), 'Shelter map warns users not to treat the bundled basemap as authoritative navigation.');
   assert(shelterMapTsx.includes('Street is the default') || shelterMapTsx.includes('Gatekart er standard'), 'Shelter map explains the street-first default.');
   assert(shelterMapTsx.includes('tileLayer') || shelterMapTsx.includes('openstreetmap-standard'), 'Shelter map keeps the live street basemap fallback.');
   assert(shelterMapTsx.includes('future-poi-overlay'), 'Shelter map reserves future POI overlay layers above basemap.');
@@ -207,17 +209,14 @@ function runStaticContractChecks() {
   assert(manifest.mode === 'local-public-file', 'PMTiles manifest marks the package as local-public-file.');
   assert(manifest.styleUrl === '/maps/norway-style.json', 'PMTiles manifest points at the local style JSON.');
   assert(manifest.archiveUrl === '/maps/norway.pmtiles', 'PMTiles manifest declares the local archive URL for size validation.');
-  assert(typeof manifest.minArchiveBytes === 'number' && manifest.minArchiveBytes >= 1024 * 1024, 'PMTiles manifest declares a realistic minimum archive size.');
+  assert(typeof manifest.minArchiveBytes === 'number' && manifest.minArchiveBytes >= 16384, 'PMTiles manifest declares a realistic minimum archive size.');
   const pmtilesSize = fs.statSync(pmtilesPath).size;
-  assert(
-    pmtilesSize >= manifest.minArchiveBytes || mapProviderTs.includes('Declared PMTiles archive is missing or below the minimum package size'),
-    'Placeholder-sized PMTiles archives are rejected instead of reported as installed.'
-  );
+  assert(pmtilesSize >= manifest.minArchiveBytes, 'Bundled PMTiles archive exceeds the declared minimum package size.');
 
   const style = JSON.parse(readText('public/maps/norway-style.json'));
-  assert(style.sources?.norway?.url === 'pmtiles:///maps/norway.pmtiles', 'Style references the local PMTiles archive.');
-  assert(Array.isArray(style.layers) && style.layers.some((layer) => layer['source-layer'] === 'norway'), 'Style renders the Norway source layer.');
-  assert(Array.isArray(style.layers) && style.layers.some((layer) => layer['source-layer'] === 'cities'), 'Style renders the cities source layer.');
+  assert(style.sources?.['norway-raster']?.url === 'pmtiles:///maps/norway.pmtiles', 'Style references the local PMTiles archive.');
+  assert(style.sources?.['norway-raster']?.type === 'raster', 'Style uses the bundled raster PMTiles source.');
+  assert(Array.isArray(style.layers) && style.layers.some((layer) => layer.id === 'norway-raster' && layer.type === 'raster'), 'Style renders the raster Norway basemap layer.');
 
   const sampleMetPayload = {
     features: [

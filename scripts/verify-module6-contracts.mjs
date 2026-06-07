@@ -95,11 +95,11 @@ function runStaticContractChecks() {
   assert(assistantTsx.includes('deterministicAssistiveResponse'), 'Assistant has deterministic fallback response pipeline.');
   assert(assistantTsx.includes('tryLocalModel'), 'Assistant includes optional local model routing.');
   assert(assistantTsx.includes('RAG-lite local context') || assistantTsx.includes('RAG-lite lokal kontekst'), 'Assistant exposes RAG-lite context usage.');
-  assert(assistantTsx.includes('Local AI settings') || assistantTsx.includes('Lokal AI-innstillinger'), 'Assistant exposes local settings panel.');
+  assert(assistantTsx.includes('Settings for local AI') || assistantTsx.includes('Innstillinger for lokal KI'), 'Assistant exposes local settings panel.');
   assert(assistantTsx.includes('Test connection') || assistantTsx.includes('Test tilkobling'), 'Assistant exposes test connection action.');
   assert(assistantTsx.includes('Clear settings') || assistantTsx.includes('Nullstill'), 'Assistant exposes clear-settings action.');
   assert(assistantTsx.includes('advisory only') || assistantTsx.includes('kun veiledende'), 'Assistant shows advisory-only safety disclaimer.');
-  assert(assistantTsx.includes('only local AI endpoints are allowed') || assistantTsx.includes('kun lokale AI-endepunkt tillatt'), 'Assistant blocks non-local endpoint usage.');
+  assert(assistantTsx.includes('only local AI endpoints are allowed') || assistantTsx.includes('kun lokale KI-endepunkt tillatt'), 'Assistant blocks non-local endpoint usage.');
   assert(assistantTsx.includes('qwen2.5:3b') && assistantTsx.includes('llama3.2:3b'), 'Assistant recommends local small-model options.');
   assert(assistantTsx.includes('No cloud fallback is used') || assistantTsx.includes('Ingen skylokal fallback brukes'), 'Assistant states no cloud fallback behavior.');
 

@@ -6,9 +6,9 @@
 @source not "../.agents";
 
 @theme {
-  --font-sans: "Inter", "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Inter", "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+  --font-display: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
 
   /* Register semantic color variables to Tailwind v4 engine */
@@ -26,9 +26,9 @@
 
   --max-width: 1400px;
 
-  --font-main: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-main: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Inter", "Segoe UI", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
-  --font-display: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+  --font-display: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
 
   /* Default calm dark theme variables */
   --bg: #101614;
@@ -65,6 +65,11 @@
   --hero-gradient:
     radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
     linear-gradient(180deg, #101614 0%, #17201e 100%);
+
+  --preparedness-banner-bg: #8fd3c7;
+  --preparedness-banner-fg: #06201c;
+  --nav-active-bg: #8fd3c7;
+  --nav-active-fg: #06201c;
 }
 
 /* THEMES AS UTILITY BOUNDARIES */
@@ -105,6 +110,11 @@
   --hero-gradient:
     radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
     linear-gradient(180deg, #101614 0%, #17201e 100%);
+
+  --preparedness-banner-bg: #8fd3c7;
+  --preparedness-banner-fg: #06201c;
+  --nav-active-bg: #8fd3c7;
+  --nav-active-fg: #06201c;
 }
 
 .theme-light {
@@ -122,11 +132,11 @@
   /* Subtext/body text */
   --muted: #344b44;
   --text-muted: #2e4942;
-  --text-dim: #526b63;
+  --text-dim: #3b5049;
   
   /* Accent structures */
-  --accent: #225c52;
-  --accent-solid: #225c52;
+  --accent: #164a41;
+  --accent-solid: #164a41;
   --accent-on-solid: #ffffff;
   --status-success-bg: #f0fdf4;
   --status-success-text: #14532d;
@@ -155,6 +165,54 @@
   --hero-gradient:
     radial-gradient(circle at top right, rgba(34, 92, 82, 0.06), transparent 40%),
     linear-gradient(180deg, #f7faf8 0%, #eef3f1 100%);
+
+  --preparedness-banner-bg: #164a41;
+  --preparedness-banner-fg: #ffffff;
+  --nav-active-bg: #164a41;
+  --nav-active-fg: #ffffff;
+}
+
+.theme-signal {
+  --bg: #16120d;
+  --bg-alt: #1f1710;
+  --card: #261c13;
+  --text: #fdf7ef;
+  --text-main: #fff9f2;
+  --muted: #ebd7bd;
+  --text-muted: #e7d1b2;
+  --text-dim: #c7ab85;
+  --accent: #ef8e21;
+  --accent-solid: #ef8e21;
+  --accent-on-solid: #1f1205;
+  --status-success-bg: #193225;
+  --status-success-text: #d1fae5;
+  --status-success-border: rgba(52, 211, 153, 0.38);
+  --status-warning-bg: #4a2d0a;
+  --status-warning-text: #fde68a;
+  --status-warning-border: rgba(245, 158, 11, 0.45);
+  --status-error-bg: #4a1515;
+  --status-error-text: #fecaca;
+  --status-error-border: rgba(248, 113, 113, 0.45);
+  --status-info-bg: #1f2f55;
+  --status-info-text: #dbeafe;
+  --status-info-border: rgba(96, 165, 250, 0.4);
+  --border: rgba(255, 249, 242, 0.14);
+  --border-muted: rgba(255, 249, 242, 0.09);
+  --header-bg: rgba(22, 18, 13, 0.92);
+  --bg-panel: #261c13;
+  --bg-panel-soft: rgba(255, 255, 255, 0.04);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --hero-gradient:
+    radial-gradient(circle at top right, rgba(239, 142, 33, 0.18), transparent 35%),
+    linear-gradient(180deg, #16120d 0%, #1f1710 100%);
+
+  --preparedness-banner-bg: #ef8e21;
+  --preparedness-banner-fg: #1f1205;
+  --nav-active-bg: #ef8e21;
+  --nav-active-fg: #1f1205;
 }
 
 /* Custom scrollbar */
@@ -277,15 +335,31 @@
   --bg-panel: #ffffff;
   --bg-panel-soft: rgba(0, 0, 0, 0.03);
   --border-muted: rgba(16, 32, 28, 0.10);
-  --border-active: #225c52;
+  --border-active: #164a41;
   --text-main: #10201c;
   --text-muted: #2e4942;
-  --text-dim: #526b63;
-  --accent: #225c52;
+  --text-dim: #3b5049;
+  --accent: #164a41;
   --accent-soft: rgba(34, 92, 82, 0.08);
   --accent-glow: rgba(34, 92, 82, 0.24);
   --accent-hover: rgba(34, 92, 82, 0.58);
   --accent-hover-dot: #2f7a6d;
+}
+
+.theme-signal .knowledge-map-container {
+  --bg-main: #16120d;
+  --bg-panel: #261c13;
+  --bg-panel-soft: rgba(255, 255, 255, 0.04);
+  --border-muted: rgba(255, 249, 242, 0.12);
+  --border-active: #ef8e21;
+  --text-main: #fff9f2;
+  --text-muted: #e7d1b2;
+  --text-dim: #c7ab85;
+  --accent: #ef8e21;
+  --accent-soft: rgba(239, 142, 33, 0.14);
+  --accent-glow: rgba(239, 142, 33, 0.34);
+  --accent-hover: rgba(239, 142, 33, 0.6);
+  --accent-hover-dot: #f6b261;
 }
 
 .knowledge-map-grid-bg {
@@ -302,6 +376,12 @@
     linear-gradient(90deg, rgba(18, 32, 45, 0.02) 1px, transparent 1px);
 }
 
+.theme-signal .knowledge-map-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 246, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 246, 235, 0.025) 1px, transparent 1px);
+}
+
 .knowledge-map-grain {
   position: absolute;
   inset: 0;
@@ -312,6 +392,10 @@
 
 .theme-light .knowledge-map-grain {
   opacity: 0.012;
+}
+
+.theme-signal .knowledge-map-grain {
+  opacity: 0.028;
 }
 
 .knowledge-map-radial-glow {
@@ -328,6 +412,10 @@
 
 .theme-light .knowledge-map-radial-glow {
   background: radial-gradient(circle, rgba(34, 92, 82, 0.10) 0%, transparent 65%);
+}
+
+.theme-signal .knowledge-map-radial-glow {
+  background: radial-gradient(circle, rgba(239, 142, 33, 0.16) 0%, transparent 65%);
 }
 
 .feature-card {
@@ -426,4 +514,56 @@
 .text-\[var\(--text-muted\)\] .font-bold,
 .text-\[var\(--text-muted\)\] strong {
   color: var(--text-main) !important;
+}
+
+/* ==========================================================================
+   COMPONENT-SCOPED ACCENT CONTRAST FIX
+   Applies only to selected/accent UI surfaces.
+   Do not change global white text.
+   ========================================================================== */
+
+.preparedness-banner,
+.nav-item.active,
+.nav-item[aria-current="page"],
+.status-accent,
+.status-box-accent,
+.system-status-accent,
+.language-switcher .active,
+.language-switcher [aria-pressed="true"],
+.language-switcher [data-active="true"],
+.theme-switcher .active,
+.theme-switcher [aria-pressed="true"],
+.theme-switcher [data-active="true"],
+.signal-switcher .active,
+.signal-switcher [aria-pressed="true"],
+.signal-switcher [data-active="true"],
+.mode-switcher .active,
+.mode-switcher [aria-pressed="true"],
+.mode-switcher [data-active="true"] {
+  background-color: var(--accent-solid) !important;
+  color: var(--accent-on-solid) !important;
+  border-color: color-mix(in srgb, var(--accent-solid) 75%, var(--accent-on-solid) 25%) !important;
+}
+
+.preparedness-banner *,
+.nav-item.active *,
+.nav-item[aria-current="page"] *,
+.status-accent *,
+.status-box-accent *,
+.system-status-accent *,
+.language-switcher .active *,
+.language-switcher [aria-pressed="true"] *,
+.language-switcher [data-active="true"] *,
+.theme-switcher .active *,
+.theme-switcher [aria-pressed="true"] *,
+.theme-switcher [data-active="true"] *,
+.signal-switcher .active *,
+.signal-switcher [aria-pressed="true"] *,
+.signal-switcher [data-active="true"] *,
+.mode-switcher .active *,
+.mode-switcher [aria-pressed="true"] *,
+.mode-switcher [data-active="true"] * {
+  color: inherit !important;
+  fill: currentColor;
+  stroke: currentColor;
 }

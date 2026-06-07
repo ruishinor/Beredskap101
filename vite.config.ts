@@ -42,8 +42,47 @@ export default defineConfig(() => {
       },
     },
     build: {
-      // Keep verification runs warning-free while the large offline dataset remains bundled.
-      chunkSizeWarningLimit: 4096,
+      chunkSizeWarningLimit: 1100,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              const modulePath = id.split('node_modules/')[1] || '';
+              const segments = modulePath.split('/');
+              const packageName = segments[0]?.startsWith('@')
+                ? `${segments[0]}/${segments[1] || ''}`
+                : segments[0] || '';
+
+              if (packageName === 'react' || packageName === 'react-dom' || packageName === 'scheduler') {
+                return 'react-core';
+              }
+              if (packageName === 'lucide-react') {
+                return 'icons';
+              }
+              if (packageName === 'i18next' || packageName === 'react-i18next') {
+                return 'i18n';
+              }
+              if (packageName === 'maplibre-gl') {
+                return 'maplibre';
+              }
+              if (packageName === 'leaflet') {
+                return 'leaflet';
+              }
+              if (packageName === 'pmtiles') {
+                return 'pmtiles';
+              }
+              if (packageName === 'minisearch') {
+                return 'search';
+              }
+              return 'vendor';
+            }
+
+            if (id.includes('processedAssets.json')) {
+              return 'processed-assets';
+            }
+          },
+        },
+      },
     },
   };
 });

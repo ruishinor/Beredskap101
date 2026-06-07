@@ -7,8 +7,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { scenariosDataEn, scenariosDataNo } from '../data/pillarsData';
 import { Award, ShieldAlert, ChevronRight, RefreshCw, Trophy, CheckCircle2 } from 'lucide-react';
+import type { ThemeType } from '../types';
 
-export default function TrainingScenarios({ theme }: { theme: 'dark' | 'light' }) {
+export default function TrainingScenarios({ theme }: { theme: ThemeType }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || 'en';
   const scenariosData = currentLang === 'no' ? scenariosDataNo : scenariosDataEn;
@@ -110,8 +111,8 @@ export default function TrainingScenarios({ theme }: { theme: 'dark' | 'light' }
             <Trophy className="w-4 h-4" />
             <span className="text-xs font-mono uppercase tracking-widest">{t('lbl_resilience_points')}</span>
           </div>
-          <p className={`text-4xl font-extrabold font-mono tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{score}</p>
-          <p className={`text-xs mt-2 leading-relaxed ${theme === 'dark' ? 'text-neutral-400' : 'text-slate-500'}`}>
+          <p className={`text-4xl font-extrabold font-mono tracking-tight ${theme !== 'light' ? 'text-white' : 'text-slate-900'}`}>{score}</p>
+          <p className={`text-xs mt-2 leading-relaxed ${theme !== 'light' ? 'text-neutral-400' : 'text-slate-500'}`}>
             {t('lbl_score_help_text')}
           </p>
         </div>
@@ -170,7 +171,7 @@ export default function TrainingScenarios({ theme }: { theme: 'dark' | 'light' }
                   >
                     <div className="flex items-start gap-3">
                       <div className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center border text-xs font-mono ${
-                        theme === 'dark' ? 'border-neutral-700 bg-neutral-900' : 'border-slate-300 bg-slate-100'
+                        theme !== 'light' ? 'border-neutral-700 bg-neutral-900' : 'border-slate-300 bg-slate-100'
                       }`}>
                         {String.fromCharCode(65 + index)}
                       </div>

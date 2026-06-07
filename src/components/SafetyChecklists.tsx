@@ -6,9 +6,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { checklistsDataEn, checklistsDataNo } from '../data/pillarsData';
+import type { ThemeType } from '../types';
 import { CheckSquare, Square, RefreshCw, Info } from 'lucide-react';
 
-export default function SafetyChecklists({ theme }: { theme: 'dark' | 'light' }) {
+export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || 'en';
   const checklistsData = currentLang === 'no' ? checklistsDataNo : checklistsDataEn;
@@ -118,7 +119,7 @@ export default function SafetyChecklists({ theme }: { theme: 'dark' | 'light' })
             <span className="opacity-70">{t('lbl_resilience_status')}</span>
             <span className="font-bold">{checkedCount} {t('lbl_of')} {totalCount} {t('lbl_completed')} ({progressPercent}%)</span>
           </div>
-          <div className={`w-full h-2 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-neutral-950' : 'bg-slate-100'}`}>
+          <div className={`w-full h-2 rounded-full overflow-hidden ${theme !== 'light' ? 'bg-neutral-950' : 'bg-slate-100'}`}>
             <div
               className={`h-full transition-all duration-300 ${styles.progressBar}`}
               style={{ width: `${progressPercent}%` }}
@@ -137,17 +138,17 @@ export default function SafetyChecklists({ theme }: { theme: 'dark' | 'light' })
                 onClick={() => toggleCheck(itm.id)}
                 className={`flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
                   isChecked
-                    ? theme === 'dark'
+                    ? theme !== 'light'
                       ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]/30'
                       : 'bg-teal-50/40 border-teal-500/30 text-slate-500 line-through opacity-85'
-                    : theme === 'dark'
+                    : theme !== 'light'
                     ? 'bg-neutral-950/20 hover:bg-neutral-950/40 border-neutral-800 hover:border-neutral-700'
                     : 'bg-slate-50/20 hover:bg-slate-50/80 border-slate-200'
                 }`}
               >
                 <div className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
                   {isChecked ? (
-                    <CheckSquare className={`w-5 h-5 ${theme === 'dark' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
+                    <CheckSquare className={`w-5 h-5 ${theme !== 'light' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
                   ) : (
                     <Square className="w-5 h-5 text-neutral-500" />
                   )}

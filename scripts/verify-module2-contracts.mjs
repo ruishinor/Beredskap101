@@ -1,4 +1,4 @@
-﻿import fs from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
@@ -181,8 +181,14 @@ function run() {
     /setActiveTab\('shelters'\)[\s\S]{0,900}setActiveTab\('recommended-reading'\)/.test(appTsx),
     'Recommended Reading is positioned immediately after Shelters in main navigation.'
   );
+  assert(
+    /setActiveTab\('recommended-reading'\)[\s\S]{0,900}setActiveTab\('support'\)/.test(appTsx),
+    'Support is positioned immediately after Recommended Reading in main navigation.'
+  );
   const recommendedNavHits = (appTsx.match(/setActiveTab\('recommended-reading'\)/g) || []).length;
   assert(recommendedNavHits === 1, 'Recommended Reading is exposed once in primary navigation (footer shortcut removed).');
+  const supportNavHits = (appTsx.match(/setActiveTab\('support'\)/g) || []).length;
+  assert(supportNavHits >= 1, 'Support is exposed in primary or mobile navigation.');
 
   console.log('\n[Module 2] Offline Content Pack Interactivity');
   assert(appTsx.includes('id="offline-content-packs"'), 'Offline content pack section exists in reference library.');
@@ -203,24 +209,21 @@ function run() {
   assert(pushStateCount === 1, 'History push logic is consolidated to a single URL-sync path.');
 
   console.log('\n[Module 2] Accessibility and Color Contrast');
-  const darkAccentSolid = extractVarFromTheme(indexCss, '\\.theme-dark', 'accent-solid');
-  const darkAccentOnSolid = extractVarFromTheme(indexCss, '\\.theme-dark', 'accent-on-solid');
-  const lightAccentSolid = extractVarFromTheme(indexCss, '\\.theme-light', 'accent-solid');
-  const lightAccentOnSolid = extractVarFromTheme(indexCss, '\\.theme-light', 'accent-on-solid');
+  for (const themeSelector of ['\\.theme-dark', '\\.theme-light', '\\.theme-signal']) {
+    const accentSolid = extractVarFromTheme(indexCss, themeSelector, 'accent-solid');
+    const accentOnSolid = extractVarFromTheme(indexCss, themeSelector, 'accent-on-solid');
+    const accentContrast = contrastRatio(accentSolid, accentOnSolid);
+    assert(accentContrast >= 4.5, `${themeSelector.replace('\\.', '')} solid accent contrast passes WCAG AA (${accentContrast.toFixed(2)}:1).`);
 
-  const darkContrast = contrastRatio(darkAccentSolid, darkAccentOnSolid);
-  const lightContrast = contrastRatio(lightAccentSolid, lightAccentOnSolid);
-  assert(darkContrast >= 4.5, `Dark solid accent contrast passes WCAG AA (${darkContrast.toFixed(2)}:1).`);
-  assert(lightContrast >= 4.5, `Light solid accent contrast passes WCAG AA (${lightContrast.toFixed(2)}:1).`);
-
-  for (const themeSelector of ['\\.theme-dark', '\\.theme-light']) {
     for (const tone of ['success', 'warning', 'error', 'info']) {
       const bg = extractVarFromTheme(indexCss, themeSelector, `status-${tone}-bg`);
       const fg = extractVarFromTheme(indexCss, themeSelector, `status-${tone}-text`);
       const ratio = contrastRatio(bg, fg);
-      assert(ratio >= 4.5, `${themeSelector.replace('\\.', '')} ${tone} status token contrast passes WCAG AA (${ratio.toFixed(2)}:1).`);
+      const toneLabel = tone === 'warning' ? 'alert' : tone;
+      assert(ratio >= 4.5, `${themeSelector.replace('\\.', '')} ${toneLabel} status token contrast passes WCAG AA (${ratio.toFixed(2)}:1).`);
     }
   }
+  assert(appTsx.includes("id=\"btn-theme-signal\"") && appTsx.includes("setTheme('signal')"), 'Signal theme button and persistence wiring are present.');
 
   const whiteOnOrangeFindings = detectWhiteOnOrangeSegments();
   assert(
@@ -231,14 +234,20 @@ function run() {
   console.log('\n[Module 2] FAQ and User Guidance');
   assert(
     staticPagesTsx.includes('How do I switch between online and offline mode?') &&
-      staticPagesTsx.includes('Hvordan bytter jeg mellom online/offline modus?'),
+      staticPagesTsx.includes('Hvordan bytter jeg mellom online og offline modus?'),
     'FAQ includes online/offline mode toggle instructions in EN and NO.'
   );
   assert(
-    staticPagesTsx.includes('How do I download and activate map packages?') &&
-      staticPagesTsx.includes('Hvordan laster jeg ned og aktiverer kartpakker?'),
-    'FAQ includes map package download/activation instructions in EN and NO.'
+    staticPagesTsx.includes('How does the map package work now?') &&
+      staticPagesTsx.includes('Hvordan fungerer kartpakken nå?'),
+    'FAQ explains the shipped map-package behavior in EN and NO.'
   );
+  assert(
+    staticPagesTsx.includes('Which keywords are useful for Norwegian news and search?') &&
+      staticPagesTsx.includes('Hvilke nøkkelord er nyttige for norske nyheter og søk?'),
+    'FAQ documents Norwegian news/search keywords in EN and NO.'
+  );
+  assert(staticPagesTsx.includes('export and deletion') && staticPagesTsx.includes('Article 17'), 'FAQ documents Article 17 and Article 20 user controls.');
 
   console.log('\n[Module 2] Urban First Aid Kit Restoration');
   const urbanKitIdHits = (pillarsDataTs.match(/id: 'urban-first-aid-kit'/g) || []).length;
@@ -288,7 +297,7 @@ function run() {
     assert(min >= MIN_ALIGNMENT_THRESHOLD, `${section} keeps minimum lexical alignment >= ${MIN_ALIGNMENT_THRESHOLD} (min ${min.toFixed(4)}, avg ${avg.toFixed(4)}).`);
   }
 
-  console.log('\n[SUCCESS] Module 2 contract verification completed with no errors, warnings, or flags.');
+  console.log('\n[SUCCESS] Module 2 contract verification completed with no errors or flags.');
 }
 
 run();

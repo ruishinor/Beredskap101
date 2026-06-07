@@ -3,9 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type ThemeType = 'dark' | 'light';
+export type ThemeType = 'dark' | 'light' | 'signal';
 
-export type PillarId = 'førstehjelp' | 'friluftsliv' | 'egensikkerhet' | 'egenberedskap' | 'personvern' | 'reisesikkerhet';
+export type PillarId =
+  | 'førstehjelp'
+  | 'friluftsliv'
+  | 'egensikkerhet'
+  | 'egenberedskap'
+  | 'personvern'
+  | 'reisesikkerhet';
 
 export interface Topic {
   id: string;

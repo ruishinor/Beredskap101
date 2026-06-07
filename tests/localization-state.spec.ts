@@ -20,12 +20,18 @@ async function expectLanguageState(page: Page, language: 'en' | 'no') {
   await expect.poll(async () => page.evaluate(() => window.localStorage.getItem('beredskap101_language_v1'))).toBe(language);
 }
 
-async function expectThemeState(page: Page, theme: 'dark' | 'light') {
-  const activeSelector = theme === 'dark' ? '#btn-theme-dark' : '#btn-theme-light';
-  const inactiveSelector = theme === 'dark' ? '#btn-theme-light' : '#btn-theme-dark';
+async function expectThemeState(page: Page, theme: 'dark' | 'light' | 'signal') {
+  const selectors = {
+    dark: '#btn-theme-dark',
+    light: '#btn-theme-light',
+    signal: '#btn-theme-signal',
+  } as const;
 
-  await expect(page.locator(activeSelector)).toHaveClass(/font-extrabold/);
-  await expect(page.locator(inactiveSelector)).not.toHaveClass(/font-extrabold/);
+  await expect(page.locator(selectors[theme])).toHaveClass(/font-extrabold/);
+  for (const [otherTheme, selector] of Object.entries(selectors)) {
+    if (otherTheme === theme) continue;
+    await expect(page.locator(selector)).not.toHaveClass(/font-extrabold/);
+  }
   await expect(page.locator('.app')).toHaveClass(new RegExp(`theme-${theme}`));
   await expect.poll(async () => page.evaluate(() => window.localStorage.getItem('beredskap101_theme_v1'))).toBe(theme);
 }
@@ -39,12 +45,12 @@ test.describe('localization and theme state', () => {
     await expectLanguageState(page, 'no');
     await expect(page.getByRole('button', { name: 'Kunnskap' }).first()).toBeVisible();
 
-    for (const theme of ['light', 'dark', 'light'] as const) {
+    for (const theme of ['light', 'signal', 'dark', 'light'] as const) {
       await page.locator(`#btn-theme-${theme}`).click();
       await expectThemeState(page, theme);
     }
 
-    for (const route of ['#scenarios', '#recommended-reading', '#checklists']) {
+    for (const route of ['#scenarios', '#recommended-reading', '#support', '#checklists']) {
       await page.goto(`${baseURL}/${route}`, { waitUntil: 'load' });
       await expectLanguageState(page, 'no');
     }
@@ -63,12 +69,18 @@ test.describe('localization and theme state', () => {
     await page.goto(`${baseURL}/`, { waitUntil: 'load' });
     await page.evaluate(() => {
       window.localStorage.setItem('beredskap101_language_v1', 'en');
-      window.localStorage.setItem('beredskap101_theme_v1', 'dark');
+      window.localStorage.setItem('beredskap101_theme_v1', 'signal');
     });
     await page.reload({ waitUntil: 'load' });
     await expectLanguageState(page, 'en');
-    await expectThemeState(page, 'dark');
+    await expectThemeState(page, 'signal');
     await expect(page.getByRole('button', { name: 'Knowledge' }).first()).toBeVisible();
+
+    await page.locator('#btn-theme-dark').click();
+    await expectThemeState(page, 'dark');
+    await page.reload({ waitUntil: 'load' });
+    await expectLanguageState(page, 'en');
+    await expectThemeState(page, 'dark');
 
     await page.locator('#btn-theme-light').click();
     await expectThemeState(page, 'light');

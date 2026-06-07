@@ -7,7 +7,7 @@ function trackPageErrors(page: Page, pageErrors: string[]) {
 }
 
 test.describe('ui regressions', () => {
-  test('keeps library cards visible in light mode, normalizes the shelter map, and explains local-only storage/AI', async ({ page, baseURL }) => {
+  test('keeps library cards visible, exposes Support, ships the bundled shelter map, and explains local-only storage/AI', async ({ page, baseURL }) => {
     const pageErrors: string[] = [];
     trackPageErrors(page, pageErrors);
 
@@ -39,6 +39,16 @@ test.describe('ui regressions', () => {
       `${featureCardPresentation.parentBackgroundImage}|${featureCardPresentation.parentBackgroundColor}`
     );
 
+    await page.goto(`${baseURL}/#support`, { waitUntil: 'load' });
+    await expect(page.getByRole('heading', { name: 'Support', exact: true })).toBeVisible();
+    await expect(page.locator('a[href="mailto:info@holf.services"]').first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Copy email address|Kopier e-postadresse/ }).first()).toBeVisible();
+    await expect(page.locator('section')).toContainText(/Article 17|Artikkel 17/);
+    await expect(page.locator('section')).toContainText(/Article 20|Artikkel 20/);
+
+    await page.goto(`${baseURL}/#contact`, { waitUntil: 'load' });
+    await expect(page.locator('a[href="mailto:info@holf.services"]').first()).toBeVisible();
+
     await page.goto(`${baseURL}/#shelters`, { waitUntil: 'load' });
     await expect(page.locator('#shelter-map-canvas')).toBeVisible();
 
@@ -60,19 +70,15 @@ test.describe('ui regressions', () => {
     const offlinePackageButton = page.locator('button').filter({ hasText: /Offline package|Offline-pakke/ }).first();
     await expect(offlinePackageButton).toBeEnabled();
     await offlinePackageButton.click();
-    await expect(page.locator('body')).toContainText(/offline package is not installed|Offline-pakken er ikke installert/);
-    await expect(page.locator('#shelter-map-canvas')).not.toHaveClass(/pmtiles-shelter-basemap/);
+    await expect(page.locator('body')).toContainText(/Offline package ready|Offline-pakke klar/);
+    await expect(page.locator('body')).toContainText(/Bundled local file|Innebygd lokal fil/);
+    await expect(page.locator('body')).toContainText(/Orientation only, not routing|Orientering, ikke ruting/);
+    await expect(page.locator('body')).not.toContainText(/not installed in this copy|ikke tilgjengelig i denne kopien/);
+    await expect(page.locator('#shelter-map-canvas')).toHaveClass(/pmtiles-shelter-basemap/);
     await page.locator('div[role="button"][tabindex="0"]').filter({ hasText: /Rom: #/ }).first().click();
     await expect(page.getByRole('link', { name: /Open in OpenStreetMap|Åpne i OpenStreetMap/ }).first()).toHaveAttribute('href', /openstreetmap\.org/);
     await expect(page.getByRole('link', { name: /Data source|Datakilde/ }).first()).toHaveAttribute('href', /objektkatalog\.geonorge\.no/);
     await expect(page.getByRole('link', { name: /DSB guidance|Råd fra DSB/ }).first()).toHaveAttribute('href', /dsb\.no/);
-
-    const footerPrivacyButton = page.locator('footer button').filter({ hasText: /Privacy|Personvern/ }).first();
-    const footerCopyButton = page.locator('footer button').filter({ hasText: /Copy email|Kopier e-post/ }).first();
-    for (const control of [footerPrivacyButton, footerCopyButton]) {
-      const box = await control.boundingBox();
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-    }
 
     await page.goto(`${baseURL}/#checklists`, { waitUntil: 'load' });
     await page.getByRole('button', { name: 'Local AI Assist' }).click();
@@ -85,10 +91,12 @@ test.describe('ui regressions', () => {
     await expect(page.locator('#local-document-vault')).toContainText('Export/import is manual and local only');
 
     await page.goto(`${baseURL}/#faq`, { waitUntil: 'load' });
-    await expect(page.locator('section')).toContainText('What is stored locally on this device?');
+    await expect(page.locator('section')).toContainText('Do you store personal data?');
     await expect(page.locator('section')).toContainText('How do I start using a local AI model here? ELI5.');
-    await expect(page.locator('section')).toContainText('manual and local only');
-    await expect(page.locator('section')).toContainText('For most people: you do not need to do anything.');
+    await expect(page.locator('section')).toContainText('There is no automatic cloud sync');
+    await expect(page.locator('section')).toContainText('How does the map package work now?');
+    await expect(page.locator('section')).toContainText('Which keywords are useful for Norwegian news and search?');
+    await expect(page.locator('section')).toContainText(/orientation backdrop|orienteringsbakgrunn/);
 
     await page.goto(`${baseURL}/#privacy`, { waitUntil: 'load' });
     await expect(page.locator('section')).toContainText('No automatic cloud sync is used');

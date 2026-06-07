@@ -207,7 +207,7 @@ The codebase has been **recently redesigned** (as of 2026-06-03T22:50) away from
 | E-01 | 🔴 **Critical** | **No React Error Boundary** — A single render error in any component crashes the entire app to white screen |
 | E-02 | 🟢 **Good** | **Service worker offline fallback** — Graceful degradation for feeds, API, and navigation |
 | E-03 | 🟢 **Good** | **IndexedDB → localStorage fallback chain** — `saveSystem.ts` gracefully degrades |
-| E-04 | 🟢 **Good** | **Local AI failure → deterministic fallback** — Never crashes on AI unavailability |
+| E-04 | 🟢 **Good** | **Local AI failure → deterministic (specifical local response is returned) fallback** — Never crashes on AI unavailability |
 | E-05 | 🟢 **Good** | **Feed cache staleness check** — Stale cached feeds are cleaned up |
 | E-06 | 🟡 **Medium** | **No global `window.onerror` / `unhandledrejection` handler** — Unhandled promise rejections silently fail |
 

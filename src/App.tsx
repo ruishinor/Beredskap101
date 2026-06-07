@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { Suspense, lazy, startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import MiniSearch from 'minisearch';
 import {
   BookOpen,
@@ -16,6 +16,7 @@ import {
   Database,
   FileText,
   ListChecks,
+  LifeBuoy,
   Search,
   ShieldCheck,
   BarChart3,
@@ -30,37 +31,22 @@ import { useTranslation } from 'react-i18next';
 import { LANGUAGE_STORAGE_KEY } from './i18n';
 import { checklistsDataEn, checklistsDataNo, pillarsDataEn, pillarsDataNo } from './data/pillarsData';
 import { PillarId, ThemeType } from './types';
-import SafetyChecklists from './components/SafetyChecklists';
-import InteractiveFlowcharts from './components/InteractiveFlowcharts';
-import TrainingScenarios from './components/TrainingScenarios';
-import ExtendedAssetViewer from './components/ExtendedAssetViewer';
-import EditorialArticlesViewer from './components/EditorialArticlesViewer';
 import { optimizeTitle } from './utils/titleOptimizer';
 import { localizeCategory } from './utils/localizationHelper';
 import { localizeProcessedAsset } from './utils/localizeProcessedAsset';
 import { isDisplayWorthyAsset } from './utils/assetQualityGate';
-import DynamicGearListBuilder from './components/DynamicGearListBuilder';
-import SecureSaveManager from './components/SecureSaveManager';
-import LocalDocumentVault from './components/LocalDocumentVault';
-import LocalAiAssistant from './components/LocalAiAssistant';
 import { telemetryInstance, ConnectivityState } from './utils/connectivityTelemetry';
-import KnowledgeMap from './components/KnowledgeMap';
-import SourceLinksSection from './components/SourceLinksSection';
-import NorwegianNewsFeed from './components/NorwegianNewsFeed';
 import CookieBanner, { saveCookiePrefs, useCookiePrefs } from './components/CookiePreferences';
-import { AboutPage, ContactPage, FAQPage, GlossaryPage, PolicyPage, RecommendedReadingPage } from './components/StaticPages';
-import ShelterMap from './components/ShelterMap';
 import { glossaryData } from './data/glossaryData';
 import { editorialArticles } from './data/editorialArticles';
 import sheltersData from './data/shelters.json';
-import processedAssetsData from './data/processedAssets.json';
 import { sourceRegistry } from './data/sourceRegistry';
 import { buildOfflineKnowledgeArtifacts } from './utils/offlineKnowledge';
 import { formatOsloDateTime } from './utils/dateTime';
 import type { ContentPack, SearchDocument } from './types/offline';
 
 type AppTab =
-  'manual' | 'library' | 'reference-library' | 'glossary' | 'recommended-reading' | 'scenarios' | 'flowcharts' | 'checklists' | 'about' | 'contact' | 'privacy' | 'legal' | 'terms' | 'faq' | 'cookies' | 'shelters';
+  'manual' | 'library' | 'reference-library' | 'glossary' | 'recommended-reading' | 'support' | 'scenarios' | 'flowcharts' | 'checklists' | 'about' | 'contact' | 'privacy' | 'legal' | 'terms' | 'faq' | 'cookies' | 'shelters' | 'appearance' | 'data' | 'accessibility';
 
 const hashToTab: Record<string, AppTab> = {
   knowledge: 'manual',
@@ -68,6 +54,7 @@ const hashToTab: Record<string, AppTab> = {
   'reference-library': 'reference-library',
   glossary: 'glossary',
   'recommended-reading': 'recommended-reading',
+  support: 'support',
   scenarios: 'scenarios',
   flowcharts: 'flowcharts',
   checklists: 'checklists',
@@ -79,7 +66,10 @@ const hashToTab: Record<string, AppTab> = {
   faq: 'faq',
   cookies: 'cookies',
   shelters: 'shelters',
-  'shelter-map': 'shelters'
+  'shelter-map': 'shelters',
+  appearance: 'appearance',
+  data: 'data',
+  accessibility: 'accessibility',
 };
 
 const tabToHash: Record<AppTab, string> = {
@@ -88,6 +78,7 @@ const tabToHash: Record<AppTab, string> = {
   'reference-library': 'reference-library',
   glossary: 'glossary',
   'recommended-reading': 'recommended-reading',
+  support: 'support',
   scenarios: 'scenarios',
   flowcharts: 'flowcharts',
   checklists: 'checklists',
@@ -98,7 +89,10 @@ const tabToHash: Record<AppTab, string> = {
   terms: 'terms',
   faq: 'faq',
   cookies: 'cookies',
-  shelters: 'shelters'
+  shelters: 'shelters',
+  appearance: 'appearance',
+  data: 'data',
+  accessibility: 'accessibility',
 };
 
 type SearchLanguageFilter = 'all' | 'en' | 'no';
@@ -112,6 +106,27 @@ type IndexedSearchDocument = SearchDocument & {
 type LocalSearchResult = SearchDocument & {
   score: number;
 };
+
+const SafetyChecklists = lazy(() => import('./components/SafetyChecklists'));
+const InteractiveFlowcharts = lazy(() => import('./components/InteractiveFlowcharts'));
+const TrainingScenarios = lazy(() => import('./components/TrainingScenarios'));
+const ExtendedAssetViewer = lazy(() => import('./components/ExtendedAssetViewer'));
+const EditorialArticlesViewer = lazy(() => import('./components/EditorialArticlesViewer'));
+const DynamicGearListBuilder = lazy(() => import('./components/DynamicGearListBuilder'));
+const SecureSaveManager = lazy(() => import('./components/SecureSaveManager'));
+const LocalDocumentVault = lazy(() => import('./components/LocalDocumentVault'));
+const LocalAiAssistant = lazy(() => import('./components/LocalAiAssistant'));
+const KnowledgeMap = lazy(() => import('./components/KnowledgeMap'));
+const SourceLinksSection = lazy(() => import('./components/SourceLinksSection'));
+const NorwegianNewsFeed = lazy(() => import('./components/NorwegianNewsFeed'));
+const ShelterMap = lazy(() => import('./components/ShelterMap'));
+const AboutPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.AboutPage })));
+const ContactPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.ContactPage })));
+const FAQPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.FAQPage })));
+const GlossaryPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.GlossaryPage })));
+const PolicyPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.PolicyPage })));
+const RecommendedReadingPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.RecommendedReadingPage })));
+const SupportHubPage = lazy(() => import('./components/StaticPages').then((mod) => ({ default: mod.SupportHubPage })));
 
 const SEARCH_TYPE_ORDER: SearchDocument['type'][] = [
   'manual-topic',
@@ -194,7 +209,7 @@ function readStoredTheme(): ThemeType | null {
 
   try {
     const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (storedTheme === 'dark' || storedTheme === 'light') {
+    if (storedTheme === 'dark' || storedTheme === 'light' || storedTheme === 'signal') {
       return storedTheme;
     }
   } catch {
@@ -217,10 +232,32 @@ function readPreferredTheme(): ThemeType {
   return 'dark';
 }
 
+function LazySectionFallback({
+  currentLang,
+  label,
+}: {
+  currentLang: string;
+  label: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-5 text-xs text-[var(--muted)]">
+      {currentLang === 'no' ? `Laster ${label.toLowerCase()}...` : `Loading ${label.toLowerCase()}...`}
+    </div>
+  );
+}
+
+type ProcessedAssetsLoadState = 'idle' | 'loading' | 'ready' | 'error';
+
 export default function App() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.resolvedLanguage === 'no' ? 'no' : 'en';
-  const [activeTab, setActiveTab] = useState<AppTab>(() => readTabFromHash());
+  const [activeTab, setActiveTab] = useState<AppTab>(() => {
+    const initialTab = readTabFromHash();
+    if (initialTab === 'about' || initialTab === 'contact' || initialTab === 'privacy' || initialTab === 'legal' || initialTab === 'terms' || initialTab === 'faq' || initialTab === 'cookies') {
+      return 'support';
+    }
+    return initialTab;
+  });
   const hasInitializedHistoryRef = useRef(false);
   const [referenceTimestamp, setReferenceTimestamp] = useState<number>(() => Date.now());
   const [copiedContactEmail, setCopiedContactEmail] = useState(false);
@@ -258,6 +295,26 @@ export default function App() {
   // Checklist sub-tab
   const [checklistSubTab, setChecklistSubTab] = useState<'standard' | 'custom' | 'backup' | 'vault' | 'ai'>('standard');
 
+  // Settings sub-tab state
+  const [settingsSubTab, setSettingsSubTab] = useState<'about' | 'faq' | 'contact' | 'privacy' | 'legal' | 'terms' | 'cookies' | 'data' | 'accessibility' | 'appearance'>(() => {
+    const initialTab = readTabFromHash();
+    if (
+      initialTab === 'about' ||
+      initialTab === 'contact' ||
+      initialTab === 'privacy' ||
+      initialTab === 'legal' ||
+      initialTab === 'terms' ||
+      initialTab === 'faq' ||
+      initialTab === 'cookies' ||
+      initialTab === 'appearance' ||
+      initialTab === 'data' ||
+      initialTab === 'accessibility'
+    ) {
+      return initialTab as any;
+    }
+    return 'about';
+  });
+
   useEffect(() => {
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
@@ -279,7 +336,18 @@ export default function App() {
 
     if (typeof document !== 'undefined') {
       const themeMeta = document.querySelector('meta[name="theme-color"]');
-      themeMeta?.setAttribute('content', theme === 'dark' ? '#101614' : '#eef3f1');
+      const themeColor = theme === 'light' ? '#eef3f1' : theme === 'signal' ? '#16120d' : '#101614';
+      themeMeta?.setAttribute('content', themeColor);
+
+      // Force theme class propagation to root HTML and body elements for absolute parity/reliability.
+      const themeClass = theme === 'dark' ? 'theme-dark' : theme === 'signal' ? 'theme-signal' : 'theme-light';
+      const root = document.documentElement;
+      root.classList.remove('theme-dark', 'theme-light', 'theme-signal');
+      root.classList.add(themeClass);
+      
+      const body = document.body;
+      body.classList.remove('theme-dark', 'theme-light', 'theme-signal');
+      body.classList.add(themeClass);
     }
   }, [theme]);
 
@@ -329,7 +397,27 @@ export default function App() {
 
   useEffect(() => {
     const handleRouteStateChange = () => {
-      setActiveTab(readTabFromHash());
+      const tab = readTabFromHash();
+      if (
+        tab === 'about' ||
+        tab === 'faq' ||
+        tab === 'contact' ||
+        tab === 'privacy' ||
+        tab === 'legal' ||
+        tab === 'terms' ||
+        tab === 'cookies' ||
+        tab === 'appearance' ||
+        tab === 'data' ||
+        tab === 'accessibility' ||
+        tab === 'support'
+      ) {
+        setActiveTab('support');
+        if (tab !== 'support') {
+          setSettingsSubTab(tab as any);
+        }
+      } else {
+        setActiveTab(tab);
+      }
       const uiState = readUiSubStateFromLocation();
       setSelectedAssetId(uiState.selectedAssetId);
       setSelectedPillarId(uiState.selectedPillarId);
@@ -350,6 +438,7 @@ export default function App() {
   const [searchPillarFilter, setSearchPillarFilter] = useState<string>('all');
   const [searchLanguageFilter, setSearchLanguageFilter] = useState<SearchLanguageFilter>('all');
   const [searchCriticalityFilter, setSearchCriticalityFilter] = useState<SearchCriticalityFilter>('all');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   
   // Pillar Selection state (null means overview)
   const [selectedPillarId, setSelectedPillarId] = useState<PillarId | null>(() => readUiSubStateFromLocation().selectedPillarId);
@@ -362,7 +451,7 @@ export default function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const hash = `#${tabToHash[activeTab]}`;
+    const hash = activeTab === 'support' ? `#${settingsSubTab}` : `#${tabToHash[activeTab]}`;
 
     const assetForUrl =
       activeTab === 'manual' || activeTab === 'library' || activeTab === 'reference-library'
@@ -395,7 +484,7 @@ export default function App() {
     if (nextUrl !== currentUrl) {
       window.history.pushState(window.history.state, '', nextUrl);
     }
-  }, [activeTab, activeArticleId, selectedAssetId, selectedPillarId]);
+  }, [activeTab, activeArticleId, selectedAssetId, selectedPillarId, settingsSubTab]);
   
   // Track initial active sub-module tab selected from external preview
   const [selectedAssetInitialTab, setSelectedAssetInitialTab] = useState<'article' | 'guide' | 'checklist' | 'protocol' | 'module' | 'stats'>('article');
@@ -409,6 +498,7 @@ export default function App() {
   // Filtered assets query inside Extended Reference Library section
   const [librarySearchQuery, setLibrarySearchQuery] = useState<string>('');
   const [libraryPackFilter, setLibraryPackFilter] = useState<string>('all');
+  const deferredLibrarySearchQuery = useDeferredValue(librarySearchQuery);
 
   type ProcessedAssetsPayload = {
     schemaVersion?: string;
@@ -417,12 +507,41 @@ export default function App() {
     sourceRevision?: string;
     assets?: any[];
   } | any[];
-  const processedAssetsPayload = processedAssetsData as ProcessedAssetsPayload;
+  const [processedAssetsPayload, setProcessedAssetsPayload] = useState<ProcessedAssetsPayload | null>(null);
+  const [processedAssetsLoadState, setProcessedAssetsLoadState] = useState<ProcessedAssetsLoadState>('idle');
+
+  useEffect(() => {
+    let cancelled = false;
+
+    setProcessedAssetsLoadState('loading');
+    import('./data/processedAssets.json')
+      .then((module) => {
+        if (cancelled) return;
+        const payload = ((module as { default?: ProcessedAssetsPayload }).default ?? module) as ProcessedAssetsPayload;
+        startTransition(() => {
+          setProcessedAssetsPayload(payload);
+          setProcessedAssetsLoadState('ready');
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to load processed asset bundle', error);
+        if (!cancelled) {
+          setProcessedAssetsLoadState('error');
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const rawProcessedAssets = useMemo<any[]>(() => {
+    if (!processedAssetsPayload) return [];
     if (Array.isArray(processedAssetsPayload)) return processedAssetsPayload;
     return Array.isArray(processedAssetsPayload.assets) ? processedAssetsPayload.assets : [];
   }, [processedAssetsPayload]);
   const processedAssetsGeneratedAt = useMemo(() => {
+    if (!processedAssetsPayload) return '';
     if (Array.isArray(processedAssetsPayload)) return '';
     return processedAssetsPayload.generatedAt || '';
   }, [processedAssetsPayload]);
@@ -432,6 +551,11 @@ export default function App() {
       .filter((asset) => isDisplayWorthyAsset(asset, currentLang))
       .map((asset) => localizeProcessedAsset(asset, currentLang));
   }, [rawProcessedAssets, currentLang]);
+  const selectedProcessedAsset = useMemo(
+    () => (selectedAssetId ? processedAssets.find((asset) => asset.id === selectedAssetId) || null : null),
+    [processedAssets, selectedAssetId]
+  );
+  const processedAssetsReady = processedAssetsLoadState === 'ready';
 
   // Filtered topics/articles flatten helper
   const allTopics = useMemo(() => {
@@ -445,6 +569,8 @@ export default function App() {
   }, [pillarsData]);
   const referenceCount = processedAssets.length;
   const allGuidesCount = allTopics.length;
+  const processedAssetsLoading = processedAssetsLoadState === 'idle' || processedAssetsLoadState === 'loading';
+  const processedAssetsFailed = processedAssetsLoadState === 'error';
 
   const offlineKnowledge = useMemo(() => {
     return buildOfflineKnowledgeArtifacts({
@@ -493,9 +619,9 @@ export default function App() {
       }
       const matchesPillar = libraryPillarFilter === 'all' || asset.pillarId === libraryPillarFilter;
       const optTitle = optimizeTitle(asset.title, currentLang).toLowerCase();
-      const query = librarySearchQuery.toLowerCase();
+      const query = deferredLibrarySearchQuery.toLowerCase();
       const matchesQuery =
-        !librarySearchQuery.trim() ||
+        !deferredLibrarySearchQuery.trim() ||
         optTitle.includes(query) ||
         asset.title.toLowerCase().includes(query) ||
         asset.category.toLowerCase().includes(query) ||
@@ -503,7 +629,7 @@ export default function App() {
 
       return matchesPillar && matchesQuery;
     });
-  }, [contentPackAssetsById, currentLang, libraryPackFilter, libraryPillarFilter, librarySearchQuery, processedAssets]);
+  }, [contentPackAssetsById, currentLang, deferredLibrarySearchQuery, libraryPackFilter, libraryPillarFilter, processedAssets]);
   const visibleReferenceAssets = useMemo(() => {
     return filteredReferenceAssets.slice(0, libraryPageSize);
   }, [filteredReferenceAssets, libraryPageSize]);
@@ -572,7 +698,7 @@ export default function App() {
   }, []);
 
   const localSearchResults = useMemo<LocalSearchResult[]>(() => {
-    const query = searchQuery.trim();
+    const query = deferredSearchQuery.trim();
     if (!query) return [];
 
     const rows = localSearchIndex.search(query, { prefix: true, fuzzy: 0.2 }) as Array<any>;
@@ -620,7 +746,7 @@ export default function App() {
     }
 
     return filtered.slice(0, SEARCH_RESULT_LIMIT);
-  }, [currentLang, localSearchIndex, searchCriticalityFilter, searchLanguageFilter, searchPillarFilter, searchQuery, searchTypeFilter]);
+  }, [currentLang, deferredSearchQuery, localSearchIndex, searchCriticalityFilter, searchLanguageFilter, searchPillarFilter, searchTypeFilter]);
 
 
   // Map pillar ID to the exact index in custom mockup
@@ -663,7 +789,7 @@ export default function App() {
   };
 
   // Mapping theme choice to class name
-  const themeClass = theme === 'dark' ? 'theme-dark' : 'theme-light';
+  const themeClass = theme === 'dark' ? 'theme-dark' : theme === 'signal' ? 'theme-signal' : 'theme-light';
 
   // Responsive button and theme styles relying on modern CSS custom properties
   const themeStyles = {
@@ -885,7 +1011,7 @@ export default function App() {
     <div className={`app min-h-screen font-sans flex flex-col justify-between text-[var(--text)] bg-[var(--bg)] transition-colors duration-300 ${themeClass}`}>
       
       {/* GLOBAL SYSTEM STATUS BANNER */}
-      <div className="w-full bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-[10px] md:text-xs font-mono font-bold tracking-wider py-1.5 px-4 flex items-center justify-center gap-2 border-b border-[var(--border)] overflow-hidden">
+      <div className="preparedness-banner w-full text-[10px] md:text-xs font-mono font-bold tracking-wider py-1.5 px-4 flex items-center justify-center gap-2 border-b border-[var(--border)] overflow-hidden">
         <AlertTriangle className="w-3 md:w-3.5 h-3 md:h-3.5 flex-shrink-0 animate-pulse" />
         <span className="truncate">{t('offline_banner_desc')}</span>
         <span className="hidden md:inline opacity-70">|</span>
@@ -920,7 +1046,7 @@ export default function App() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             {/* Connectivity Telemetry Badge */}
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-mono font-bold uppercase ${
+            <div className={`connectivity-status-badge flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-mono font-bold uppercase ${
               connState === 'ONLINE' 
                 ? 'bg-[var(--status-success-bg)] border-[var(--status-success-border)] text-[var(--status-success-text)]' 
                 : connState === 'DEGRADED'
@@ -991,6 +1117,20 @@ export default function App() {
                 <Sun className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{currentLang === 'no' ? 'Lys' : 'Light'}</span>
               </button>
+              <button
+                id="btn-theme-signal"
+                type="button"
+                onClick={() => setTheme('signal')}
+                aria-pressed={theme === 'signal'}
+                className={`theme-btn inline-flex items-center gap-1.5 text-[10px] md:text-xs font-semibold rounded-full px-3 py-1.5 transition-all cursor-pointer ${
+                  theme === 'signal'
+                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md'
+                    : 'text-[var(--muted)] hover:text-[var(--text)]'
+                }`}
+              >
+                <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Signal</span>
+              </button>
             </div>
           </div>
 
@@ -1001,9 +1141,9 @@ export default function App() {
           <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-center sm:justify-start gap-1 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none py-2 text-xs font-mono">
             <button
               onClick={() => { setActiveTab('manual'); setSelectedPillarId(null); setActiveArticleId(null); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'manual' 
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
+                  ? 'active border-transparent font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1012,9 +1152,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('library'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'library' 
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
+                  ? 'active border-transparent font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1023,9 +1163,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('scenarios'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'scenarios' 
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
+                  ? 'active border-transparent font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1034,9 +1174,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('flowcharts'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'flowcharts' 
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
+                  ? 'active border-transparent font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1045,9 +1185,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('checklists'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'checklists' 
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
+                  ? 'active border-transparent font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1056,9 +1196,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('glossary'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'glossary'
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
+                  ? 'active border-transparent font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1067,9 +1207,9 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('shelters'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'shelters'
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
+                  ? 'active border-transparent font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1078,14 +1218,25 @@ export default function App() {
             </button>
             <button
               onClick={() => { setActiveTab('recommended-reading'); setSelectedAssetId(null); scrollToTop(); }}
-              className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'recommended-reading'
-                  ? 'bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
+                  ? 'active border-transparent font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
               <span>{currentLang === 'no' ? 'Lesetips' : 'Reading'}</span>
+            </button>
+            <button
+              onClick={() => { setActiveTab('support'); setSelectedAssetId(null); scrollToTop(); }}
+              className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'support' 
+                  ? 'active border-transparent font-bold' 
+                  : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
+              }`}
+            >
+              <LifeBuoy className="w-3.5 h-3.5" />
+              <span>{currentLang === 'no' ? 'Innstillinger' : 'Settings'}</span>
             </button>
           </div>
         </div>
@@ -1098,29 +1249,43 @@ export default function App() {
           <div>
             {selectedAssetId ? (
               <section className="section py-10 px-4 sm:px-8 max-w-[1400px] mx-auto animate-fade-in">
-                <ExtendedAssetViewer
-                  key={selectedAssetId}
-                  assetId={selectedAssetId}
-                  asset={processedAssets.find(a => a.id === selectedAssetId)}
-                  theme={theme}
-                  onBack={() => setSelectedAssetId(null)}
-                  currentLang={currentLang}
-                  initialTab={selectedAssetInitialTab}
-                />
+                {processedAssetsLoading && !selectedProcessedAsset ? (
+                  <LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'referansemodul' : 'reference module'} />
+                ) : processedAssetsFailed && !selectedProcessedAsset ? (
+                  <div className="rounded-2xl border border-[var(--status-error-border)] bg-[var(--status-error-bg)] px-4 py-5 text-xs text-[var(--status-error-text)]">
+                    {currentLang === 'no'
+                      ? 'Referansearkivet kunne ikke lastes lokalt. Gå tilbake og prøv igjen.'
+                      : 'The reference archive could not be loaded locally. Go back and try again.'}
+                  </div>
+                ) : (
+                  <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'referansemodul' : 'reference module'} />}>
+                    <ExtendedAssetViewer
+                      key={selectedAssetId}
+                      assetId={selectedAssetId}
+                      asset={selectedProcessedAsset || undefined}
+                      theme={theme}
+                      onBack={() => setSelectedAssetId(null)}
+                      currentLang={currentLang}
+                      initialTab={selectedAssetInitialTab}
+                    />
+                  </Suspense>
+                )}
               </section>
             ) : !selectedPillarId && !activeArticleId ? (
               <div className="space-y-8">
-                <KnowledgeMap
-                  currentLang={currentLang}
-                  theme={theme}
-                  setActiveTab={setActiveTab}
-                  setSelectedPillarId={setSelectedPillarId}
-                  setActiveArticleId={setActiveArticleId}
-                  setSelectedAssetId={setSelectedAssetId}
-                  setSelectedAssetInitialTab={setSelectedAssetInitialTab}
-                  completedTopics={completedTopics}
-                  guideCount={allGuidesCount}
-                />
+                <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'kunnskapskart' : 'knowledge map'} />}>
+                  <KnowledgeMap
+                    currentLang={currentLang}
+                    theme={theme}
+                    setActiveTab={setActiveTab}
+                    setSelectedPillarId={setSelectedPillarId}
+                    setActiveArticleId={setActiveArticleId}
+                    setSelectedAssetId={setSelectedAssetId}
+                    setSelectedAssetInitialTab={setSelectedAssetInitialTab}
+                    completedTopics={completedTopics}
+                    guideCount={allGuidesCount}
+                  />
+                </Suspense>
 
                 <section id="offline-local-search" className="section px-4 sm:px-8 max-w-[1400px] mx-auto">
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 space-y-4">
@@ -1139,6 +1304,22 @@ export default function App() {
                         {currentLang === 'no' ? 'Fungerer offline' : 'Works offline'}
                       </span>
                     </div>
+
+                    {(processedAssetsLoading || processedAssetsFailed) && (
+                      <div className={`rounded-lg border px-3 py-2 text-xs ${
+                        processedAssetsFailed
+                          ? 'border-[var(--status-error-border)] bg-[var(--status-error-bg)] text-[var(--status-error-text)]'
+                          : 'border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-text)]'
+                      }`}>
+                        {processedAssetsFailed
+                          ? (currentLang === 'no'
+                            ? 'Referansemoduler er midlertidig utilgjengelige i lokalsøket. Øvrige offline-kilder virker fortsatt.'
+                            : 'Reference modules are temporarily unavailable in local search. The rest of the offline sources still work.')
+                          : (currentLang === 'no'
+                            ? 'Referansemoduler indekseres lokalt i bakgrunnen. Manualtemaer, sjekklister og kilder er allerede søkbare.'
+                            : 'Reference modules are indexing locally in the background. Manual topics, checklists, and source links are already searchable.')}
+                      </div>
+                    )}
 
                     <div className="bg-[rgba(0,0,0,0.15)] border border-[var(--border)] rounded-full px-4 py-2.5 flex items-center gap-2">
                       <Search className="w-4 h-4 text-[var(--muted)] flex-shrink-0" />
@@ -1288,20 +1469,32 @@ export default function App() {
                   </div>
                 </section>
 
-                <SourceLinksSection currentLang={currentLang} />
+                <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'offisielle kilder' : 'official sources'} />}>
+                  <SourceLinksSection currentLang={currentLang} />
+                </Suspense>
 
-                <NorwegianNewsFeed currentLang={currentLang} />
+                <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'norske nyheter' : 'norwegian news'} />}>
+                  <NorwegianNewsFeed currentLang={currentLang} />
+                </Suspense>
 
                 {/* REFERENCE LIBRARY CALL-TO-ACTION */}
                 <section className="section bg-[var(--bg-alt)] py-12 px-4 sm:px-8 border-t border-[var(--border)] text-center rounded-2xl max-w-[1400px] mx-auto">
                   <div className="max-w-2xl mx-auto space-y-4">
                     <h2 className="text-2xl md:text-3xl font-bold font-display text-[var(--text)]">
-                      {currentLang === 'no' ? 'Fordyp din beredskapskunnskap' : 'Deepen Your Preparedness Knowledge'}
+                      {currentLang === 'no' ? 'Lær mer om beredskap' : 'Expand Your Preparedness Knowledge'}
                     </h2>
                     <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed">
-                      {currentLang === 'no'
-                        ? `S\u00f8ker du spesifikke emner? Referansebiblioteket har ${referenceCount} kvalitetssikrede moduler i denne utgaven.`
-                        : `Looking for specific topics? The reference library currently includes ${referenceCount} quality-reviewed modules in this build.`}
+                      {processedAssetsFailed
+                        ? (currentLang === 'no'
+                          ? 'Referansebiblioteket er midlertidig utilgjengelig i denne økten. Prøv igjen for å laste lokale referansemoduler.'
+                          : 'The reference library is temporarily unavailable in this session. Try again to load the local reference modules.')
+                        : processedAssetsReady
+                          ? (currentLang === 'no'
+                            ? `Leter du etter spesifikke emner? Referansebiblioteket har ${referenceCount} kvalitetssikrede artikler akkurat nå, og blir stadig utvidet.`
+                            : `Looking for specific topics? The reference library currently includes ${referenceCount} quality-reviewed articles at the moment, and is continuously updated.`)
+                          : (currentLang === 'no'
+                            ? 'Referansebiblioteket lastes lokalt i bakgrunnen for å redusere treg oppstart på langsommere enheter.'
+                            : 'The reference library is loading locally in the background to reduce slow startup on lower-powered devices.')}
                     </p>
                     <div className="pt-2">
                       <button
@@ -1562,18 +1755,47 @@ export default function App() {
           <div>
             {selectedAssetId ? (
               <section className="section py-10 px-4 sm:px-8 max-w-[1400px] mx-auto animate-fade-in">
-                <ExtendedAssetViewer
-                  key={selectedAssetId}
-                  assetId={selectedAssetId}
-                  asset={processedAssets.find(a => a.id === selectedAssetId)}
-                  theme={theme}
-                  onBack={() => setSelectedAssetId(null)}
-                  currentLang={currentLang}
-                  initialTab={selectedAssetInitialTab}
-                />
+                {processedAssetsLoading && !selectedProcessedAsset ? (
+                  <LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'referansemodul' : 'reference module'} />
+                ) : processedAssetsFailed && !selectedProcessedAsset ? (
+                  <div className="rounded-2xl border border-[var(--status-error-border)] bg-[var(--status-error-bg)] px-4 py-5 text-xs text-[var(--status-error-text)]">
+                    {currentLang === 'no'
+                      ? 'Referansearkivet kunne ikke lastes lokalt. Gå tilbake og prøv igjen.'
+                      : 'The reference archive could not be loaded locally. Go back and try again.'}
+                  </div>
+                ) : (
+                  <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'referansemodul' : 'reference module'} />}>
+                    <ExtendedAssetViewer
+                      key={selectedAssetId}
+                      assetId={selectedAssetId}
+                      asset={selectedProcessedAsset || undefined}
+                      theme={theme}
+                      onBack={() => setSelectedAssetId(null)}
+                      currentLang={currentLang}
+                      initialTab={selectedAssetInitialTab}
+                    />
+                  </Suspense>
+                )}
               </section>
             ) : (
               <div>
+                {(processedAssetsLoading || processedAssetsFailed) && (
+                  <section className="section px-4 sm:px-8 max-w-[1400px] mx-auto pt-6">
+                    <div className={`rounded-xl border px-4 py-3 text-xs ${
+                      processedAssetsFailed
+                        ? 'border-[var(--status-error-border)] bg-[var(--status-error-bg)] text-[var(--status-error-text)]'
+                        : 'border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-text)]'
+                    }`}>
+                      {processedAssetsFailed
+                        ? (currentLang === 'no'
+                          ? 'Lokale referansemoduler kunne ikke lastes i denne økten. Guider, artikler og øvrig appinnhold fungerer fortsatt.'
+                          : 'Local reference modules could not be loaded in this session. Guides, articles, and the rest of the app still work.')
+                        : (currentLang === 'no'
+                          ? 'Lokale referansemoduler lastes i bakgrunnen for å redusere treg oppstart. Guider og artikler er tilgjengelige allerede nå.'
+                          : 'Local reference modules are loading in the background to reduce slow startup. Guides and editorial content are already available.')}
+                    </div>
+                  </section>
+                )}
                 {activeTab === 'library' && (
                   <>
                 {/* FEATURED OPERATIONAL GUIDES */}
@@ -1590,7 +1812,7 @@ export default function App() {
                       <div>
                         <p className="max-w-[50ch] text-[var(--muted)] text-xs md:text-sm leading-relaxed">
                           {currentLang === 'no'
-                            ? 'Korte, praktiske guider for de vanligste beredskapsspørsmålene i 2026: egenberedskap, vann, varsler, strømbrudd, førstehjelp og digitalt personvern.'
+                          ? 'Korte, praktiske guider for de vanligste beredskapsspørsmålene i 2026: egenberedskap, vann, varsler, strømbrudd, førstehjelp og digitalt personvern.'
                             : 'Short, practical guidance for the most common preparedness questions in 2026: household readiness, water, alerts, outages, first aid, and digital privacy.'}
                         </p>
                       </div>
@@ -1611,7 +1833,7 @@ export default function App() {
                             }`}>{t('high_priority_tag')}</span>
                           </div>
                           
-                          <h3 className="text-xl md:text-2xl font-bold leading-tight font-display">{currentLang === 'no' ? 'Improvisert urban traumesett' : 'Improvised Urban Trauma Kit'}</h3>
+                          <h3 className="text-xl md:text-2xl font-bold leading-tight font-display">{currentLang === 'no' ? 'Improvisert førstehjelpskit for bymiljøer' : 'Improvised Urban Trauma Kit'}</h3>
                           
                           <p className="text-[var(--muted)] text-xs md:text-sm leading-relaxed">
                             {currentLang === 'no' 
@@ -1685,13 +1907,23 @@ export default function App() {
                       </p>
                     </div>
                   </div>
-                  <EditorialArticlesViewer theme={theme} />
+                  <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'beredskapsartikler' : 'editorial articles'} />}>
+                    <EditorialArticlesViewer theme={theme} />
+                  </Suspense>
                   
                   <div className="mt-8 text-center pt-6 border-t border-[var(--border)]/35">
                     <p className="text-xs text-[var(--muted)] mb-3">
-                      {currentLang === 'no'
-                        ? `S\u00f8ker du spesifikke emner? Referansebiblioteket inneholder ${referenceCount} moduler i denne utgaven.`
-                        : `Looking for specific topics? The reference library includes ${referenceCount} modules in this build.`}
+                      {processedAssetsFailed
+                        ? (currentLang === 'no'
+                          ? 'Referansebiblioteket er midlertidig utilgjengelig i denne økten. Prøv igjen for å laste lokale referansemoduler.'
+                          : 'The reference library is temporarily unavailable in this session. Try again to load the local reference modules.')
+                        : processedAssetsReady
+                          ? (currentLang === 'no'
+                            ? `Leter du etter spesifikke emner? Referansebiblioteket inneholder ${referenceCount} artikler akkurat nå, og blir stadig utvidet.`
+                            : `Looking for specific topics? The reference library includes ${referenceCount} articles at the moment, and is continuously updated.`)
+                          : (currentLang === 'no'
+                            ? 'Referansebiblioteket lastes lokalt i bakgrunnen for å redusere treg oppstart på langsommere enheter.'
+                            : 'The reference library is loading locally in the background to reduce slow startup on lower-powered devices.')}
                     </p>
                     <button
                       onClick={() => {
@@ -1860,7 +2092,7 @@ export default function App() {
                                 </span>
                               </div>
                               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                                {summary.samples.join(' ? ')}
+                                {summary.samples.join(' • ')}
                               </p>
                               <button
                                 type="button"
@@ -2076,7 +2308,9 @@ export default function App() {
                 {t('scenarios_desc')}
               </p>
             </div>
-            <TrainingScenarios theme={theme} />
+            <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'scenarioøvelser' : 'training scenarios'} />}>
+              <TrainingScenarios theme={theme} />
+            </Suspense>
           </section>
         )}
 
@@ -2092,7 +2326,9 @@ export default function App() {
                 {t('flowcharts_desc')}
               </p>
             </div>
-            <InteractiveFlowcharts theme={theme} />
+            <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'beslutningstrær' : 'decision trees'} />}>
+              <InteractiveFlowcharts theme={theme} />
+            </Suspense>
           </section>
         )}
 
@@ -2163,150 +2399,87 @@ export default function App() {
               </button>
             </div>
 
-            {checklistSubTab === 'standard' && <SafetyChecklists theme={theme} />}
-            {checklistSubTab === 'custom' && <DynamicGearListBuilder theme={theme} />}
-            {checklistSubTab === 'backup' && <SecureSaveManager theme={theme} />}
-            {checklistSubTab === 'vault' && <LocalDocumentVault theme={theme} />}
-            {checklistSubTab === 'ai' && <LocalAiAssistant theme={theme} currentLang={currentLang} searchDocuments={searchDocuments} />}
+            {checklistSubTab === 'standard' && (
+              <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'standardsjekklister' : 'standard checklists'} />}>
+                <SafetyChecklists theme={theme} />
+              </Suspense>
+            )}
+            {checklistSubTab === 'custom' && (
+              <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'egen sjekkliste' : 'custom checklist'} />}>
+                <DynamicGearListBuilder theme={theme} />
+              </Suspense>
+            )}
+            {checklistSubTab === 'backup' && (
+              <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'sikkerhetskopi' : 'backup tools'} />}>
+                <SecureSaveManager theme={theme} />
+              </Suspense>
+            )}
+            {checklistSubTab === 'vault' && (
+              <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'dokumentvault' : 'document vault'} />}>
+                <LocalDocumentVault theme={theme} />
+              </Suspense>
+            )}
+            {checklistSubTab === 'ai' && (
+              <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'lokal KI' : 'local AI'} />}>
+                <LocalAiAssistant theme={theme} currentLang={currentLang} searchDocuments={searchDocuments} />
+              </Suspense>
+            )}
           </section>
         )}
 
-        {activeTab === 'glossary' && <GlossaryPage currentLang={currentLang} />}
+        {activeTab === 'glossary' && (
+          <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'begrepsliste' : 'glossary'} />}>
+            <GlossaryPage currentLang={currentLang} />
+          </Suspense>
+        )}
 
         {activeTab === 'shelters' && (
-          <ShelterMap currentLang={currentLang} theme={theme} />
+          <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'tilfluktsromkart' : 'shelter map'} />}>
+            <ShelterMap currentLang={currentLang} theme={theme} />
+          </Suspense>
         )}
 
-        {activeTab === 'recommended-reading' && <RecommendedReadingPage currentLang={currentLang} />}
-
-        {activeTab === 'about' && (
-          <AboutPage
-            currentLang={currentLang}
-            onStartLearning={() => {
-              setActiveTab('manual');
-              setSelectedPillarId(null);
-              setActiveArticleId(null);
-              setSelectedAssetId(null);
-              scrollToTop();
-            }}
-            onBeginTraining={() => {
-              setActiveTab('scenarios');
-              setSelectedAssetId(null);
-              scrollToTop();
-            }}
-          />
+        {activeTab === 'recommended-reading' && (
+          <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'lesetips' : 'reading'} />}>
+            <RecommendedReadingPage currentLang={currentLang} />
+          </Suspense>
         )}
 
-        {activeTab === 'contact' && <ContactPage currentLang={currentLang} />}
-
-        {activeTab === 'privacy' && (
-          <PolicyPage
-            title={currentLang === 'no' ? 'Personvern' : 'Privacy Policy'}
-            body={
-              currentLang === 'no'
-                ? [
-                    'Beredskap101 samler ikke inn personopplysninger for analyse eller annonsering.',
-                    'Sjekklistedata, lokale dokumenter, vedlegg, cookievalg og lokal AI-innstillinger lagres lokalt i nettleseren på denne enheten for funksjonalitet. Ingen automatisk skysynk brukes.',
-                    'Hvis du sletter nettleserdata, bytter profil eller bytter enhet, må du bruke egen eksport for å gjenopprette det som var lagret lokalt.',
-                    'Valgfri lokal AI sender bare teksten du legger inn, oppgaven du velger og korte lokale kontekstutdrag til ditt lokale AI-endepunkt. Data sendes ikke til våre servere, og modellfilene lagres ikke i appen.',
-                    'Ved bruk av kontaktskjema opprettes kun en e-post-handoff til info@holf.services uten serverlagring.',
-                    'Artikkel 17 sletting og Artikkel 20 eksport/import er tilgjengelig i Checklists > Local Document Vault og Backup.'
-                  ]
-                : [
-                    'Beredskap101 does not collect personal data for analytics or advertising.',
-                    'Checklist state, local documents, attachments, cookie choices, and local AI settings are stored locally in the browser on this device for functionality. No automatic cloud sync is used.',
-                    'If you clear browser data, switch profile, or change device, you must use your own export to restore what was stored locally.',
-                    'Optional local AI sends only the text you provide, the task you choose, and short local context excerpts to your local AI endpoint. Data is not sent to our servers, and model files are not stored in the app.',
-                    'The contact form creates only an email handoff to info@holf.services with no server-side message storage.',
-                    'Article 17 local deletion and Article 20 export/import are available in Checklists > Local Document Vault and Backup.'
-                  ]
-            }
-          />
-        )}
-
-        {activeTab === 'legal' && (
-          <PolicyPage
-            title={currentLang === 'no' ? 'Juridisk informasjon' : 'Legal'}
-            body={
-              currentLang === 'no'
-                ? [
-                    'Innholdet er kun veiledende og erstatter ikke nødnummer eller profesjonell medisinsk/juridisk rådgivning.',
-                    'Ved akutt fare skal offentlige nødetater kontaktes umiddelbart på 110, 112 eller 113.',
-                    'Beredskap101 tilbyr kun informasjonsinnhold og lokale verktøy for egenberedskap.'
-                  ]
-                : [
-                    'Content is informational and does not replace emergency response services or professional advice.',
-                    'In urgent danger, immediately contact public emergency services at 110, 112, or 113.',
-                    'Beredskap101 provides information content and local preparedness tools only.'
-                  ]
-            }
-          />
-        )}
-
-        {activeTab === 'terms' && (
-          <PolicyPage
-            title={currentLang === 'no' ? 'Bruksvilkår' : 'Terms of Service'}
-            body={
-              currentLang === 'no'
-                ? [
-                    'Ved bruk av tjenesten godtar du at informasjon brukes på eget ansvar.',
-                    'Du skal ikke bruke innholdet til ulovlige formål eller til å skade andre.',
-                    'Tjenesten kan oppdateres uten varsel for å forbedre kvalitet, sikkerhet og språk.'
-                  ]
-                : [
-                    'By using the service, you accept that preparedness information is used at your own discretion.',
-                    'You must not use this content for unlawful activity or harm.',
-                    'The service may be updated without notice to improve quality, safety, and language.'
-                  ]
-            }
-          />
-        )}
-
-        {activeTab === 'faq' && <FAQPage currentLang={currentLang} />}
-
-        {activeTab === 'cookies' && (
-          <PolicyPage
-            title={currentLang === 'no' ? 'Cookie-innstillinger' : 'Cookie Preferences'}
-            body={
-              currentLang === 'no'
-                ? [
-                    'Beredskap101 bruker ikke analyse- eller markedsføringskapsler.',
-                    cookiePrefs
-                      ? `Nåværende valg: ${cookiePrefs.optionalEnabled ? 'Valgfri funksjonalitet aktivert' : 'Valgfri funksjonalitet deaktivert'}.`
-                      : 'Ingen preferanse lagret ennå.',
-                    'Du kan endre valget med knappene under.'
-                  ]
-                : [
-                    'Beredskap101 does not use analytics or advertising cookies.',
-                    cookiePrefs
-                      ? `Current setting: ${cookiePrefs.optionalEnabled ? 'Optional functionality enabled' : 'Optional functionality disabled'}.`
-                      : 'No preference saved yet.',
-                    'You can change your preference using the controls below.'
-                  ]
-            }
-          />
-        )}
-        {activeTab === 'cookies' && (
-          <section className="section px-4 sm:px-8 max-w-[900px] mx-auto pb-10">
-            <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 flex flex-wrap gap-2">
-              <button
-                onClick={() => {
-                  saveCookiePrefs(false);
-                }}
-                className="px-3 py-2 rounded-lg border border-[var(--border)] text-xs font-bold"
-              >
-                {currentLang === 'no' ? 'Avvis valgfri' : 'Reject optional'}
-              </button>
-              <button
-                onClick={() => {
-                  saveCookiePrefs(true);
-                }}
-                className="px-3 py-2 rounded-lg bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-xs font-bold"
-              >
-                {currentLang === 'no' ? 'Godta valgfri' : 'Accept optional'}
-              </button>
-            </div>
-          </section>
+        {activeTab === 'support' && (
+          <Suspense fallback={<LazySectionFallback currentLang={currentLang} label={currentLang === 'no' ? 'innstillinger' : 'settings'} />}>
+            <SupportHubPage
+              currentLang={currentLang}
+              contactEmail={contactEmail}
+              copiedContactEmail={copiedContactEmail}
+              onCopyContactEmail={handleCopyContactEmail}
+              theme={theme}
+              setTheme={setTheme}
+              subTab={settingsSubTab}
+              setSubTab={setSettingsSubTab}
+              onOpenVault={() => {
+                setActiveTab('checklists');
+                setChecklistSubTab('vault');
+                scrollToTop();
+              }}
+              onOpenBackup={() => {
+                setActiveTab('checklists');
+                setChecklistSubTab('backup');
+                scrollToTop();
+              }}
+              onStartLearning={() => {
+                setActiveTab('manual');
+                setSelectedPillarId(null);
+                setActiveArticleId(null);
+                setSelectedAssetId(null);
+                scrollToTop();
+              }}
+              onBeginTraining={() => {
+                setActiveTab('scenarios');
+                setSelectedAssetId(null);
+                scrollToTop();
+              }}
+            />
+          </Suspense>
         )}
 
       </main>
@@ -2314,111 +2487,27 @@ export default function App() {
       {/* FOOTER */}
       <footer className="footer border-t border-[var(--border)] py-12 px-4 sm:px-8 bg-[var(--bg-alt)] mt-auto select-none">
         <div className="max-w-[1400px] mx-auto space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-4 space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-3">
               <strong className="block text-lg tracking-[0.08em] font-extrabold text-[var(--text)]">BEREDSKAP101</strong>
               <p className="text-sm text-[var(--muted)] leading-relaxed max-w-md">
                 {t('footer_desc')}
               </p>
               <p className="text-xs text-[var(--muted)] leading-relaxed max-w-md">
                 {currentLang === 'no'
-                  ? 'Lokal lagring, tydelige klargjøringssteg, og direkte tilgang til personvern, vilkår, eksport og sletting.'
-                  : 'Local storage, clear preparedness steps, and direct access to privacy, terms, export, and deletion tools.'}
+                  ? 'Lokal lagring, tydelige klargjøringssteg og støtteverktøy er samlet under Support i navigasjonen.'
+                  : 'Local storage, clear preparedness steps, and support tools are gathered under Support in the navigation.'}
               </p>
             </div>
 
-            <div className="lg:col-span-4 space-y-3">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                {currentLang === 'no' ? 'Støtte' : 'Support'}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('about'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Om' : 'About'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('contact'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Kontakt' : 'Contact'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('faq'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>FAQ</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <a
-                  href={`mailto:${contactEmail}`}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span className="truncate">{contactEmail}</span>
-                  <ExternalLink className="w-4 h-4 shrink-0" />
-                </a>
-                <button
-                  type="button"
-                  onClick={handleCopyContactEmail}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{copiedContactEmail ? (currentLang === 'no' ? 'Kopiert' : 'Copied') : (currentLang === 'no' ? 'Kopier e-post' : 'Copy email')}</span>
-                  <Copy className="w-4 h-4 shrink-0" />
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 space-y-3">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                {currentLang === 'no' ? 'Juridisk og data' : 'Legal and data'}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('privacy'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Personvern' : 'Privacy'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('terms'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Vilkår' : 'Terms'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('cookies'); scrollToTop(); }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Cookie-innstillinger' : 'Cookie preferences'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('checklists');
-                    setChecklistSubTab('vault');
-                    scrollToTop();
-                  }}
-                  className="inline-flex min-h-11 items-center justify-between gap-3 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-left text-[var(--text)] hover:bg-[var(--bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/70"
-                >
-                  <span>{currentLang === 'no' ? 'Slett data' : 'Right to be Forgotten'}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-              </div>
-              <div className="rounded-lg border border-dashed border-[var(--border)] px-4 py-3 space-y-1 text-xs text-[var(--muted)] leading-relaxed">
+            <div className="space-y-3">
+              <div className="rounded-lg border border-dashed border-[var(--border)] px-4 py-3 space-y-2 text-xs text-[var(--muted)] leading-relaxed">
                 <p>{currentLang === 'no' ? 'Referansetid' : 'Reference time'}: {referenceTimeLabel}</p>
-                <p>{currentLang === 'no' ? 'Kontakt' : 'Contact'}: {contactEmail}</p>
+                <p>
+                  {currentLang === 'no'
+                    ? 'Juridisk informasjon, personvern, cookievalg, eksport og sletting finner du i Support.'
+                    : 'Legal information, privacy, cookie choices, export, and deletion live under Support.'}
+                </p>
                 <p>{t('footer_all_rights')} &copy; 2026 Beredskap101</p>
               </div>
             </div>
@@ -2475,6 +2564,13 @@ export default function App() {
         >
           <BookmarkCheck className="w-4.5 h-4.5" />
           <span className="text-[9px] font-bold font-mono">{t('nav_profile')}</span>
+        </button>
+        <button
+          onClick={() => { setActiveTab('support'); scrollToTop(); }}
+          className={`flex flex-col items-center gap-1 cursor-pointer transition-all ${activeTab === 'support' ? 'text-[var(--accent)] font-bold scale-105' : 'text-[var(--muted)] opacity-70'}`}
+        >
+          <LifeBuoy className="w-4.5 h-4.5" />
+          <span className="text-[9px] font-bold font-mono">{currentLang === 'no' ? 'Innstillinger' : 'Settings'}</span>
         </button>
       </nav>
 

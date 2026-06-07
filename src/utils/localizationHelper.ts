@@ -10,7 +10,7 @@ export function localizeCategory(category: string, lang: string): string {
   switch (c) {
     case 'F\u00F8rstehjelp & Akuttmedisin':
     case 'First Aid & Trauma':
-      return 'First Aid & Trauma';
+      return 'First Aid & Traume';
     case 'Egenberedskap & Kriseh\u00E5ndtering i Hjemmet':
     case 'Household Preparedness':
       return 'Household Preparedness';

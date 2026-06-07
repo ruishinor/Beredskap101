@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartPulse, CloudLightning, ShieldAlert, CheckCircle, RotateCcw, Award, ShieldQuestion, HelpCircle } from 'lucide-react';
+import type { ThemeType } from '../types';
 
 interface FlowNode {
   text: string;
@@ -181,7 +182,7 @@ const FLOWCHARTS_NO: Record<string, Flowchart> = {
         ]
       },
       conscious: {
-        text: 'Puster pasienten normalt eller strever de med pusten/viser tegn på heteslag/trauma?',
+        text: 'Puster pasienten normalt eller strever de med pusten/viser tegn på heteslag/traume?',
         options: [
           { text: 'Normal pust, men svimmel/overopphetet', nextId: 'heat_exhaustion', isCorrect: true },
           { text: 'Kvelningssymptomer (slår på halsen)', nextId: 'choking' }
@@ -276,7 +277,7 @@ const FLOWCHARTS_NO: Record<string, Flowchart> = {
         ]
       },
       emotional_pressure: {
-        text: 'Insisterer de på at det må kjøpes i ?n bestemt butikk rett ved siden av?',
+        text: 'Insisterer de på at det må kjøpes i én bestemt butikk rett ved siden av?',
         options: [
           { text: 'Ja, de vil bare ha kjøp i den butikken', nextId: 'scam_confirmed', isCorrect: true },
           { text: 'Nei, de tar gjerne imot annen hjelp', nextId: 'needs_vetting' }
@@ -304,7 +305,7 @@ const FLOWCHARTS_NO: Record<string, Flowchart> = {
   }
 };
 
-export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'light' }) {
+export default function InteractiveFlowcharts({ theme }: { theme: ThemeType }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || 'en';
   const FLOWCHARTS = currentLang === 'no' ? FLOWCHARTS_NO : FLOWCHARTS_EN;
@@ -336,12 +337,12 @@ export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'ligh
 
   /** Theme custom styles */
   const styles = {
-    cardBg: theme === 'dark' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200',
-    titleText: theme === 'dark' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
-    bodyText: theme === 'dark' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
-    btnActive: theme === 'dark' ? 'bg-[var(--accent-solid)]/15 text-[var(--accent)] border-[var(--accent)]' : 'bg-teal-50 text-teal-900 border-teal-600',
-    btnInactive: theme === 'dark' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
-    optionBtn: theme === 'dark' ? 'bg-neutral-950 hover:bg-neutral-800 text-neutral-200 border-neutral-800 hover:border-[var(--accent)]/50' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 hover:border-teal-500'
+    cardBg: theme !== 'light' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200',
+    titleText: theme !== 'light' ? 'text-[var(--accent)] font-mono' : 'text-slate-900 font-display',
+    bodyText: theme !== 'light' ? 'text-neutral-300 font-mono' : 'text-slate-600 font-sans',
+    btnActive: theme !== 'light' ? 'bg-[var(--accent-solid)]/15 text-[var(--accent)] border-[var(--accent)]' : 'bg-teal-50 text-teal-900 border-teal-600',
+    btnInactive: theme !== 'light' ? 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100',
+    optionBtn: theme !== 'light' ? 'bg-neutral-950 hover:bg-neutral-800 text-neutral-200 border-neutral-800 hover:border-[var(--accent)]/50' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 hover:border-teal-500'
   };
 
   const FlowIcon = flowchart.icon;
@@ -380,7 +381,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'ligh
       <div className={`p-6 rounded-xl border-2 shadow-sm ${styles.cardBg} transition-colors duration-200`}>
         <div className="flex items-center justify-between mb-4 pb-4 border-b border-dashed border-neutral-700/30">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-[var(--accent-solid)]/10 text-[var(--accent)]' : 'bg-teal-100 text-teal-800'}`}>
+            <div className={`p-2 rounded-lg ${theme !== 'light' ? 'bg-[var(--accent-solid)]/10 text-[var(--accent)]' : 'bg-teal-100 text-teal-800'}`}>
               <FlowIcon className="w-6 h-6 animate-pulse" />
             </div>
             <div>
@@ -411,7 +412,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'ligh
         {/* Question/Instructions */}
         <div className="my-6 min-h-[100px] flex flex-col justify-center">
           <span className="text-xs font-mono uppercase opacity-50 block mb-1">{t('lbl_flowchart_step')}</span>
-          <p className={`text-lg md:text-xl font-medium leading-relaxed ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+          <p className={`text-lg md:text-xl font-medium leading-relaxed ${theme !== 'light' ? 'text-white' : 'text-neutral-900'}`}>
             {currentNode.text}
           </p>
         </div>
@@ -429,7 +430,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'ligh
               >
                 <div className="flex items-start gap-3">
                   <div className={`mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center border text-xs ${
-                    theme === 'dark' ? 'border-neutral-600 bg-neutral-900' : 'border-slate-300 bg-slate-100'
+                    theme !== 'light' ? 'border-neutral-600 bg-neutral-900' : 'border-slate-300 bg-slate-100'
                   }`}>
                     {idx + 1}
                   </div>
@@ -448,11 +449,11 @@ export default function InteractiveFlowcharts({ theme }: { theme: 'dark' | 'ligh
         {/* Actionable Tips bottom block when landing on a leaf node */}
         {currentNode.options.length === 1 && currentNode.options[0].nextId === 'start' && (
           <div className={`mt-6 p-4 rounded-lg border-l-4 flex items-start gap-3 ${
-            theme === 'dark' ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]' : 'bg-teal-50 border-teal-600'
+            theme !== 'light' ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]' : 'bg-teal-50 border-teal-600'
           }`}>
             <Award className="w-6 h-6 text-yellow-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className={`font-semibold text-sm ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+              <p className={`font-semibold text-sm ${theme !== 'light' ? 'text-white' : 'text-neutral-900'}`}>
                 {t('lbl_flowchart_conclusion')}
               </p>
               <p className="text-xs opacity-80 mt-1">

@@ -172,7 +172,7 @@ const no = {
   hero_description:
     'Beredskap101 gjør offisielle beredskapsråd, førstehjelp, prosedyrer, friluftsvurderinger, egenberedskap og reisesikkerhet om til praktisk kunnskap og konkrete handlinger du kan bruke før, under og etter en krise.',
   hero_btn_flowcharts: 'Åpne nødflytskjema',
-  hero_btn_checklists: 'Bygg ?n-ukes lager',
+  hero_btn_checklists: 'Bygg én-ukes lager',
   search_placeholder: 'Søk: vannlagring, tourniquet, nødvarsel, brennertelefon, strømbrudd...',
   btn_close: 'Lukk',
   btn_close_search: 'Lukk søk',
@@ -187,7 +187,7 @@ const no = {
   metric_guides: 'Handlingsguider',
   pillars_title: 'Kjernepillarer for beredskap',
   pillars_desc:
-    'Strukturert, mobiltilpasset veiledning for ?n uke egenberedskap, akutt førstehjelp, praktiske beslutninger ute i virkeligheten, digitalt personvern, egensikkerhet og robust reise.',
+    'Strukturert, mobiltilpasset veiledning for én uke egenberedskap, akutt førstehjelp, praktiske beslutninger ute i virkeligheten, digitalt personvern, egensikkerhet og robust reise.',
   featured_title: 'Utvalgte praktiske veiledninger',
   featured_desc:
     'Korte, praktiske guider for de viktigste søkeintensjonene i 2026: egenberedskap, 20 liter vann per person, Nødvarsel, strømbrudd, førstehjelp og digitalt personvern.',
@@ -215,9 +215,9 @@ const no = {
   flowcharts_title: 'Interaktive nødflytskjema',
   flowcharts_desc:
     'Beslutningstrær for det første minuttet av en krise: førstehjelp, evakuering mot å bli hjemme, og vanlige reisesvindler.',
-  checklists_title: 'Sjekklister for ?n uke egenberedskap',
+  checklists_title: 'Sjekklister for én uke egenberedskap',
   checklists_desc:
-    'DSB anbefaler nå at husholdninger planlegger for ?n uke. Disse lokale sjekklistene hjelper deg med vann, mat, varme, medisiner, kommunikasjon, betaling og personvern.',
+    'DSB anbefaler nå at husholdninger planlegger for én uke. Disse lokale sjekklistene hjelper deg med vann, mat, varme, medisiner, kommunikasjon, betaling og personvern.',
   lbl_scenario_modules: 'Scenario-moduler',
   lbl_resilience_points: 'Resilienspoeng',
   lbl_score_help_text: 'Startverdi er 100. Gode valg gir margin; risikable snarveier fjerner den.',

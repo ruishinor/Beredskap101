@@ -1,6 +1,7 @@
 # Offline Phase 4 PMTiles Notes
 
-Phase 4 adds an optional PMTiles renderer while preserving the shelter-safe fallback renderer.
+Phase 4 adds a bundled PMTiles renderer while preserving the shelter-safe fallback renderer.
+The bundled PMTiles package is treated as an orientation-only fallback, not authoritative routing/cartography.
 
 ## Provider Abstraction
 
@@ -19,11 +20,15 @@ Map package modes:
 - `local-public-file`
 - `cached-download`
 
-## Self-Hosted Local PMTiles Mode
+## Bundled Local PMTiles Mode
 
-1. Add `public/maps/pmtiles-manifest.json`.
-2. Reference a local style JSON via `styleUrl`.
-3. Ensure the style references local or offline-accessible `pmtiles://` sources.
+The app now ships with:
+
+1. `public/maps/pmtiles-manifest.json`
+2. `public/maps/norway-style.json`
+3. `public/maps/norway.pmtiles`
+
+If you regenerate the archive, ensure the style continues to reference a local `pmtiles://` source.
 
 Manifest schema:
 

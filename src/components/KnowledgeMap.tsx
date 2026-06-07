@@ -6,12 +6,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown, ChevronUp } from 'lucide-react';
-import { PillarId } from '../types';
+import { PillarId, type ThemeType } from '../types';
 import KnowledgeMapSection from './knowledge-map/KnowledgeMapSection';
 
 interface KnowledgeMapProps {
   currentLang: string;
-  theme: 'dark' | 'light';
+  theme: ThemeType;
   setActiveTab: (tab: 'manual' | 'scenarios' | 'flowcharts' | 'checklists' | 'library') => void;
   setSelectedPillarId: (id: PillarId | null) => void;
   setActiveArticleId: (id: string | null) => void;
