@@ -20,7 +20,9 @@ import {
   Lock,
 } from 'lucide-react';
 import { glossaryData } from '../data/glossaryData';
-import { saveCookiePrefs, useCookiePrefs } from './CookiePreferences';
+import { saveCookiePrefs } from './CookiePreferences';
+import SecureSaveManager from './SecureSaveManager';
+import LocalDocumentVault from './LocalDocumentVault';
 
 type AboutPageProps = {
   currentLang: string;
@@ -51,8 +53,6 @@ type SupportHubPageProps = {
   setTheme: (theme: ThemeType) => void;
   subTab: 'about' | 'faq' | 'contact' | 'privacy' | 'legal' | 'terms' | 'cookies' | 'data' | 'accessibility' | 'appearance';
   setSubTab: (tab: 'about' | 'faq' | 'contact' | 'privacy' | 'legal' | 'terms' | 'cookies' | 'data' | 'accessibility' | 'appearance') => void;
-  onStartLearning?: () => void;
-  onBeginTraining?: () => void;
 };
 
 type ContactPageProps = {
@@ -383,10 +383,7 @@ export function SupportHubPage({
   setSubTab,
   onOpenVault,
   onOpenBackup,
-  onStartLearning,
-  onBeginTraining,
 }: SupportHubPageProps) {
-  const cookiePrefs = useCookiePrefs();
   const settingsItems = [
     { id: 'about', labelEn: 'About Beredskap101', labelNo: 'Om Beredskap101', icon: <Info className="w-4 h-4 shrink-0" /> },
     { id: 'faq', labelEn: 'FAQ', labelNo: 'Vanlige spørsmål', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
@@ -407,7 +404,7 @@ export function SupportHubPage({
           {currentLang === 'no' ? 'Systeminnstillinger og compliance' : 'System settings and compliance'}
         </span>
         <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)]">
-          {currentLang === 'no' ? 'Support' : 'Support'}
+          {currentLang === 'no' ? 'Innstillinger & Dokumentasjon' : 'Settings & Documentation'}
         </h2>
         <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed max-w-[80ch]">
           {currentLang === 'no'
@@ -416,66 +413,100 @@ export function SupportHubPage({
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 items-start w-full">
-        <div className="w-full lg:w-[320px] flex-shrink-0 space-y-4">
-          <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[var(--border)] select-none whitespace-nowrap scrollbar-none">
-            {settingsItems.map((item) => {
-              const isActive = subTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    setSubTab(item.id as any);
-                    if (typeof window !== 'undefined') {
-                      window.location.hash = `#${item.id}`;
-                    }
-                  }}
-                  className={`flex items-center gap-2.5 px-4 py-3 rounded-lg text-xs font-bold transition-all cursor-pointer text-left shrink-0 ${
-                    isActive
-                      ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)]'
-                      : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--bg-panel-soft)]'
-                  }`}
-                >
-                  {item.icon}
-                  <span>{currentLang === 'no' ? item.labelNo : item.labelEn}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 space-y-3 text-xs">
-            <h4 className="font-bold text-[var(--text)]">{currentLang === 'no' ? 'Kontakt og Rettigheter' : 'Contact & Rights'}</h4>
-            <ContactEmailBar
-              currentLang={currentLang}
-              contactEmail={contactEmail}
-              copiedContactEmail={copiedContactEmail}
-              onCopyContactEmail={onCopyContactEmail}
-            />
-            <div className="text-[var(--muted)] leading-relaxed space-y-1">
-              <p>
-                {currentLang === 'no'
-                  ? 'Sletting (Artikkel 17) og eksport (Artikkel 20) administreres under Databehandling.'
-                  : 'Deletion (Article 17) and export (Article 20) are managed under Data Management.'}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        <nav className="w-full lg:w-[320px] flex-shrink-0 flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[var(--border)] select-none whitespace-nowrap scrollbar-none">
+          {settingsItems.map((item) => {
+            const isActive = subTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setSubTab(item.id as any);
+                  if (typeof window !== 'undefined') {
+                    window.location.hash = `#${item.id}`;
+                  }
+                }}
+                className={`flex items-center gap-2.5 px-4 py-3 rounded-lg text-xs font-bold transition-all cursor-pointer text-left shrink-0 ${
+                  isActive
+                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)]'
+                    : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--bg-panel-soft)]'
+                }`}
+              >
+                {item.icon}
+                <span>{currentLang === 'no' ? item.labelNo : item.labelEn}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         <div className="flex-grow w-full min-w-0 animate-fade-in space-y-6">
           
           {subTab === 'about' && (
             <div className="space-y-4">
-              <AboutPage
-                currentLang={currentLang}
-                onStartLearning={onStartLearning || (() => {})}
-                onBeginTraining={onBeginTraining || (() => {})}
-              />
+              <h3 className="text-xl font-bold text-[var(--text)]">{currentLang === 'no' ? 'Om Beredskap101' : 'About Beredskap101'}</h3>
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-4 leading-relaxed text-sm">
+                {currentLang === 'no' ? (
+                  <>
+                    <p>
+                      <strong>Beredskap101</strong> er en kunnskapsplattform basert på operativ erfaring fra sikkerhet og beredskap, samfunnssikkerhet, førstehjelp og overlevelse.
+                    </p>
+                    <p>
+                      Målet er å gjøre egenberedskap enkelt, saklig og praktisk. Appen fokuserer på de reelle behovene til norske husholdninger i kriser (som strømbrudd eller vannmangel) uten å skape unødvendig frykt eller drama.
+                    </p>
+                    <p>
+                      Siden er bygget som en 100% lokal-først Progressive Web App (PWA). Alt kjerneinnhold, offline-kart, sjekklister og backup fungerer helt uten sky eller sentral sporing.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <strong>Beredskap101</strong> is a knowledge platform grounded in security, societal safety, first aid, and survival experience.
+                    </p>
+                    <p>
+                      Our goal is to keep preparedness simple, sober, and practical. We target the true emergency requirements of households (such as blackouts or water disruptions) without inducing fear or drama.
+                    </p>
+                    <p>
+                      This site operates as a 100% local-first Progressive Web App (PWA). All primary articles, offline maps, checklist trackers, and backups operate completely free from cloud sync or central telemetry.
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           )}
 
           {subTab === 'faq' && (
-            <FAQPage currentLang={currentLang} />
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-[var(--text)]">{currentLang === 'no' ? 'Vanlige spørsmål' : 'FAQ'}</h3>
+              <div className="space-y-3">
+                {(currentLang === 'no'
+                  ? [
+                      ['Lagrer dere persondata?', 'Nei. Sjekklister, preferanser, lokale dokumenter, vedlegg, cookievalg og lokal KI-konfigurasjon lagres lokalt i nettleseren på denne enheten. Det brukes ingen automatisk skysynk eller tredjeparts analyse.'],
+                      ['Hva betyr lokal-first og air-gapped i denne appen?', 'Det betyr at kjerneinnhold, søk, sjekklister, backup, dokumentlager og lokal KI er laget for å fungere uten å sende data til Beredskap101 sine servere. Lokal KI er begrenset til localhost, privat IP eller .local-domene.'],
+                      ['Hvordan fungerer eksport og sletting?', 'Artikkel 20 eksport ligger i Databehandling. Artikkel 17 sletting ligger også i Databehandling under "Slett alle appdata". Du må selv eksportere før sletting hvis du vil beholde en kopi.'],
+                      ['Hvordan tar jeg i bruk lokal KI her?', '1. Installer en lokal kjører som Ollama (ollama.com/download), LM Studio (lmstudio.ai/download), Jan (jan.ai) eller en annen OpenAI-kompatibel lokal server. 2. Last ned en liten modell, for eksempel Qwen 2.5 3B Instruct eller Llama 3.2 3B Instruct. 3. I appen under Checklists > Local AI: aktiver Lokal KI, lim inn lokal URL (ofte http://localhost:11434/v1), og angi modellnavnet. 4. Test tilkoblingen. Ved feil brukes en lokal reserve.'],
+                      ['Hvordan fungerer kartpakken nå?', 'Nettilkoblet gatekart er førstevalg når nett finnes. Den innebygde offline-kartpakken følger med som orienteringsbakgrunn uten nett, ikke som autoritativ ruting eller kartografi. Hvis begge feiler, faller appen tilbake til en enkel reservevisning uten å miste tilfluktsromlisten, romnummer eller søk.'],
+                      ['Er dette en erstatning for nødetater?', 'Nei. Ring alltid 110, 112 eller 113 ved akutte hendelser. Innholdet er veiledende og skal brukes med menneskelig vurdering.'],
+                    ]
+                  : [
+                      ['Do you store personal data?', 'No. Checklists, preferences, local documents, attachments, cookie choices, and local AI configuration stay in the browser on this device. There is no automatic cloud sync or third-party analytics.'],
+                      ['What does local-first and air-gapped mean here?', 'It means core content, search, checklists, backups, the document vault, and local AI are designed to work without sending data to Beredskap101 servers. Local AI is restricted to localhost, private IP ranges, or .local domains.'],
+                      ['How do export and deletion work?', 'Article 20 export lives in Data Management. Article 17 deletion lives in Data Management under "Delete all app data". Export first if you want to keep a copy before deletion.'],
+                      ['How do I start using a local AI model here?', '1. Install a local runner such as Ollama, LM Studio, or Jan. 2. Pull a small model, for example Qwen 2.5 3B Instruct or Llama 3.2 3B Instruct. 3. In the app under Checklists > Local AI: enable Local AI, paste the local URL (often http://localhost:11434/v1), and the model name. 4. Test connection. If it fails, the app uses local fallback.'],
+                      ['How does the map package work now?', 'Online street map is preferred when internet is available. A bundled offline package ships with the app as an orientation backdrop without internet, not as authoritative routing or cartography.'],
+                      ['Is this a replacement for emergency services?', 'No. Always call 110, 112 or 113 in acute emergencies. The content is advisory and should be used with human judgment.'],
+                    ]
+                ).map(([q, a]) => (
+                  <article key={q} className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
+                    <h4 className="font-bold text-sm text-[var(--text)] inline-flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 shrink-0" />
+                      {q}
+                    </h4>
+                    <p className="text-xs md:text-sm text-[var(--muted)] mt-2 leading-relaxed">{a}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
           )}
 
           {subTab === 'appearance' && (
@@ -560,14 +591,14 @@ export function SupportHubPage({
                       'Beredskap101 samler ikke inn personopplysninger for analyse, profilering eller annonsering.',
                       'Sjekklistedata, lokale dokumenter, vedlegg, cookievalg og innstillinger for lokal KI lagres lokalt i nettleseren på din enhet. Ingen automatisk skysynk brukes.',
                       'Hvis du sletter nettleserdata eller bytter enhet, forsvinner dataene med mindre du har brukt eksportfunksjonen.',
-                      'Valgfri lokal KI (Ollama/LM Studio etc.) sender bare forespørsler til ditt eget angitte lokale endepunkt på localhost eller privat IP-område. Data sendes aldri til Beredskap101 sine servere, og modellfilene lagres ikke i appen.',
+                      'Valgfri lokal KI (Ollama/LM Studio etc.) sender bare forespørsler til ditt eget angitte lokale endepunkt på localhost eller privat IP-område. Data sendes aldri til Beredskap101 sine servere.',
                       'Artikkel 17 sletting og Artikkel 20 dataeksport er lett tilgjengelig lokalt under Databehandling.',
                     ]
                   : [
                       'Beredskap101 does not collect personal data for tracking, profiling, or ads.',
                       'Checklist state, local documents, attachments, cookie choices, and local AI configs are stored locally in the browser on your device. No automatic cloud sync is used.',
                       'If you clear browser cookies or switch devices, data is lost unless you have exported it manually.',
-                      'Optional local AI (Ollama/LM Studio) sends requests only to your specified local endpoint on localhost or a private IP. No data is sent to Beredskap101 servers, and model files are not stored in the app.',
+                      'Optional local AI (Ollama/LM Studio) sends requests only to your specified local endpoint on localhost or a private IP. No data is sent to Beredskap101 servers.',
                       'Article 17 deletion and Article 20 data export are easily accessible locally under Data Management.',
                     ]
                 ).map((paragraph, idx) => (
@@ -630,19 +661,6 @@ export function SupportHubPage({
                     ? 'Beredskap101 bruker ikke analyse- eller markedsføringskapsler. Du kan velge om du vil tillate informasjonskapsler som trengs for å huske innstillingene dine.'
                     : 'Beredskap101 does not use analytics or marketing cookies. You can manage whether optional cookies used to store configuration are accepted.'}
                 </p>
-                <div className="text-xs text-[var(--muted)] leading-relaxed">
-                  {cookiePrefs ? (
-                    <p>
-                      {currentLang === 'no'
-                        ? `Nåværende valg: ${cookiePrefs.optionalEnabled ? 'Valgfri funksjonalitet aktivert' : 'Valgfri funksjonalitet deaktivert'}.`
-                        : `Current setting: ${cookiePrefs.optionalEnabled ? 'Optional functionality enabled' : 'Optional functionality disabled'}.`}
-                    </p>
-                  ) : (
-                    <p>
-                      {currentLang === 'no' ? 'Ingen preferanse lagret ennå.' : 'No preference saved yet.'}
-                    </p>
-                  )}
-                </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                   <button
                     onClick={() => {
@@ -666,56 +684,37 @@ export function SupportHubPage({
           )}
 
           {subTab === 'data' && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h3 className="text-xl font-bold text-[var(--text)]">{currentLang === 'no' ? 'Databehandling og brukerrettigheter (GDPR)' : 'Data Management & User Rights (GDPR)'}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-3 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-bold flex items-center gap-2 text-[var(--text)]">
-                      <Database className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                      {currentLang === 'no' ? 'Artikkel 20 Dataportabilitet' : 'Article 20 Data Portability'}
-                    </h4>
-                    <p className="text-xs text-[var(--muted)] leading-relaxed">
-                      {currentLang === 'no'
-                        ? 'Last ned en kopi av alle dine lokale sjekklister, dokumenter, notater og innstillinger kryptert i en JSON-fil som du kan flytte eller ta vare på.'
-                        : 'Export a complete copy of all your local checklists, documents, notes, and settings encrypted into a JSON file for backup or transfer.'}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={onOpenBackup}
-                      className="px-3 py-2 rounded-lg bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-xs font-bold cursor-pointer hover:opacity-95"
-                    >
-                      {currentLang === 'no' ? 'Gå til eksport og backup' : 'Go to Export & Backup'}
-                    </button>
-                  </div>
+              
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+                <h4 className="text-sm font-bold flex items-center gap-2 text-[var(--text)]">
+                  <Database className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                  {currentLang === 'no' ? 'Artikkel 20 Dataportabilitet (Eksport / Import)' : 'Article 20 Data Portability (Export / Import)'}
+                </h4>
+                <p className="text-xs text-[var(--muted)] leading-relaxed">
+                  {currentLang === 'no'
+                    ? 'Eksporter eller gjenopprett dine lokale sjekklister, dokumenter, notater og KI-innstillinger. Dataene krypteres med ditt eget passord før eksport.'
+                    : 'Export or restore your local checklists, documents, notes, and AI settings. The data is encrypted with your own passkey before export.'}
+                </p>
+                <div className="border-t border-[var(--border)] pt-4">
+                  <SecureSaveManager theme={theme} />
                 </div>
+              </div>
 
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-3 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-bold flex items-center gap-2 text-[var(--text)]">
-                      <Trash2 className="w-4 h-4 text-red-500 shrink-0" />
-                      {currentLang === 'no' ? 'Artikkel 17 Retten til å bli glemt' : 'Article 17 Right to be Forgotten'}
-                    </h4>
-                    <p className="text-xs text-[var(--muted)] leading-relaxed">
-                      {currentLang === 'no'
-                        ? 'Slett alle dine lagrede appdata permanent fra denne nettleseren. Dette fjerner notater, vedlegg, sjekklisteframgang, tema og KI-preferanser.'
-                        : 'Permanently erase all your Beredskap101 data from this browser session. This removes all notes, checklists, theme, and AI preferences.'}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={onOpenVault}
-                      className="px-3 py-2 rounded-lg border border-red-500/40 text-red-500 text-xs font-bold cursor-pointer hover:bg-red-500/10"
-                    >
-                      {currentLang === 'no' ? 'Gå til sletting og vault' : 'Go to Deletion & Vault'}
-                    </button>
-                  </div>
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+                <h4 className="text-sm font-bold flex items-center gap-2 text-[var(--text)]">
+                  <Trash2 className="w-4 h-4 text-red-500 shrink-0" />
+                  {currentLang === 'no' ? 'Artikkel 17 Retten til å bli glemt (Lokalt dokumentlager / Sletting)' : 'Article 17 Right to be Forgotten (Local Document Vault / Erasure)'}
+                </h4>
+                <p className="text-xs text-[var(--muted)] leading-relaxed">
+                  {currentLang === 'no'
+                    ? 'Administrer dine lagrede dokumenter eller slett alle lokale appdata og innstillinger permanent fra denne enheten.'
+                    : 'Manage your stored documents or permanently erase all local application data and settings from this device.'}
+                </p>
+                <div className="border-t border-[var(--border)] pt-4">
+                  <LocalDocumentVault theme={theme} />
                 </div>
-
               </div>
             </div>
           )}

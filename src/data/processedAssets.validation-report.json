@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-06-06T20:42:53.552Z",
+  "generatedAt": "2026-06-07T19:14:03.971Z",
   "summary": {
-    "acceptedAssets": 20,
+    "acceptedAssets": 18,
     "duplicateChecklistGroups": 1,
     "duplicateCourseModuleGroups": 1,
     "duplicateStatsGroups": 1,
-    "duplicateProtocolGroups": 1,
-    "missingEvidenceFields": 20
+    "duplicateProtocolGroups": 0,
+    "missingEvidenceFields": 18
   },
   "adversarialReview": {
     "checklistGroups": [
       {
         "signature": "[\"primary and backup roles are confirmed.\",\"communication channels are operational and tested.\",\"critical resources are available within required response time.\",\"escalation thresholds are understood by all stakeholders.\",\"after-action findings are documented and assigned.\"]",
-        "count": 20,
+        "count": 18,
         "sampleTitles": [
           "Særlige kategorier av personopplysninger; GDPR og Personvern",
           "Business Disaster Recovery Preparing to Get Back to Business",
@@ -26,7 +26,7 @@
     "courseModuleGroups": [
       {
         "signature": "{\"learninggoals\":[\"connect situational awareness to rapid, prioritized action.\",\"use structured communication under time pressure.\",\"run continuous improvement cycles after drills and incidents.\"],\"theory\":\"this module explains how universal preparedness principles transfer across countries, sectors, and organizational levels. the goal is not to mirror source wording, but to use it as input for decision quality, role clarity, and repeatable execution under uncertainty.\",\"reflectionquestions\":[\"which controls can be implemented immediately without new budget or tooling?\",\"where do delays or ambiguity appear in our current workflow?\",\"how can we test improvements in a simple but realistic drill?\"]}",
-        "count": 20,
+        "count": 18,
         "sampleTitles": [
           "Særlige kategorier av personopplysninger; GDPR og Personvern",
           "Business Disaster Recovery Preparing to Get Back to Business",
@@ -39,7 +39,7 @@
     "statsGroups": [
       {
         "signature": "{\"datacomplexity\":\"medium\",\"readinessfactor\":\"8/10\",\"distribution\":[\"theoretical understanding: 40%\",\"practical measures: 40%\",\"evaluation and learning: 20%\"]}",
-        "count": 20,
+        "count": 18,
         "sampleTitles": [
           "Særlige kategorier av personopplysninger; GDPR og Personvern",
           "Business Disaster Recovery Preparing to Get Back to Business",
@@ -49,18 +49,8 @@
         ]
       }
     ],
-    "protocolGroups": [
-      {
-        "signature": "{\"purpose\":\"verify that controls for household preparedness: core readiness actions remain robust across different contexts and skill levels.\",\"procedures\":[\"run a time-boxed scenario drill with explicit start conditions and outcome metrics.\",\"log decisions, deviations, and information flow throughout execution.\",\"repeat with altered assumptions to measure robustness.\"],\"requirements\":[\"responsibilities, thresholds, and controls are documented without ambiguity.\",\"controls remain executable with realistic resource constraints.\",\"improvement actions have owners, deadlines, and verification criteria.\"]}",
-        "count": 3,
-        "sampleTitles": [
-          "Household Preparedness: Core Readiness Actions",
-          "Household Preparedness: Core Readiness Actions (Duplicate? 2)",
-          "Household Preparedness: Core Readiness Actions (Duplicate? 3)"
-        ]
-      }
-    ],
-    "missingEvidenceFields": 20,
+    "protocolGroups": [],
+    "missingEvidenceFields": 18,
     "retrospective": [
       "The current accepted corpus still repeats checklist, module, and stats structures across many assets.",
       "The validator now records those patterns as report output instead of hiding them behind a pass-only check.",

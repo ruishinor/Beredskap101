@@ -44,6 +44,7 @@ import { sourceRegistry } from './data/sourceRegistry';
 import { buildOfflineKnowledgeArtifacts } from './utils/offlineKnowledge';
 import { formatOsloDateTime } from './utils/dateTime';
 import type { ContentPack, SearchDocument } from './types/offline';
+// import processedAssetsData from './data/processedAssets.json';
 
 type AppTab =
   'manual' | 'library' | 'reference-library' | 'glossary' | 'recommended-reading' | 'support' | 'scenarios' | 'flowcharts' | 'checklists' | 'about' | 'contact' | 'privacy' | 'legal' | 'terms' | 'faq' | 'cookies' | 'shelters' | 'appearance' | 'data' | 'accessibility';
@@ -1011,7 +1012,7 @@ export default function App() {
     <div className={`app min-h-screen font-sans flex flex-col justify-between text-[var(--text)] bg-[var(--bg)] transition-colors duration-300 ${themeClass}`}>
       
       {/* GLOBAL SYSTEM STATUS BANNER */}
-      <div className="preparedness-banner w-full text-[10px] md:text-xs font-mono font-bold tracking-wider py-1.5 px-4 flex items-center justify-center gap-2 border-b border-[var(--border)] overflow-hidden">
+      <div className="preparedness-banner w-full bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-[10px] md:text-xs font-mono font-bold tracking-wider py-1.5 px-4 flex items-center justify-center gap-2 border-b border-[var(--border)] overflow-hidden">
         <AlertTriangle className="w-3 md:w-3.5 h-3 md:h-3.5 flex-shrink-0 animate-pulse" />
         <span className="truncate">{t('offline_banner_desc')}</span>
         <span className="hidden md:inline opacity-70">|</span>
@@ -1046,7 +1047,7 @@ export default function App() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             {/* Connectivity Telemetry Badge */}
-            <div className={`connectivity-status-badge flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-mono font-bold uppercase ${
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-mono font-bold uppercase ${
               connState === 'ONLINE' 
                 ? 'bg-[var(--status-success-bg)] border-[var(--status-success-border)] text-[var(--status-success-text)]' 
                 : connState === 'DEGRADED'
@@ -1065,9 +1066,9 @@ export default function App() {
                 id="btn-lang-en"
                 onClick={() => i18n.changeLanguage('en')}
                 aria-pressed={currentLang === 'en'}
-                className={`rounded-full px-2.5 py-1 transition-all cursor-pointer ${
+                className={`lang-item rounded-full px-2.5 py-1 transition-all cursor-pointer ${
                   currentLang === 'en'
-                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-sm'
+                    ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-sm'
                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                 }`}
               >
@@ -1077,9 +1078,9 @@ export default function App() {
                 id="btn-lang-no"
                 onClick={() => i18n.changeLanguage('no')}
                 aria-pressed={currentLang === 'no'}
-                className={`rounded-full px-2.5 py-1 transition-all cursor-pointer ${
+                className={`lang-item rounded-full px-2.5 py-1 transition-all cursor-pointer ${
                   currentLang === 'no'
-                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-sm'
+                    ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-sm'
                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                 }`}
               >
@@ -1096,7 +1097,7 @@ export default function App() {
                 aria-pressed={theme === 'dark'}
                 className={`theme-btn inline-flex items-center gap-1.5 text-[10px] md:text-xs font-semibold rounded-full px-3 py-1.5 transition-all cursor-pointer ${
                   theme === 'dark' 
-                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md' 
+                    ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md' 
                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                 }`}
               >
@@ -1110,7 +1111,7 @@ export default function App() {
                 aria-pressed={theme === 'light'}
                 className={`theme-btn inline-flex items-center gap-1.5 text-[10px] md:text-xs font-semibold rounded-full px-3 py-1.5 transition-all cursor-pointer ${
                   theme === 'light' 
-                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md' 
+                    ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md' 
                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                 }`}
               >
@@ -1124,7 +1125,7 @@ export default function App() {
                 aria-pressed={theme === 'signal'}
                 className={`theme-btn inline-flex items-center gap-1.5 text-[10px] md:text-xs font-semibold rounded-full px-3 py-1.5 transition-all cursor-pointer ${
                   theme === 'signal'
-                    ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md'
+                    ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] font-extrabold shadow-md'
                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                 }`}
               >
@@ -1143,7 +1144,7 @@ export default function App() {
               onClick={() => { setActiveTab('manual'); setSelectedPillarId(null); setActiveArticleId(null); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'manual' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1154,7 +1155,7 @@ export default function App() {
               onClick={() => { setActiveTab('library'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'library' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1165,7 +1166,7 @@ export default function App() {
               onClick={() => { setActiveTab('scenarios'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'scenarios' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1176,7 +1177,7 @@ export default function App() {
               onClick={() => { setActiveTab('flowcharts'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'flowcharts' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1187,7 +1188,7 @@ export default function App() {
               onClick={() => { setActiveTab('checklists'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'checklists' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1198,7 +1199,7 @@ export default function App() {
               onClick={() => { setActiveTab('glossary'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'glossary'
-                  ? 'active border-transparent font-bold'
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1209,7 +1210,7 @@ export default function App() {
               onClick={() => { setActiveTab('shelters'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'shelters'
-                  ? 'active border-transparent font-bold'
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1220,7 +1221,7 @@ export default function App() {
               onClick={() => { setActiveTab('recommended-reading'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'recommended-reading'
-                  ? 'active border-transparent font-bold'
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold'
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1231,7 +1232,7 @@ export default function App() {
               onClick={() => { setActiveTab('support'); setSelectedAssetId(null); scrollToTop(); }}
               className={`nav-item px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'support' 
-                  ? 'active border-transparent font-bold' 
+                  ? 'active bg-[var(--accent-solid)] border-transparent text-[var(--accent-on-solid)] font-bold' 
                   : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
@@ -1833,7 +1834,7 @@ export default function App() {
                             }`}>{t('high_priority_tag')}</span>
                           </div>
                           
-                          <h3 className="text-xl md:text-2xl font-bold leading-tight font-display">{currentLang === 'no' ? 'Improvisert førstehjelpskit for bymiljøer' : 'Improvised Urban Trauma Kit'}</h3>
+                          <h3 className="text-xl md:text-2xl font-bold leading-tight font-display">{currentLang === 'no' ? 'Improvisert urban traumesett' : 'Improvised Urban Trauma Kit'}</h3>
                           
                           <p className="text-[var(--muted)] text-xs md:text-sm leading-relaxed">
                             {currentLang === 'no' 
@@ -2464,18 +2465,6 @@ export default function App() {
               onOpenBackup={() => {
                 setActiveTab('checklists');
                 setChecklistSubTab('backup');
-                scrollToTop();
-              }}
-              onStartLearning={() => {
-                setActiveTab('manual');
-                setSelectedPillarId(null);
-                setActiveArticleId(null);
-                setSelectedAssetId(null);
-                scrollToTop();
-              }}
-              onBeginTraining={() => {
-                setActiveTab('scenarios');
-                setSelectedAssetId(null);
                 scrollToTop();
               }}
             />

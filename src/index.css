@@ -62,14 +62,20 @@
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --hero-gradient:
-    radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
-    linear-gradient(180deg, #101614 0%, #17201e 100%);
-
   --preparedness-banner-bg: #8fd3c7;
   --preparedness-banner-fg: #06201c;
   --nav-active-bg: #8fd3c7;
   --nav-active-fg: #06201c;
+  --lang-active-bg: #8fd3c7;
+  --lang-active-fg: #06201c;
+  --theme-active-bg: #8fd3c7;
+  --theme-active-fg: #06201c;
+  --status-accent-bg: #8fd3c7;
+  --status-accent-fg: #06201c;
+
+  --hero-gradient:
+    radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
+    linear-gradient(180deg, #101614 0%, #17201e 100%);
 }
 
 /* THEMES AS UTILITY BOUNDARIES */
@@ -107,14 +113,20 @@
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --hero-gradient:
-    radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
-    linear-gradient(180deg, #101614 0%, #17201e 100%);
-
   --preparedness-banner-bg: #8fd3c7;
   --preparedness-banner-fg: #06201c;
   --nav-active-bg: #8fd3c7;
   --nav-active-fg: #06201c;
+  --lang-active-bg: #8fd3c7;
+  --lang-active-fg: #06201c;
+  --theme-active-bg: #8fd3c7;
+  --theme-active-fg: #06201c;
+  --status-accent-bg: #8fd3c7;
+  --status-accent-fg: #06201c;
+
+  --hero-gradient:
+    radial-gradient(circle at top right, rgba(143, 211, 199, .16), transparent 34%),
+    linear-gradient(180deg, #101614 0%, #17201e 100%);
 }
 
 .theme-light {
@@ -162,14 +174,20 @@
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --hero-gradient:
-    radial-gradient(circle at top right, rgba(34, 92, 82, 0.06), transparent 40%),
-    linear-gradient(180deg, #f7faf8 0%, #eef3f1 100%);
-
   --preparedness-banner-bg: #164a41;
   --preparedness-banner-fg: #ffffff;
   --nav-active-bg: #164a41;
   --nav-active-fg: #ffffff;
+  --lang-active-bg: #164a41;
+  --lang-active-fg: #ffffff;
+  --theme-active-bg: #164a41;
+  --theme-active-fg: #ffffff;
+  --status-accent-bg: #164a41;
+  --status-accent-fg: #ffffff;
+
+  --hero-gradient:
+    radial-gradient(circle at top right, rgba(34, 92, 82, 0.06), transparent 40%),
+    linear-gradient(180deg, #f7faf8 0%, #eef3f1 100%);
 }
 
 .theme-signal {
@@ -205,14 +223,20 @@
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --hero-gradient:
-    radial-gradient(circle at top right, rgba(239, 142, 33, 0.18), transparent 35%),
-    linear-gradient(180deg, #16120d 0%, #1f1710 100%);
-
   --preparedness-banner-bg: #ef8e21;
   --preparedness-banner-fg: #1f1205;
   --nav-active-bg: #ef8e21;
   --nav-active-fg: #1f1205;
+  --lang-active-bg: #ef8e21;
+  --lang-active-fg: #1f1205;
+  --theme-active-bg: #ef8e21;
+  --theme-active-fg: #1f1205;
+  --status-accent-bg: #ef8e21;
+  --status-accent-fg: #1f1205;
+
+  --hero-gradient:
+    radial-gradient(circle at top right, rgba(239, 142, 33, 0.18), transparent 35%),
+    linear-gradient(180deg, #16120d 0%, #1f1710 100%);
 }
 
 /* Custom scrollbar */
@@ -516,54 +540,55 @@
   color: var(--text-main) !important;
 }
 
-/* ==========================================================================
-   COMPONENT-SCOPED ACCENT CONTRAST FIX
-   Applies only to selected/accent UI surfaces.
-   Do not change global white text.
-   ========================================================================== */
-
-.preparedness-banner,
-.nav-item.active,
-.nav-item[aria-current="page"],
-.status-accent,
-.status-box-accent,
-.system-status-accent,
-.language-switcher .active,
-.language-switcher [aria-pressed="true"],
-.language-switcher [data-active="true"],
-.theme-switcher .active,
-.theme-switcher [aria-pressed="true"],
-.theme-switcher [data-active="true"],
-.signal-switcher .active,
-.signal-switcher [aria-pressed="true"],
-.signal-switcher [data-active="true"],
-.mode-switcher .active,
-.mode-switcher [aria-pressed="true"],
-.mode-switcher [data-active="true"] {
-  background-color: var(--accent-solid) !important;
-  color: var(--accent-on-solid) !important;
-  border-color: color-mix(in srgb, var(--accent-solid) 75%, var(--accent-on-solid) 25%) !important;
+/* Scoped Contrast Corrections for Accent-State Controls */
+.preparedness-banner {
+  background: var(--preparedness-banner-bg) !important;
+  color: var(--preparedness-banner-fg) !important;
 }
-
-.preparedness-banner *,
-.nav-item.active *,
-.nav-item[aria-current="page"] *,
-.status-accent *,
-.status-box-accent *,
-.system-status-accent *,
-.language-switcher .active *,
-.language-switcher [aria-pressed="true"] *,
-.language-switcher [data-active="true"] *,
-.theme-switcher .active *,
-.theme-switcher [aria-pressed="true"] *,
-.theme-switcher [data-active="true"] *,
-.signal-switcher .active *,
-.signal-switcher [aria-pressed="true"] *,
-.signal-switcher [data-active="true"] *,
-.mode-switcher .active *,
-.mode-switcher [aria-pressed="true"] *,
-.mode-switcher [data-active="true"] * {
+.preparedness-banner * {
   color: inherit !important;
-  fill: currentColor;
-  stroke: currentColor;
+  stroke: currentColor !important;
 }
+
+.nav-item.active {
+  background: var(--nav-active-bg) !important;
+  color: var(--nav-active-fg) !important;
+}
+.nav-item.active * {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+.lang-item.active {
+  background: var(--lang-active-bg) !important;
+  color: var(--lang-active-fg) !important;
+}
+.lang-item.active * {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+.theme-btn.active {
+  background: var(--theme-active-bg) !important;
+  color: var(--theme-active-fg) !important;
+}
+.theme-btn.active * {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+.status-accent.active,
+.norway-size-button.active,
+.map-layer-btn.active,
+.gear-need-btn.active {
+  background: var(--status-accent-bg) !important;
+  color: var(--status-accent-fg) !important;
+}
+.status-accent.active *,
+.norway-size-button.active *,
+.map-layer-btn.active *,
+.gear-need-btn.active * {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+

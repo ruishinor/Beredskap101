@@ -1,4 +1,5 @@
-﻿import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+// Verification requirement: The offline package is not installed in this copy
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import maplibregl from 'maplibre-gl';
@@ -909,9 +910,9 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
                     key={mode}
                     type="button"
                     onClick={() => handleMapLayerSelection(mode)}
-                    className={`px-3 py-1.5 rounded-full border text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                    className={`map-layer-btn px-3 py-1.5 rounded-full border text-[11px] font-mono font-bold transition-all cursor-pointer ${
                       active
-                        ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-transparent'
+                        ? 'active bg-[var(--accent-solid)] text-[var(--accent-on-solid)] border-transparent'
                         : mode === 'offline-package' && !isPmtilesAvailable
                           ? 'bg-[var(--bg-panel)] text-[var(--text-dim)] border-[var(--border-muted)] hover:border-yellow-500/40 hover:text-yellow-200'
                           : 'bg-[var(--bg-panel)] text-[var(--text-dim)] border-[var(--border-muted)] hover:border-[var(--accent)]/40 hover:text-[var(--text-main)]'

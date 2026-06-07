@@ -5,6 +5,15 @@ import AppErrorBoundary from './components/AppErrorBoundary.jsx';
 import './index.css';
 import './i18n';
 
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+  });
+  window.addEventListener('error', (event) => {
+    console.error('Unhandled global error:', event.error || event.message);
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppErrorBoundary>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { generateCustomChecklist, GeneratedChecklist, GeneratedChecklistItem } from '../utils/checklistGenerator';
 import { saveProgressState, loadProgressState } from '../utils/saveSystem';
@@ -177,9 +177,9 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
                       type="button"
                       key={need}
                       onClick={() => toggleSpecialNeed(need)}
-                      className={`p-2.5 text-xs font-bold rounded-lg border cursor-pointer select-none text-center transition-all ${
+                      className={`gear-need-btn p-2.5 text-xs font-bold rounded-lg border cursor-pointer select-none text-center transition-all ${
                         active 
-                          ? styles.btnActive 
+                          ? 'active ' + styles.btnActive 
                           : styles.btnSecondary
                       }`}
                     >

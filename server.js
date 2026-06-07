@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import contactHandler from './api/contact.ts';
@@ -61,6 +61,65 @@ function isAllowedLocalOrigin(origin) {
   }
 }
 
+
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:* http://*.local:* https://*.local:*; font-src 'self' data:; worker-src 'self' blob:; manifest-src 'self'; media-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none';"
+  );
+  next();
+});
+
+const rateLimitStore = new Map();
+
+// Periodic cleanup of rate limit store (every 5 minutes)
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, timestamps] of rateLimitStore.entries()) {
+    const active = timestamps.filter((time) => now - time < 60000 * 15);
+    if (active.length === 0) {
+      rateLimitStore.delete(ip);
+    } else {
+      rateLimitStore.set(ip, active);
+    }
+  }
+}, 300000);
+
+function rateLimit({ windowMs, max, message }) {
+  return (req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    if (!rateLimitStore.has(ip)) {
+      rateLimitStore.set(ip, []);
+    }
+    const timestamps = rateLimitStore.get(ip);
+    const active = timestamps.filter((time) => now - time < windowMs);
+    if (active.length >= max) {
+      return res.status(429).json({ error: message || 'Too many requests, please try again later.' });
+    }
+    active.push(now);
+    rateLimitStore.set(ip, active);
+    next();
+  };
+}
+
+const contactRateLimiter = rateLimit({
+  windowMs: 900000, // 15 mins
+  max: 5,
+  message: 'Too many contact messages sent from this IP. Please try again in 15 minutes.'
+});
+
+const copilotRateLimiter = rateLimit({
+  windowMs: 60000, // 1 min
+  max: 15,
+  message: 'Too many copilot requests from this IP. Please wait a minute before trying again.'
+});
+
 app.use(
   cors({
     origin(origin, callback) {
@@ -98,7 +157,7 @@ async function delegateApiHandler(handler, req, res) {
 }
 
 // Keep local dev API behavior aligned with deployed serverless handlers.
-app.all('/api/contact', (req, res) => delegateApiHandler(contactHandler, req, res));
+app.all('/api/contact', contactRateLimiter, (req, res) => delegateApiHandler(contactHandler, req, res));
 app.all('/api/source-feeds', (req, res) => delegateApiHandler(sourceFeedsHandler, req, res));
 app.all('/api/norway-news', (req, res) => delegateApiHandler(norwayNewsHandler, req, res));
 
@@ -297,7 +356,7 @@ async function tryLocalAiAnalysis({ history, context }) {
 }
 
 // Local-only crisis analysis endpoint. Cloud AI is intentionally not used.
-app.post('/api/copilot/analyze', async (req, res) => {
+app.post('/api/copilot/analyze', copilotRateLimiter, async (req, res) => {
   try {
     const { history, context } = req.body;
     if (!history || !Array.isArray(history)) {
