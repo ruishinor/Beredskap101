@@ -234,14 +234,40 @@ function verifyPhase5To7Compatibility() {
   assert(!localAiAssistant.includes('openai.com'), 'Local AI assistant does not call cloud OpenAI endpoints');
   assert(!localAiAssistant.includes('gemini'), 'Local AI assistant does not reference Gemini');
   assert(localAiAssistant.includes('RAG-lite local context'), 'Local AI assistant exposes RAG-lite context messaging');
+  const vercelConfig = fs.readFileSync(path.join(CWD, 'vercel.json'), 'utf8');
+
+  function extractCspDirective(configText, directiveName) {
+    const match = configText.match(new RegExp(`${directiveName}\\s+([^;]+);?`));
+    return match ? match[1].trim().split(/\s+/) : [];
+  }
+
+  const imgSrcTokens = extractCspDirective(vercelConfig, 'img-src');
+
+  assert(
+    imgSrcTokens.includes("'self'") &&
+      imgSrcTokens.includes('data:') &&
+      imgSrcTokens.includes('blob:') &&
+      imgSrcTokens.includes('https://tile.openstreetmap.org'),
+    'CSP image policy allows self/data/blob images plus the explicit OSM tile host'
+  );
+
+  assert(!imgSrcTokens.includes('*'), 'CSP does not allow wildcard image sources');
+  assert(!imgSrcTokens.includes('https:'), 'CSP does not allow broad remote HTTPS image hosts');
+  assert(!imgSrcTokens.includes('http:'), 'CSP does not allow broad remote HTTP image hosts');
 
   const staticPages = fs.readFileSync(path.join(CWD, 'src/components/StaticPages.tsx'), 'utf8');
   assert(!staticPages.includes('covers.openlibrary.org'), 'Recommended reading does not pull external cover image runtime dependencies');
 
-  const vercelConfig = fs.readFileSync(path.join(CWD, 'vercel.json'), 'utf8');
-  assert(vercelConfig.includes("img-src 'self' data:"), 'CSP image policy is tightened to self/data sources');
-  assert(vercelConfig.includes("http://localhost:*"), 'CSP connect-src allows localhost local AI endpoints');
-  assert(!vercelConfig.includes('img-src \'self\' data: https:'), 'CSP no longer allows broad remote image hosts');
+  const connectSrcTokens = extractCspDirective(vercelConfig, 'connect-src');
+
+  assert(
+    connectSrcTokens.includes("http://localhost:*"),
+    'CSP connect-src allows localhost local AI endpoints'
+  );
+
+  assert(!connectSrcTokens.includes('*'), 'CSP connect-src does not allow wildcard connect sources');
+  assert(!connectSrcTokens.includes('https:'), 'CSP connect-src does not allow broad HTTPS connect sources');
+  assert(!connectSrcTokens.includes('http:'), 'CSP connect-src does not allow broad HTTP connect sources');
 }
 
 async function runVerificationCycle(cycleNum) {

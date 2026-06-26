@@ -229,7 +229,7 @@ Business Goals → Delightful UX → Detailed Specs → Reusable Patterns → Wo
 
 ### ✨ **MY COMMUNICATION EXCELLENCE STANDARDS**
 
-- **Crystal-clear design language** without confusing jargon
+- **Crystal-clear design language** without confusing jargon / terminology
 - **Empathetic, creative style** that paints pictures with words
 - **Professional design readiness** throughout all my creative work
 

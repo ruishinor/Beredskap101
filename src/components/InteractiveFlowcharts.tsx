@@ -127,7 +127,7 @@ const FLOWCHARTS_EN: Record<string, Flowchart> = {
     id: 'scam_trust',
     title: 'Is it a Scam?',
     icon: ShieldAlert,
-    description: 'Check common street-scam patterns in plain language.',
+    description: 'Check common street-scam patterns.',
     initialNodeId: 'start',
     nodes: {
       start: {
@@ -266,7 +266,7 @@ const FLOWCHARTS_NO: Record<string, Flowchart> = {
     id: 'scam_trust',
     title: 'Er dette svindel?',
     icon: ShieldAlert,
-    description: 'Sjekk vanlige svindelmønstre på gaten uten fagjargon.',
+    description: 'Eksempler på vanlige svindelmetoder på gaten.',
     initialNodeId: 'start',
     nodes: {
       start: {
@@ -356,7 +356,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: ThemeType }) {
           const isActive = flow.id === activeId;
           return (
             <button
-              id={`btn-flow-${flow.id}`}
+              type="button"
               key={flow.id}
               onClick={() => {
                 setActiveId(flow.id);
@@ -392,6 +392,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: ThemeType }) {
           {history.length > 0 && (
             <div className="flex gap-2">
               <button
+                type="button"
                 id="btn-flow-back"
                 onClick={handleBack}
                 className={`p-1.5 rounded border flex items-center gap-1 text-xs transition-colors cursor-pointer ${styles.btnInactive}`}
@@ -399,6 +400,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: ThemeType }) {
                 {t('btn_back')}
               </button>
               <button
+                type="button"
                 id="btn-flow-reset"
                 onClick={handleReset}
                 className={`p-1.5 rounded border flex items-center gap-1 text-xs transition-colors cursor-pointer ${styles.btnInactive}`}
@@ -423,7 +425,7 @@ export default function InteractiveFlowcharts({ theme }: { theme: ThemeType }) {
             const isFinishedNode = currentNode.options.length === 1 && opt.nextId === 'start';
             return (
               <button
-                id={`btn-flow-opt-${idx}`}
+              type="button"
                 key={idx}
                 onClick={() => handleOptionSelect(opt.nextId)}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all flex items-start justify-between gap-4 cursor-pointer hover:translate-x-1 duration-150 ${styles.optionBtn}`}

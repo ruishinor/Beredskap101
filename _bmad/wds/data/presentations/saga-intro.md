@@ -227,7 +227,7 @@ Vision Clarity → Market Understanding → Clear Strategy → User Intelligence
 
 ### ✨ **MY COMMUNICATION EXCELLENCE STANDARDS**
 
-- **Crystal-clear strategic language** without confusing technical jargon
+- **Crystal-clear strategic language** without confusing technical jargon / terminology 
 - **Professional analysis style** using "including", "designed for", "meaning" conventions
 - **Collaborative approach** - one question at a time, deep listening
 - **Reflective practice** - I reflect back what I hear to ensure understanding

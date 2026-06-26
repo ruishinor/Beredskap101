@@ -62,18 +62,39 @@ function runCspChecks() {
   assert(csp.includes("default-src 'self'"), 'CSP keeps default-src restricted to self.');
   assert(csp.includes("script-src 'self'"), 'CSP keeps script-src restricted to self.');
   assert(csp.includes("style-src 'self' 'unsafe-inline'"), 'CSP keeps inline styles narrowly scoped.');
-  assert(csp.includes("img-src 'self' data:"), 'CSP keeps images limited to self and data URIs.');
-  assert(csp.includes("connect-src 'self'"), 'CSP includes same-origin connect-src.');
-  assert(csp.includes('http://localhost:*'), 'CSP allows localhost HTTP for optional local AI.');
-  assert(csp.includes('http://127.0.0.1:*'), 'CSP allows loopback IPv4 HTTP for optional local AI.');
-  assert(csp.includes('http://*.local:*') && csp.includes('https://*.local:*'), 'CSP allows .local endpoints for trusted local setups.');
+   function extractCspDirective(cspValue, directiveName) {
+    const match = cspValue.match(new RegExp(`${directiveName}\\s+([^;]+);?`));
+    return match ? match[1].trim().split(/\s+/) : [];
+  }
+
+  const imgSrcTokens = extractCspDirective(csp, 'img-src');
+
+  assert(
+    imgSrcTokens.includes("'self'") &&
+      imgSrcTokens.includes('data:') &&
+      imgSrcTokens.includes('blob:') &&
+      imgSrcTokens.includes('https://tile.openstreetmap.org'),
+    'CSP allows same-origin/data/blob images plus the explicit OpenStreetMap tile host.'
+  );
+
+  assert(!imgSrcTokens.includes('*'), 'CSP does not allow wildcard image sources.');
+  assert(!imgSrcTokens.includes('https:'), 'CSP does not allow broad HTTPS image sources.');
+  assert(!imgSrcTokens.includes('http:'), 'CSP does not allow broad HTTP image sources.');
+
+  const connectSrcTokens = extractCspDirective(csp, 'connect-src');
+
+  assert(connectSrcTokens.includes("'self'"), 'CSP includes same-origin connect-src.');
+  assert(connectSrcTokens.includes('http://localhost:*'), 'CSP allows localhost HTTP for optional local AI.');
+  assert(connectSrcTokens.includes('http://127.0.0.1:*'), 'CSP allows loopback IPv4 HTTP for optional local AI.');
+  assert(connectSrcTokens.includes('http://*.local:*') && connectSrcTokens.includes('https://*.local:*'), 'CSP allows .local endpoints for trusted local setups.');
+  assert(!connectSrcTokens.includes('*'), 'CSP does not allow wildcard connect-src.');
+  assert(!connectSrcTokens.includes('http:'), 'CSP does not allow all HTTP endpoints.');
+  assert(!connectSrcTokens.includes('https:'), 'CSP does not allow all HTTPS endpoints.');
+
   assert(csp.includes("worker-src 'self' blob:"), 'CSP allows same-origin and blob workers for PMTiles renderer support.');
   assert(csp.includes("manifest-src 'self'"), 'CSP explicitly allows same-origin manifest loading.');
   assert(csp.includes("media-src 'self'"), 'CSP explicitly restricts media to same origin.');
   assert(csp.includes("frame-src 'none'"), 'CSP blocks frame embedding.');
-  assert(!csp.includes('connect-src *'), 'CSP does not allow wildcard connect-src.');
-  assert(!csp.includes('connect-src http:'), 'CSP does not allow all HTTP endpoints.');
-  assert(!csp.includes('connect-src https:'), 'CSP does not allow all HTTPS endpoints.');
   assertNoBannedRuntimeTokens(csp, 'CSP');
 }
 
