@@ -164,6 +164,7 @@ function jaccard(a, b) {
 function run() {
   const appTsx = readText('src/App.tsx');
   const sourceLinksTsx = readText('src/components/SourceLinksSection.tsx');
+  const shelterMapTsx = readText('src/components/ShelterMap.tsx');
   const staticPagesTsx = readText('src/components/StaticPages.tsx');
   const pillarsDataTs = readText('src/data/pillarsData.ts');
   const indexCss = readText('src/index.css');
@@ -189,6 +190,12 @@ function run() {
   assert(recommendedNavHits === 1, 'Recommended Reading is exposed once in primary navigation (footer shortcut removed).');
   const supportNavHits = (appTsx.match(/setActiveTab\('support'\)/g) || []).length;
   assert(supportNavHits >= 1, 'Support is exposed in primary or mobile navigation.');
+  assert(
+    shelterMapTsx.includes('function escapeHtml(value: unknown)') &&
+      shelterMapTsx.includes('const safeAddress = escapeHtml(shelter.adresse)') &&
+      shelterMapTsx.includes('const safeRoomNumber = escapeHtml(shelter.romnr)'),
+    'Shelter popup escapes dataset-derived address and room fields before HTML rendering.'
+  );
 
   console.log('\n[Module 2] Offline Content Pack Interactivity');
   assert(appTsx.includes('id="offline-content-packs"'), 'Offline content pack section exists in reference library.');

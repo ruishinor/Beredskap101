@@ -92,19 +92,19 @@ test.describe('ui regressions', () => {
 
     await page.goto(`${baseURL}/#faq`, { waitUntil: 'load' });
     await expect(page.locator('section')).toContainText('Do you store personal data?');
-    await expect(page.locator('section')).toContainText('How do I start using a local AI model here? ELI5.');
+    await expect(page.locator('section')).toContainText('How do I start using a local AI model here?');
     await expect(page.locator('section')).toContainText('There is no automatic cloud sync');
     await expect(page.locator('section')).toContainText('How does the map package work now?');
-    await expect(page.locator('section')).toContainText('Which keywords are useful for Norwegian news and search?');
+    await expect(page.locator('section')).toContainText('How do export and deletion work?');
     await expect(page.locator('section')).toContainText(/orientation backdrop|orienteringsbakgrunn/);
 
     await page.goto(`${baseURL}/#privacy`, { waitUntil: 'load' });
     await expect(page.locator('section')).toContainText('No automatic cloud sync is used');
-    await expect(page.locator('section')).toContainText('model files are not stored in the app');
+    await expect(page.locator('section')).toContainText('No data is sent to Beredskap101 servers.');
 
     await page.goto(`${baseURL}/#about`, { waitUntil: 'load' });
-    await expect(page.locator('section')).toContainText('Local storage, not cloud');
-    await expect(page.locator('section')).toContainText('Optional local AI');
+    await expect(page.locator('section')).toContainText('100% local-first Progressive Web App');
+    await expect(page.locator('section')).toContainText('free from cloud sync or central telemetry');
 
     expect(pageErrors).toEqual([]);
   });

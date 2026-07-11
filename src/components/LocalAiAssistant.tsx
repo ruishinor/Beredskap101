@@ -656,7 +656,7 @@ export default function LocalAiAssistant({
           <span>
             {lang === 'no'
               ? 'Det benyttes ingen skybasert reserve. Ved feil returneres et bestemt lokalt svar.'
-              : 'No cloud-based backup is used. In the event of an error, a specific local response is returned.'}
+              : 'No cloud fallback is used. If the local model fails, a deterministic local response is returned.'}
           </span>
         </div>
       </section>

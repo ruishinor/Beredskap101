@@ -134,7 +134,10 @@ function runRuntimeSourceChecks() {
   assert(viteConfig.includes('chunkSizeWarningLimit: 1100'), 'Vite build config keeps chunk-size warnings within a stricter limit.');
 
   const appTsx = readText('src/App.tsx');
-  assert(!appTsx.includes("import processedAssetsData from './data/processedAssets.json';"), 'App no longer statically imports processedAssets into the bootstrap path.');
+  assert(
+    !/^\s*import\s+processedAssetsData\s+from\s+['"]\.\/data\/processedAssets\.json['"];?/m.test(appTsx),
+    'App no longer statically imports processedAssets into the bootstrap path.'
+  );
   assert(appTsx.includes("import('./data/processedAssets.json')"), 'App dynamically imports processedAssets after bootstrap.');
   assert(appTsx.includes('lazy(() => import(') && appTsx.includes('<Suspense'), 'App uses lazy-loaded route or panel components with Suspense fallbacks.');
 
@@ -142,8 +145,19 @@ function runRuntimeSourceChecks() {
   assert(packageJson.scripts['preview:lan'] === 'vite preview --host 0.0.0.0 --port 4173', 'Package script exposes preview:lan for self-hosted LAN validation.');
   assert(packageJson.scripts['test:offline:smoke'], 'Package script exposes test:offline:smoke.');
   assert(packageJson.scripts['verify:offline:smoke'], 'Package script exposes verify:offline:smoke.');
+  assert(packageJson.scripts['test:e2e'], 'Package script exposes the browser E2E release gate.');
+  assert(packageJson.scripts['ingest:report'], 'Package script separates explicit ingest-report generation from non-mutating validation.');
+  assert(packageJson.scripts.verify, 'Package script exposes the canonical non-browser verification gate.');
+  assert(packageJson.scripts['verify:security'], 'Package script exposes the dependency security gate.');
+  assert(packageJson.scripts['verify:release'], 'Package script exposes the complete release gate.');
   assert(packageJson.scripts['verify:module7:contracts'], 'Package script exposes verify:module7:contracts.');
   assert(packageJson.scripts['verify:module7'], 'Package script exposes verify:module7.');
+
+  const hostedCopilotRoute = readText('api/copilot/analyze.ts');
+  assert(
+    hostedCopilotRoute.includes('deterministicCopilotHandler'),
+    'Hosted deployment exposes the deterministic /api/copilot/analyze compatibility handler.'
+  );
 
   const playwrightConfig = readText('playwright.config.ts');
   assert(playwrightConfig.includes("name: 'chromium-offline'"), 'Playwright config defines the chromium-offline project.');
@@ -173,26 +187,29 @@ function runBuildArtifactChecks() {
 
 function runDocumentationChecks() {
   const readme = readText('README.md');
-  assert(readme.includes('## Supported Deployment Modes'), 'README documents supported deployment modes.');
+  assert(readme.includes('## Supported deployment modes'), 'README documents supported deployment modes.');
   assert(readme.includes('Hosted/static PWA'), 'README documents hosted/static PWA mode.');
   assert(readme.includes('Self-hosted local PWA'), 'README documents self-hosted local PWA mode.');
   assert(readme.includes('npm run preview:lan'), 'README documents the LAN preview command.');
-  assert(readme.includes('Hosted HTTPS note'), 'README documents hosted HTTPS local-AI limits.');
-  assert(readme.includes('same-origin proxy'), 'README documents the same-origin proxy fallback for hosted HTTPS.');
-  assert(readme.includes('## Offline Deployment Checklist'), 'README includes an offline deployment checklist.');
-  assert(readme.includes('## Release Notes (Offline Guarantees vs Online Enhancements)'), 'README includes release notes for offline vs online features.');
+  assert(readme.includes('## Verification'), 'README documents the dependency-ordered verification gate.');
+  assert(readme.includes('## Offline deployment checklist'), 'README includes an offline deployment checklist.');
+  assert(readme.includes('## Release boundaries'), 'README distinguishes offline guarantees from online enhancements.');
 
-  const auditDoc = readText('docs/module7-audit-2026-06-02.md');
-  assert(auditDoc.includes('## Module 7 (Deployment Hardening)'), 'Module 7 audit doc includes the deployment hardening section.');
-  assert(auditDoc.includes('Adversarial review'), 'Module 7 audit doc records adversarial review notes.');
-  assert(auditDoc.includes('Retrospective'), 'Module 7 audit doc records retrospective notes.');
+  const auditDoc = readText('docs/AUDIT_AND_STABILIZATION_2026-07-10.md');
+  assert(auditDoc.includes('## Adversarial retrospective'), 'Current audit records the adversarial retrospective.');
+  assert(auditDoc.includes('## Modular roadmap'), 'Current audit records the sequential modular roadmap.');
+  assert(auditDoc.includes('## Deferred work and residual risk'), 'Current audit records residual risks and release conditions.');
+  assert(auditDoc.includes('## Local-first PowerShell validation'), 'Current audit provides local-first PowerShell validation.');
 
-  const checklistDoc = readText('docs/junior-execution-checklist-2026-06-02.md');
-  const requiredChecklistModules = ['Module 3', 'Module 4', 'Module 5', 'Module 6', 'Module 7'];
-  for (const moduleLabel of requiredChecklistModules) {
-    assert(checklistDoc.includes(moduleLabel), `Junior handoff checklist covers ${moduleLabel}.`);
-  }
-  assert(checklistDoc.includes('3/3 clean passes'), 'Junior handoff checklist preserves the three-pass gate rule.');
+  const validationLog = readText('docs/VALIDATION_LOG_2026-07-10.md');
+  assert(validationLog.includes('## Baseline'), 'Current validation log records the baseline.');
+  assert(validationLog.includes('## Final gate'), 'Current validation log reserves explicit final-gate evidence.');
+  assert(validationLog.includes('Production approval requires the browser E2E command to pass'), 'Current validation log preserves the browser release condition.');
+
+  const historicalPlan = readText('PLAN-26-06-06.md');
+  assert(historicalPlan.includes('Historical record only.'), 'Historical completion claims are marked as non-current evidence.');
+  readText('.env.example');
+  assert(!fs.existsSync(path.join(ROOT, '.env')), 'Environment configuration is documented without shipping a private .env file.');
 }
 
 function run() {

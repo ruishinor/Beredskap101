@@ -152,24 +152,37 @@ function readPersistedMapLayerMode(): MapLayerMode {
 
   return getDefaultMapLayerMode();
 }
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function buildShelterPopupContent(shelter: Shelter, theme: ThemeType, currentLang: string): string {
   const capacityLabel = currentLang === 'no' ? 'Kapasitet' : 'Capacity';
   const roomLabel = currentLang === 'no' ? 'Romnummer' : 'Shelter ID';
   const addressLabel = currentLang === 'no' ? 'Hentet adresse' : 'Retrieved address';
+  const safeAddress = escapeHtml(shelter.adresse);
+  const safeRoomNumber = escapeHtml(shelter.romnr);
+  const safeCapacity = escapeHtml(shelter.plasser);
 
   return `
     <div style="font-family: sans-serif; padding: 4px; color: ${theme !== 'light' ? '#fff' : '#111'};">
       <h4 style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold; line-height: 1.2;">
-        ${shelter.adresse}
+        ${safeAddress}
       </h4>
       <p style="margin: 0 0 4px 0; font-size: 11px;">
-        <strong>${addressLabel}:</strong> ${shelter.adresse}
+        <strong>${addressLabel}:</strong> ${safeAddress}
       </p>
       <p style="margin: 0 0 4px 0; font-size: 11px;">
-        <strong>${capacityLabel}:</strong> ${shelter.plasser} ${currentLang === 'no' ? 'plasser' : 'spaces'}
+        <strong>${capacityLabel}:</strong> ${safeCapacity} ${currentLang === 'no' ? 'plasser' : 'spaces'}
       </p>
       <p style="margin: 0; font-size: 11px;">
-        <strong>${roomLabel}:</strong> ${shelter.romnr}
+        <strong>${roomLabel}:</strong> ${safeRoomNumber}
       </p>
     </div>`;
 }

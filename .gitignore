@@ -31,10 +31,14 @@ Desktop.ini
 .bmad-custom/
 .bmad-config/
 .bmad-output/
+_bmad/
+_bmad-output/
 .claude/
 .qwen/
 .opencode/
+.aistudio/
 .github/agent-config/
+design-artifacts/
 
 # Temporary and scratch files
 *.tmp
@@ -68,4 +72,4 @@ src/data/processedAssets.ingest-report.json
 *.backup
 *.orig
 playwright-report/
-test-results/playwright/
+test-results/

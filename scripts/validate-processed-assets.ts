@@ -61,6 +61,7 @@ function ensureLocalizedShape(asset: any, localeName: 'en' | 'no') {
 }
 
 function main() {
+  const shouldWriteReport = process.argv.includes('--write-report');
   const data = loadJson(DATA_FILE);
 
   if (!data.schemaVersion || !data.generatedAt || !data.sourceRepo || !data.sourceRevision) {
@@ -137,26 +138,29 @@ function main() {
     ],
   };
 
-  fs.writeFileSync(
-    VALIDATION_REPORT_FILE,
-    JSON.stringify(
-      {
-        schemaVersion: data.schemaVersion,
-        generatedAt: new Date().toISOString(),
-        summary: {
-          acceptedAssets: assets.length,
-          duplicateChecklistGroups: adversarialReview.checklistGroups.length,
-          duplicateCourseModuleGroups: adversarialReview.courseModuleGroups.length,
-          duplicateStatsGroups: adversarialReview.statsGroups.length,
-          duplicateProtocolGroups: adversarialReview.protocolGroups.length,
-          missingEvidenceFields,
+  if (shouldWriteReport) {
+    fs.writeFileSync(
+      VALIDATION_REPORT_FILE,
+      JSON.stringify(
+        {
+          schemaVersion: data.schemaVersion,
+          generatedAt: new Date().toISOString(),
+          summary: {
+            acceptedAssets: assets.length,
+            duplicateChecklistGroups: adversarialReview.checklistGroups.length,
+            duplicateCourseModuleGroups: adversarialReview.courseModuleGroups.length,
+            duplicateStatsGroups: adversarialReview.statsGroups.length,
+            duplicateProtocolGroups: adversarialReview.protocolGroups.length,
+            missingEvidenceFields,
+          },
+          adversarialReview,
         },
-        adversarialReview,
-      },
-      null,
-      2
-    )
-  );
+        null,
+        2
+      )
+    );
+    console.log(`[validate] Wrote ${path.relative(path.join(__dirname, '..'), VALIDATION_REPORT_FILE)}.`);
+  }
 
   if (fs.existsSync(REPORT_FILE)) {
     const report = loadJson(REPORT_FILE);
@@ -174,7 +178,7 @@ function main() {
     }
   }
 
-  console.log(`[validate] OK - validated ${assets.length} accepted assets.`);
+  console.log(`[validate] OK - validated ${assets.length} accepted assets${shouldWriteReport ? ' and refreshed the report' : ' without modifying source files'}.`);
 }
 
 main();

@@ -44,7 +44,6 @@ import { sourceRegistry } from './data/sourceRegistry';
 import { buildOfflineKnowledgeArtifacts } from './utils/offlineKnowledge';
 import { formatOsloDateTime } from './utils/dateTime';
 import type { ContentPack, SearchDocument } from './types/offline';
-// import processedAssetsData from './data/processedAssets.json';
 
 type AppTab =
   'manual' | 'library' | 'reference-library' | 'glossary' | 'recommended-reading' | 'support' | 'scenarios' | 'flowcharts' | 'checklists' | 'about' | 'contact' | 'privacy' | 'legal' | 'terms' | 'faq' | 'cookies' | 'shelters' | 'appearance' | 'data' | 'accessibility';
@@ -276,8 +275,10 @@ export default function App() {
   const [completedTopics, setCompletedTopics] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('beredskap101_map_progress_v2');
-      return stored ? JSON.parse(stored) : [];
-    } catch (e) {
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+    } catch {
       return [];
     }
   });
@@ -285,7 +286,11 @@ export default function App() {
   const toggleTopicCompleted = (topicId: string) => {
     setCompletedTopics(prev => {
       const next = prev.includes(topicId) ? prev.filter(id => id !== topicId) : [...prev, topicId];
-      localStorage.setItem('beredskap101_map_progress_v2', JSON.stringify(next));
+      try {
+        localStorage.setItem('beredskap101_map_progress_v2', JSON.stringify(next));
+      } catch {
+        // Keep the in-memory state usable when browser storage is unavailable or full.
+      }
       return next;
     });
   };
