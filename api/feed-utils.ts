@@ -154,14 +154,26 @@ function firstStringUrl(value: unknown): string {
   return '';
 }
 
+export function normalizeExternalUrl(value: unknown): string {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return '';
+
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.toString() : '';
+  } catch {
+    return '';
+  }
+}
+
 export function extractLink(item: any): string {
   const links = toArray(item?.link);
   for (const link of links) {
-    const url = firstStringUrl(link);
+    const url = normalizeExternalUrl(firstStringUrl(link));
     if (url) return url;
   }
 
-  const guid = firstStringUrl(item?.guid);
+  const guid = normalizeExternalUrl(firstStringUrl(item?.guid));
   if (guid) return guid;
 
   return '';
@@ -178,8 +190,8 @@ export function extractImage(item: any): string | undefined {
 
   for (const field of fields) {
     for (const candidate of toArray(field)) {
-      const url = firstStringUrl(candidate);
-      if (url && /^https?:\/\//i.test(url)) return url;
+      const url = normalizeExternalUrl(firstStringUrl(candidate));
+      if (url) return url;
     }
   }
 
@@ -262,10 +274,10 @@ export function normalizeMetAlertItems(
       cleanText(properties.awarenessSeriousness) ||
       options.defaultSeverity;
     const resourceUrl = toArray(properties.resources)
-      .map((resource) => cleanText(resource?.uri))
+      .map((resource) => normalizeExternalUrl(cleanText(resource?.uri)))
       .find((candidate): candidate is string => Boolean(candidate));
     const url =
-      cleanText(properties.web) ||
+      normalizeExternalUrl(cleanText(properties.web)) ||
       resourceUrl ||
       '';
 
@@ -280,9 +292,15 @@ export function normalizeMetAlertItems(
   });
 }
 
+function getFeedFetchTimeoutMs(): number {
+  const configured = Number.parseInt(process.env.B101_FEED_TIMEOUT_MS || '', 10);
+  if (!Number.isFinite(configured)) return 15000;
+  return Math.max(500, Math.min(configured, 15000));
+}
+
 export async function fetchText(url: string, accept = 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8') {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), getFeedFetchTimeoutMs());
 
   try {
     const response = await fetch(url, {
@@ -305,7 +323,7 @@ export async function fetchText(url: string, accept = 'application/rss+xml, appl
 
 export async function fetchJson(url: string, accept = 'application/json, text/json, */*;q=0.8') {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), getFeedFetchTimeoutMs());
 
   try {
     const response = await fetch(url, {

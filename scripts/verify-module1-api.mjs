@@ -1,14 +1,21 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
+import { normalizeExternalUrl } from '../api/feed-utils.ts';
 
 const API_BASE_URL = 'http://127.0.0.1:3002';
 const UI_BASE_URL = 'http://127.0.0.1:3011';
 const STARTUP_TIMEOUT_MS = 25000;
+const REQUEST_TIMEOUT_MS = 20000;
+const TEST_FEED_TIMEOUT_MS = '1500';
 
 function spawnManaged(args, stdio = ['ignore', 'pipe', 'pipe']) {
   return spawn(process.execPath, args, {
     stdio,
-    env: process.env,
+    detached: process.platform !== 'win32',
+    env: {
+      ...process.env,
+      B101_FEED_TIMEOUT_MS: TEST_FEED_TIMEOUT_MS,
+    },
   });
 }
 
@@ -23,8 +30,11 @@ function assert(condition, message) {
   logPass(message);
 }
 
-async function fetchJson(url, init) {
-  const response = await fetch(url, init);
+async function fetchJson(url, init = {}) {
+  const response = await fetch(url, {
+    ...init,
+    signal: init.signal || AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
   const text = await response.text();
   let data;
 
@@ -55,7 +65,7 @@ async function waitForUiReady() {
   const deadline = Date.now() + STARTUP_TIMEOUT_MS;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(UI_BASE_URL);
+      const response = await fetch(UI_BASE_URL, { signal: AbortSignal.timeout(2000) });
       if (response.ok) return;
     } catch {
       // Continue polling until timeout.
@@ -69,31 +79,53 @@ function spawnApiServer() {
   return spawnManaged(['--import', 'tsx', 'server.js']);
 }
 
-async function stopApiServer(child) {
-  if (!child || child.killed) return;
-
-  const closed = new Promise((resolve) => {
-    child.once('exit', () => resolve());
-  });
+function signalProcessTree(child, signal) {
+  if (!child || child.exitCode !== null) return;
 
   try {
-    child.kill('SIGTERM');
+    if (process.platform === 'win32') {
+      if (signal === 'SIGKILL') {
+        spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+      } else {
+        child.kill('SIGTERM');
+      }
+      return;
+    }
+
+    process.kill(-child.pid, signal);
   } catch {
-    // Ignore termination race.
-  }
-
-  await Promise.race([closed, delay(1200)]);
-
-  if (child.exitCode === null) {
     try {
-      child.kill('SIGKILL');
+      child.kill(signal);
     } catch {
-      // Ignore termination race.
+      // Ignore termination races.
     }
   }
 }
 
+async function stopManagedProcess(child) {
+  if (!child || child.exitCode !== null) return;
+
+  const exited = new Promise((resolve) => {
+    child.once('exit', resolve);
+  });
+
+  signalProcessTree(child, 'SIGTERM');
+  await Promise.race([exited, delay(2500)]);
+
+  if (child.exitCode === null) {
+    signalProcessTree(child, 'SIGKILL');
+    await Promise.race([exited, delay(1000)]);
+  }
+}
+
 async function run() {
+  assert(
+    normalizeExternalUrl('https://example.com/path') === 'https://example.com/path',
+    'Feed URL normalization accepts HTTP(S) links.'
+  );
+  assert(normalizeExternalUrl('javascript:alert(1)') === '', 'Feed URL normalization rejects javascript URLs.');
+  assert(normalizeExternalUrl('data:text/html,test') === '', 'Feed URL normalization rejects data URLs.');
+
   const apiProcess = spawnApiServer();
   let stderrBuffer = '';
 
@@ -169,7 +201,7 @@ async function run() {
 
     console.log('[SUCCESS] Module 1 API parity verification completed.');
   } finally {
-    await stopApiServer(apiProcess);
+    await stopManagedProcess(apiProcess);
   }
 
   if (stderrBuffer.includes('EADDRINUSE')) {
@@ -214,7 +246,7 @@ async function run() {
       'Dev runtime keeps /api/copilot/analyze response contract through proxy'
     );
   } finally {
-    await stopApiServer(devProcess);
+    await stopManagedProcess(devProcess);
   }
 
   if (devStdErr.includes('EADDRINUSE')) {

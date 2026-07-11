@@ -20,7 +20,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { glossaryData } from '../data/glossaryData';
-import { saveCookiePrefs } from './CookiePreferences';
+import { saveCookiePrefs, useCookiePrefs } from './CookiePreferences';
 import SecureSaveManager from './SecureSaveManager';
 import LocalDocumentVault from './LocalDocumentVault';
 
@@ -384,6 +384,7 @@ export function SupportHubPage({
   onOpenVault,
   onOpenBackup,
 }: SupportHubPageProps) {
+  const cookiePrefs = useCookiePrefs();
   const settingsItems = [
     { id: 'about', labelEn: 'About Beredskap101', labelNo: 'Om Beredskap101', icon: <Info className="w-4 h-4 shrink-0" /> },
     { id: 'faq', labelEn: 'FAQ', labelNo: 'Vanlige spørsmål', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
@@ -404,7 +405,7 @@ export function SupportHubPage({
           {currentLang === 'no' ? 'Systeminnstillinger og compliance' : 'System settings and compliance'}
         </span>
         <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)]">
-          {currentLang === 'no' ? 'Innstillinger & Dokumentasjon' : 'Settings & Documentation'}
+          {currentLang === 'no' ? 'Støtte' : 'Support'}
         </h2>
         <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed max-w-[80ch]">
           {currentLang === 'no'
@@ -471,6 +472,24 @@ export function SupportHubPage({
                     </p>
                   </>
                 )}
+              </div>
+
+              <ContactEmailBar
+                currentLang={currentLang}
+                contactEmail={contactEmail}
+                copiedContactEmail={copiedContactEmail}
+                onCopyContactEmail={onCopyContactEmail}
+              />
+
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-2 text-sm text-[var(--muted)] leading-relaxed">
+                <h4 className="font-bold text-[var(--text)]">
+                  {currentLang === 'no' ? 'Lokale datarettigheter' : 'Local data rights'}
+                </h4>
+                <p>
+                  {currentLang === 'no'
+                    ? 'Artikkel 17 gir tilgang til lokal sletting, og Artikkel 20 gir tilgang til lokal eksport og import under Databehandling.'
+                    : 'Article 17 provides local erasure controls, and Article 20 provides local export and import controls under Data Management.'}
+                </p>
               </div>
             </div>
           )}
@@ -660,6 +679,15 @@ export function SupportHubPage({
                   {currentLang === 'no'
                     ? 'Beredskap101 bruker ikke analyse- eller markedsføringskapsler. Du kan velge om du vil tillate informasjonskapsler som trengs for å huske innstillingene dine.'
                     : 'Beredskap101 does not use analytics or marketing cookies. You can manage whether optional cookies used to store configuration are accepted.'}
+                </p>
+                <p className="text-xs font-bold text-[var(--text)]" role="status">
+                  {currentLang === 'no'
+                    ? cookiePrefs
+                      ? `Nåværende valg: Valgfrie funksjoner er ${cookiePrefs.optionalEnabled ? 'aktivert' : 'deaktivert'}.`
+                      : 'Nåværende valg: Ingen valg er lagret.'
+                    : cookiePrefs
+                      ? `Current setting: Optional functionality ${cookiePrefs.optionalEnabled ? 'enabled' : 'disabled'}.`
+                      : 'Current setting: No preference saved.'}
                 </p>
                 <div className="flex flex-wrap gap-2 pt-2">
                   <button

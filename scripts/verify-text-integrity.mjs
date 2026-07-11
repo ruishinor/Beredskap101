@@ -3,7 +3,8 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const TARGET_DIRS = ['src', 'scripts', 'tests'];
-const TARGET_FILES = ['index.html', 'scratch/process_uorganisert.py'];
+const REQUIRED_TARGET_FILES = ['index.html'];
+const OPTIONAL_TARGET_FILES = ['scratch/process_uorganisert.py'];
 const TARGET_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.html', '.py']);
 const FILE_EXCLUSIONS = new Set(['scripts/verify-text-integrity.mjs', 'scripts/verify-localization.mjs']);
 
@@ -66,7 +67,14 @@ const FORBIDDEN_FRAGMENTS = [
 ];
 
 function collectTargetFiles() {
-  const files = TARGET_FILES.map((file) => path.join(ROOT, file));
+  const files = REQUIRED_TARGET_FILES.map((file) => path.join(ROOT, file));
+
+  for (const file of OPTIONAL_TARGET_FILES) {
+    const fullPath = path.join(ROOT, file);
+    if (fs.existsSync(fullPath)) {
+      files.push(fullPath);
+    }
+  }
 
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -110,6 +118,37 @@ function splitQuotedSegments(line) {
   return matches.map((segment) => segment.slice(1, -1));
 }
 
+function lineHasTextIntegrityIssue(line) {
+  if (MOJIBAKE_PATTERN.test(line)) return true;
+  if (FORBIDDEN_FRAGMENTS.some((fragment) => line.includes(fragment))) return true;
+
+  const segments = [line, ...splitQuotedSegments(line)];
+  return SUSPICIOUS_SEGMENT_PATTERNS.some(({ pattern }) =>
+    segments.some((segment) => pattern.test(segment))
+  );
+}
+
+function verifyDetector() {
+  const invalidSamples = [
+    `M${String.fromCharCode(0x00c3, 0x00b8)}rk`,
+    'M?rk',
+    'Lag husstandsoevning',
+  ];
+  const validSamples = ['Mørk', 'Søk', 'Lag husstandsøving'];
+
+  for (const sample of invalidSamples) {
+    if (!lineHasTextIntegrityIssue(sample)) {
+      throw new Error(`Text-integrity detector self-test missed an invalid sample: ${JSON.stringify(sample)}`);
+    }
+  }
+
+  for (const sample of validSamples) {
+    if (lineHasTextIntegrityIssue(sample)) {
+      throw new Error(`Text-integrity detector self-test rejected a valid sample: ${JSON.stringify(sample)}`);
+    }
+  }
+}
+
 function scanFile(filePath, findings) {
   const relativePath = path.relative(ROOT, filePath).replace(/\\/g, '/');
   const text = fs.readFileSync(filePath, 'utf8');
@@ -136,6 +175,7 @@ function scanFile(filePath, findings) {
 }
 
 function main() {
+  verifyDetector();
   const findings = [];
 
   for (const filePath of collectTargetFiles()) {

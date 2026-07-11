@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
 
 function spawnProcess(label, args) {
   const child = spawn(process.execPath, args, {
@@ -21,7 +22,25 @@ const processes = [
 let shuttingDown = false;
 let exitCode = 0;
 
-function shutdown(trigger) {
+function stopChild(child, signal) {
+  if (!child || child.exitCode !== null) return;
+  try {
+    if (process.platform === 'win32' && signal === 'SIGKILL') {
+      spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+      return;
+    }
+    child.kill(signal);
+  } catch {
+    // Ignore shutdown races.
+  }
+}
+
+function waitForExit(child) {
+  if (!child || child.exitCode !== null) return Promise.resolve();
+  return new Promise((resolve) => child.once('exit', resolve));
+}
+
+async function shutdown(trigger) {
   if (shuttingDown) return;
   shuttingDown = true;
   if (trigger) {
@@ -29,34 +48,24 @@ function shutdown(trigger) {
   }
 
   for (const { child } of processes) {
-    if (child.killed) continue;
-    try {
-      if (process.platform === 'win32') {
-        spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
-      } else {
-        child.kill('SIGTERM');
-      }
-    } catch {
-      // Ignore shutdown races.
-    }
+    stopChild(child, 'SIGTERM');
   }
 
-  setTimeout(() => {
-    for (const { child } of processes) {
-      if (!child.killed) {
-        try {
-          if (process.platform === 'win32') {
-            spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
-          } else {
-            child.kill('SIGKILL');
-          }
-        } catch {
-          // Ignore shutdown races.
-        }
-      }
-    }
-    process.exit(exitCode);
-  }, 750);
+  await Promise.race([
+    Promise.all(processes.map(({ child }) => waitForExit(child))),
+    delay(1500),
+  ]);
+
+  for (const { child } of processes) {
+    stopChild(child, 'SIGKILL');
+  }
+
+  await Promise.race([
+    Promise.all(processes.map(({ child }) => waitForExit(child))),
+    delay(750),
+  ]);
+
+  process.exit(exitCode);
 }
 
 for (const { label, child } of processes) {
@@ -65,9 +74,9 @@ for (const { label, child } of processes) {
     const failed = code !== 0 && code !== null;
     if (failed) exitCode = code || 1;
     const reason = signal ? `${label} received ${signal}` : `${label} exited with code ${code}`;
-    shutdown(reason);
+    void shutdown(reason);
   });
 }
 
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
