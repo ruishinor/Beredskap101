@@ -41,8 +41,11 @@ test.describe('knowledge map pillar progression (phase 1)', () => {
 
     await page.addInitScript((storageKey) => {
       try {
-        window.localStorage.clear();
-        window.localStorage.setItem(storageKey, JSON.stringify(['severe-bleeding']));
+        if (!sessionStorage.getItem('__beredskap101_progression_test_seeded')) {
+          window.localStorage.clear();
+          window.localStorage.setItem(storageKey, JSON.stringify(['severe-bleeding']));
+          sessionStorage.setItem('__beredskap101_progression_test_seeded', '1');
+        }
       } catch {
         // Ignore storage errors in the test bootstrap.
       }
