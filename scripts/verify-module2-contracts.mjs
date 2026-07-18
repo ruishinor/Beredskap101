@@ -352,6 +352,15 @@ function run() {
     'Cookie settings entry point sets the cookies settings sub-tab.'
   );
 
+  assert(
+    knowledgeMapTsx.includes('onSearch') && appTsx.includes('onSearch={handleKnowledgeMapSearch}'),
+    'KnowledgeMap search field is wired into the shared local search pipeline.'
+  );
+  assert(
+    knowledgeMapTsx.includes("t('kmap_search_placeholder')"),
+    'KnowledgeMap search field uses a differentiated i18n placeholder.'
+  );
+
   console.log('\n[SUCCESS] Module 2 contract verification completed with no errors or flags.');
 }
 

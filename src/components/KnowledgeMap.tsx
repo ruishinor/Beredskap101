@@ -19,6 +19,7 @@ interface KnowledgeMapProps {
   setSelectedAssetInitialTab: (tab: 'article' | 'guide' | 'checklist' | 'protocol' | 'module' | 'stats') => void;
   completedTopics: string[];
   guideCount: number;
+  onSearch: (query: string) => void;
 }
 
 export default function KnowledgeMap({
@@ -31,6 +32,7 @@ export default function KnowledgeMap({
   setSelectedAssetInitialTab,
   completedTopics,
   guideCount,
+  onSearch,
 }: KnowledgeMapProps) {
   const { t } = useTranslation();
   
@@ -111,18 +113,18 @@ export default function KnowledgeMap({
 
             {/* Right Column (Status indicators) */}
             <div className="lg:col-span-5 flex flex-col gap-3 w-full">
-              {/* Local Search */}
+              {/* Local Search — wired into the shared offline local-search pipeline */}
               <div className="relative bg-black/35 border border-[var(--border-muted)] rounded-md px-3 py-2 flex items-center gap-2">
                 <Search className="w-4 h-4 text-[var(--text-dim)]" />
                 <input
                   type="text"
-                  placeholder={
-                    currentLang === 'no'
-                      ? 'Søk etter vannlagring, tourniquet...'
-                      : 'Search: water storage, tourniquet, blackouts...'
-                  }
+                  placeholder={t('kmap_search_placeholder')}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    onSearch(e.target.value);
+                  }}
+                  aria-label={t('kmap_search_placeholder')}
                   className="bg-transparent border-none outline-none text-[12px] text-[var(--text-main)] placeholder:text-[var(--text-dim)] w-full focus:ring-0"
                 />
               </div>

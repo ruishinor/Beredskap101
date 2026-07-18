@@ -1013,6 +1013,20 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // KnowledgeMap search field: feed the shared offline local-search pipeline and
+  // reveal the results section once per empty -> non-empty transition.
+  const knowledgeMapPrevQueryRef = useRef('');
+  const handleKnowledgeMapSearch = (query: string) => {
+    const wasEmpty = knowledgeMapPrevQueryRef.current.trim().length === 0;
+    knowledgeMapPrevQueryRef.current = query;
+    setSearchQuery(query);
+
+    // Empty queries must not navigate or scroll.
+    if (query.trim().length > 0 && wasEmpty) {
+      document.getElementById('offline-local-search')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className={`app min-h-screen font-sans flex flex-col justify-between text-[var(--text)] bg-[var(--bg)] transition-colors duration-300 ${themeClass}`}>
       
@@ -1290,6 +1304,7 @@ export default function App() {
                     setSelectedAssetInitialTab={setSelectedAssetInitialTab}
                     completedTopics={completedTopics}
                     guideCount={allGuidesCount}
+                    onSearch={handleKnowledgeMapSearch}
                   />
                 </Suspense>
 
