@@ -1,4 +1,5 @@
 import type { LocalAiSettings } from '../types/offline';
+import { isLocalHttpUrl } from './privateNetwork';
 
 const LOCAL_AI_SETTINGS_KEY = 'beredskap101_local_ai_settings_v1';
 
@@ -13,42 +14,13 @@ function sanitizeBaseUrl(input: string): string {
   return input.trim().replace(/\/+$/, '');
 }
 
-function parseIpv4(hostname: string): number[] | null {
-  const parts = hostname.split('.');
-  if (parts.length !== 4) return null;
-  const octets = parts.map((part) => Number.parseInt(part, 10));
-  if (octets.some((octet) => Number.isNaN(octet) || octet < 0 || octet > 255)) return null;
-  return octets;
-}
-
-function isPrivateOrLoopbackIpv4(hostname: string): boolean {
-  const octets = parseIpv4(hostname);
-  if (!octets) return false;
-  const [a, b] = octets;
-  if (a === 10) return true;
-  if (a === 127) return true;
-  if (a === 192 && b === 168) return true;
-  if (a === 172 && b >= 16 && b <= 31) return true;
-  if (a === 169 && b === 254) return true;
-  return false;
-}
+// Private-IP parsing lives in the shared util (module 5.3) — do not re-add a
+// local copy here; keep server.js, server/copilot.ts, and this file aligned.
 
 export function isLocalOnlyBaseUrl(input: string): boolean {
   const candidate = sanitizeBaseUrl(input);
   if (!candidate) return false;
-
-  try {
-    const parsed = new URL(candidate);
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
-    const hostname = parsed.hostname.toLowerCase();
-
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') return true;
-    if (hostname.endsWith('.local')) return true;
-    if (isPrivateOrLoopbackIpv4(hostname)) return true;
-    return false;
-  } catch {
-    return false;
-  }
+  return isLocalHttpUrl(candidate);
 }
 
 export function normalizeLocalAiSettings(raw: unknown): LocalAiSettings {

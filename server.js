@@ -5,6 +5,7 @@ import contactHandler from './api/contact.ts';
 import sourceFeedsHandler from './api/source-feeds.ts';
 import norwayNewsHandler from './api/norway-news.ts';
 import { localCopilotHandler } from './server/copilot.ts';
+import { isLocalHostname } from './src/utils/privateNetwork.ts';
 
 dotenv.config();
 
@@ -12,24 +13,9 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 const JSON_BODY_LIMIT = '128kb';
 
-function parseIpv4(hostname) {
-  const parts = hostname.split('.');
-  if (parts.length !== 4) return null;
-  const octets = parts.map((part) => Number.parseInt(part, 10));
-  if (octets.some((octet) => Number.isNaN(octet) || octet < 0 || octet > 255)) return null;
-  return octets;
-}
-
-function isPrivateOrLoopbackIpv4(hostname) {
-  const octets = parseIpv4(hostname);
-  if (!octets) return false;
-  const [a, b] = octets;
-  if (a === 10 || a === 127) return true;
-  if (a === 192 && b === 168) return true;
-  if (a === 172 && b >= 16 && b <= 31) return true;
-  if (a === 169 && b === 254) return true;
-  return false;
-}
+// Private-IP parsing lives in src/utils/privateNetwork.ts (module 5.3) — the
+// single shared copy imported by this server, server/copilot.ts, and
+// src/utils/localAiSettings.ts. Do not re-add a local copy here.
 
 function normalizeOriginList(value) {
   return String(value || '')
@@ -48,15 +34,7 @@ function isAllowedLocalOrigin(origin) {
   try {
     const parsed = new URL(normalizedOrigin);
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
-    const hostname = parsed.hostname.toLowerCase();
-    return (
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '::1' ||
-      hostname === '[::1]' ||
-      hostname.endsWith('.local') ||
-      isPrivateOrLoopbackIpv4(hostname)
-    );
+    return isLocalHostname(parsed.hostname);
   } catch {
     return false;
   }

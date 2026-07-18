@@ -1,3 +1,5 @@
+import { isLocalHttpUrl } from '../src/utils/privateNetwork.ts';
+
 type CopilotHandlerOptions = {
   allowLocalModel?: boolean;
 };
@@ -14,40 +16,10 @@ type SanitizedDecision =
       responseTimeSec?: number;
     };
 
-function parseIpv4(hostname: string): number[] | null {
-  const parts = hostname.split('.');
-  if (parts.length !== 4) return null;
-  const octets = parts.map((part) => Number.parseInt(part, 10));
-  if (octets.some((octet) => Number.isNaN(octet) || octet < 0 || octet > 255)) return null;
-  return octets;
-}
-
-function isPrivateOrLoopbackIpv4(hostname: string): boolean {
-  const octets = parseIpv4(hostname);
-  if (!octets) return false;
-  const [a, b] = octets;
-  if (a === 10 || a === 127) return true;
-  if (a === 192 && b === 168) return true;
-  if (a === 172 && b >= 16 && b <= 31) return true;
-  if (a === 169 && b === 254) return true;
-  return false;
-}
-
+// Private-IP parsing lives in src/utils/privateNetwork.ts (module 5.3) — the
+// single shared copy imported by server.js, this file, and localAiSettings.ts.
 function isAllowedLocalEndpoint(input: string): boolean {
-  try {
-    const parsed = new URL(input);
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
-    const hostname = parsed.hostname.toLowerCase();
-    return (
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '::1' ||
-      hostname.endsWith('.local') ||
-      isPrivateOrLoopbackIpv4(hostname)
-    );
-  } catch {
-    return false;
-  }
+  return isLocalHttpUrl(input);
 }
 
 function clampScore(value: number): number {
