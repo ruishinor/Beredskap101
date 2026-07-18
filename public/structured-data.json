@@ -1,0 +1,9 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Beredskap101",
+  "applicationCategory": "ReferenceApplication",
+  "operatingSystem": "Any",
+  "inLanguage": ["nb", "en"],
+  "description": "Mobiltilpasset beredskapsguide for egenberedskap, førstehjelp, personvern, friluftsliv og reisesikkerhet."
+}

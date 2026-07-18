@@ -22,17 +22,11 @@
     <meta property="og:site_name" content="Beredskap101" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <title>Beredskap101 | Egenberedskap, førstehjelp og robusthet</title>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Beredskap101",
-        "applicationCategory": "ReferenceApplication",
-        "operatingSystem": "Any",
-        "inLanguage": ["nb", "en"],
-        "description": "Mobiltilpasset beredskapsguide for egenberedskap, førstehjelp, personvern, friluftsliv og reisesikkerhet."
-      }
-    </script>
+    <!-- JSON-LD lives in /structured-data.json (module 5.3): the strict CSP
+         (script-src 'self', no 'unsafe-inline') blocks inline scripts, so the
+         structured data is served as a same-origin static file and linked
+         here instead of an inline <script type="application/ld+json">. -->
+    <link rel="alternate" type="application/ld+json" href="/structured-data.json" title="Beredskap101 structured data" />
   </head>
   <body>
     <div id="root"></div>
