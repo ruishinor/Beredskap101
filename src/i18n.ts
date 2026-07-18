@@ -156,7 +156,13 @@ const en = {
   lbl_reflection: 'Reflection Questions',
   lbl_test_procedures: 'Test Procedures',
   lbl_approval_reqs: 'Approval Requirements',
-  lbl_key_elements: 'Curated Key Elements'
+  lbl_key_elements: 'Curated Key Elements',
+  backup_notice_upgraded: 'Backup upgraded to stronger encryption (v3).',
+  backup_warn_reduced_encryption: 'Warning: encryption strength reduced on non-HTTPS connection.',
+  backup_error_corrupt: 'Backup file is corrupted or passphrase is wrong.',
+  backup_error_unsupported_version: 'Unsupported backup version.',
+  backup_error_v3_requires_https: 'This backup uses strong encryption (v3) that requires a secure HTTPS connection.',
+  backup_hint_passphrase_strength: 'Tip: mix upper/lowercase letters, digits and symbols for a stronger passphrase.'
 };
 
 const no = {
@@ -278,7 +284,13 @@ const no = {
   lbl_reflection: 'Spørsmål til Refleksjon',
   lbl_test_procedures: 'Testprosedyrer',
   lbl_approval_reqs: 'Godkjenningskrav',
-  lbl_key_elements: 'Strukturerte Nøkkelelementer'
+  lbl_key_elements: 'Strukturerte Nøkkelelementer',
+  backup_notice_upgraded: 'Backupen er oppgradert til sterkere kryptering (v3).',
+  backup_warn_reduced_encryption: 'Advarsel: krypteringsstyrken er redusert på tilkobling uten HTTPS.',
+  backup_error_corrupt: 'Backupfilen er ødelagt, eller passordet er feil.',
+  backup_error_unsupported_version: 'Ustøttet backupversjon.',
+  backup_error_v3_requires_https: 'Denne backupen bruker sterk kryptering (v3) som krever en sikker HTTPS-tilkobling.',
+  backup_hint_passphrase_strength: 'Tips: bland store og små bokstaver, tall og symboler for et sterkere passord.'
 };
 
 const resources = {
