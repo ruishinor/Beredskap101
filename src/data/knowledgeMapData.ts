@@ -14,7 +14,8 @@ export interface KnowledgePillar {
   position: 'top-left' | 'top-right' | 'middle-right' | 'bottom-right' | 'bottom-left' | 'middle-left';
   xOffset: number; // Center-relative coordinate offset for fallback layout
   yOffset: number;
-  isUnlocked: boolean; // Determines if active by default on landing page
+  isUnlocked: boolean; // All pillars are accessible on load; progression is shown as completion, never gating
+  progressionOrder: number; // Intended exploration sequence (1..6) as guidance, not a gate
 }
 
 export interface DiscoveryStep {
@@ -50,7 +51,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'top-left',
     xOffset: -250,
     yOffset: -150,
-    isUnlocked: true, // Only First Aid is unlocked on load
+    isUnlocked: true,
+    progressionOrder: 1,
   },
   {
     id: 'personal-safety',
@@ -66,7 +68,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'middle-left',
     xOffset: -250,
     yOffset: 0,
-    isUnlocked: false,
+    isUnlocked: true,
+    progressionOrder: 2,
   },
   {
     id: 'household-preparedness',
@@ -82,7 +85,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'bottom-left',
     xOffset: -250,
     yOffset: 150,
-    isUnlocked: false,
+    isUnlocked: true,
+    progressionOrder: 3,
   },
   {
     id: 'digital-privacy',
@@ -98,7 +102,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'top-right',
     xOffset: 250,
     yOffset: -150,
-    isUnlocked: false,
+    isUnlocked: true,
+    progressionOrder: 4,
   },
   {
     id: 'travel-security',
@@ -114,7 +119,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'middle-right',
     xOffset: 250,
     yOffset: 0,
-    isUnlocked: false,
+    isUnlocked: true,
+    progressionOrder: 5,
   },
   {
     id: 'wilderness-survival',
@@ -130,7 +136,8 @@ export const knowledgePillars: KnowledgePillar[] = [
     position: 'bottom-right',
     xOffset: 250,
     yOffset: 150,
-    isUnlocked: false,
+    isUnlocked: true,
+    progressionOrder: 6,
   },
 ];
 

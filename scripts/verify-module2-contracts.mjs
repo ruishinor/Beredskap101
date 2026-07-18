@@ -304,6 +304,45 @@ function run() {
     assert(min >= MIN_ALIGNMENT_THRESHOLD, `${section} keeps minimum lexical alignment >= ${MIN_ALIGNMENT_THRESHOLD} (min ${min.toFixed(4)}, avg ${avg.toFixed(4)}).`);
   }
 
+  console.log('\n[Phase 1] Trust UX Contracts');
+  const knowledgeMapDataTs = readText('src/data/knowledgeMapData.ts');
+  const pillarCardTsx = readText('src/components/knowledge-map/KnowledgePillarCard.tsx');
+  const knowledgeMapSectionTsx = readText('src/components/knowledge-map/KnowledgeMapSection.tsx');
+  const knowledgeMapTsx = readText('src/components/KnowledgeMap.tsx');
+
+  assert(
+    (knowledgeMapDataTs.match(/isUnlocked: true/g) || []).length === 6 &&
+      !/isUnlocked: false/.test(knowledgeMapDataTs),
+    'All six knowledge pillars are accessible on load (progression shown as completion, never gating).'
+  );
+  for (const order of [1, 2, 3, 4, 5, 6]) {
+    assert(
+      knowledgeMapDataTs.includes(`progressionOrder: ${order},`),
+      `Knowledge pillar progressionOrder ${order} is declared as guidance.`
+    );
+  }
+
+  const phase1SourceFiles = collectFiles(path.join(ROOT, 'src'), ['.ts', '.tsx']);
+  const unlockCopyFindings = [];
+  for (const file of phase1SourceFiles) {
+    const content = fs.readFileSync(file, 'utf8');
+    if (content.includes('Complete previous step') || content.includes('Complete the previous layer')) {
+      unlockCopyFindings.push(path.relative(ROOT, file).replace(/\\/g, '/'));
+    }
+  }
+  assert(
+    unlockCopyFindings.length === 0,
+    `No "complete previous step/layer" unlock copy remains (findings: ${unlockCopyFindings.length}).`
+  );
+  assert(
+    !knowledgeMapSectionTsx.includes('lockOverride') && !pillarCardTsx.includes('lockOverride'),
+    'Lock bypass override is removed from the knowledge map (no lockOverride references).'
+  );
+  assert(
+    pillarCardTsx.includes("t('pillar_progress'"),
+    'Pillar cards render an honest i18n completion progress label.'
+  );
+
   console.log('\n[SUCCESS] Module 2 contract verification completed with no errors or flags.');
 }
 

@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Lock, Unlock, CheckCircle2 } from 'lucide-react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { CheckCircle2 } from 'lucide-react';
 import { KnowledgePillar } from '../../data/knowledgeMapData';
 
 interface KnowledgePillarCardProps {
   pillar: KnowledgePillar;
   isActive: boolean;
-  isUnlocked: boolean;
   isVisited: boolean;
+  progressDone: number;
+  progressTotal: number;
   currentLang: string;
   onClick: () => void;
   onHoverStart: () => void;
@@ -14,75 +16,64 @@ interface KnowledgePillarCardProps {
   cardRef: (el: HTMLButtonElement | null) => void;
 }
 
+function ProgressRing({ percent, complete }: { percent: number; complete: boolean }) {
+  const radius = 7;
+  const circumference = 2 * Math.PI * radius;
+  const filled = (Math.min(100, Math.max(0, percent)) / 100) * circumference;
+
+  if (complete) {
+    return <CheckCircle2 className="w-3.5 h-3.5 text-[var(--status-success-text)]" aria-hidden="true" />;
+  }
+
+  return (
+    <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true" className="flex-shrink-0">
+      <circle cx="9" cy="9" r={radius} fill="none" stroke="var(--border-muted)" strokeWidth="2" />
+      <circle
+        cx="9"
+        cy="9"
+        r={radius}
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeDasharray={`${filled} ${circumference}`}
+        transform="rotate(-90 9 9)"
+      />
+    </svg>
+  );
+}
+
 export default function KnowledgePillarCard({
   pillar,
   isActive,
-  isUnlocked,
   isVisited,
+  progressDone,
+  progressTotal,
   currentLang,
   onClick,
   onHoverStart,
   onHoverEnd,
   cardRef,
 }: KnowledgePillarCardProps) {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { t } = useTranslation();
 
   const titleText = currentLang === 'no' ? pillar.titleNo : pillar.title;
   const descText = currentLang === 'no' ? pillar.descNo : pillar.desc;
   const badgeText = currentLang === 'no' ? pillar.badgeNo : pillar.badge;
 
-  const handleInteraction = (e: React.MouseEvent | React.FocusEvent) => {
-    if (!isUnlocked) {
-      if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
-      setShowTooltip(true);
-      
-      // Auto-hide tooltip after 3 seconds for focus/click
-      tooltipTimeoutRef.current = setTimeout(() => {
-        setShowTooltip(false);
-      }, 3000);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    onHoverEnd();
-    if (!isUnlocked) {
-      setShowTooltip(false);
-    }
-  };
-
-  const handleBlur = () => {
-    if (!isUnlocked) {
-      setShowTooltip(false);
-    }
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (!isUnlocked) {
-      e.preventDefault();
-      handleInteraction(e);
-    } else {
-      onClick();
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
-    };
-  }, []);
+  // Guard empty arrays: a pillar with no mapped topics renders 0/0, never NaN.
+  const safeTotal = Number.isFinite(progressTotal) && progressTotal > 0 ? progressTotal : 0;
+  const safeDone = Number.isFinite(progressDone) && progressDone > 0 ? Math.min(progressDone, safeTotal || progressDone) : 0;
+  const isComplete = safeTotal > 0 && safeDone === safeTotal;
+  const percent = safeTotal > 0 ? Math.round((safeDone / safeTotal) * 100) : 0;
+  const progressLabel = t('pillar_progress', { done: safeDone, total: safeTotal });
 
   // Build the ARIA label
-  let ariaLabel = `${pillar.index}: ${titleText}.`;
+  let ariaLabel = `${pillar.index}: ${titleText}. ${progressLabel}.`;
   if (isActive) {
     ariaLabel += currentLang === 'no' ? ' Aktiv søyle.' : ' Active pillar.';
-  }
-  if (!isUnlocked) {
-    ariaLabel += currentLang === 'no' ? ' Låst. Fullfør forrige steg for å låse opp.' : ' Locked. Complete previous step to unlock.';
   } else if (isVisited) {
     ariaLabel += currentLang === 'no' ? ' Fullført / Besøkt.' : ' Completed / Visited.';
-  } else {
-    ariaLabel += currentLang === 'no' ? ' Ulåst.' : ' Unlocked.';
   }
 
   return (
@@ -91,37 +82,28 @@ export default function KnowledgePillarCard({
       <button
         ref={cardRef}
         type="button"
-        onClick={handleClick}
-        onMouseEnter={() => {
-          onHoverStart();
-          if (!isUnlocked) setShowTooltip(true);
-        }}
-        onMouseLeave={handleMouseLeave}
-        onFocus={() => {
-          onHoverStart();
-          if (!isUnlocked) setShowTooltip(true);
-        }}
-        onBlur={handleBlur}
+        onClick={onClick}
+        onMouseEnter={onHoverStart}
+        onMouseLeave={onHoverEnd}
+        onFocus={onHoverStart}
+        onBlur={onHoverEnd}
         className={`w-full text-left rounded-[var(--radius-sm)] p-3 flex flex-col justify-between min-h-[135px] h-full transition-all duration-300 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
           isActive
             ? 'border-2 border-[var(--border-active)] bg-[var(--bg-panel)] shadow-[0_0_15px_var(--accent-glow)]'
             : isVisited
             ? 'border border-emerald-500/30 bg-[var(--bg-panel)]/90 hover:border-emerald-500/60'
-            : isUnlocked
-            ? 'border border-[var(--border-muted)] bg-[var(--bg-panel)]/80 hover:border-[var(--accent)]/55'
-            : 'border border-[var(--border-muted)] bg-[var(--bg-panel)]/40 opacity-55 cursor-not-allowed'
+            : 'border border-[var(--border-muted)] bg-[var(--bg-panel)]/80 hover:border-[var(--accent)]/55'
         }`}
         aria-label={ariaLabel}
-        aria-disabled={!isUnlocked}
       >
         {/* Header strip */}
         <div className="flex justify-between items-center w-full mb-1">
-          <span 
+          <span
             className={`font-mono text-[11px] font-bold ${
-              isActive 
-                ? 'text-[var(--accent)]' 
-                : isVisited 
-                ? 'text-[var(--status-success-text)]' 
+              isActive
+                ? 'text-[var(--accent)]'
+                : isVisited
+                ? 'text-[var(--status-success-text)]'
                 : 'text-[var(--text-dim)]'
             }`}
           >
@@ -142,37 +124,21 @@ export default function KnowledgePillarCard({
           </p>
         </div>
 
-        {/* Footer info */}
+        {/* Footer info: topics count + honest completion progress */}
         <div className="flex justify-between items-center mt-1 pt-1.5 border-t border-[var(--border-muted)] text-[11px] font-normal text-[var(--text-dim)] w-full">
           <span className="font-mono">{pillar.topicsCount}</span>
-          <span className="flex items-center">
-            {isActive ? (
-              <Unlock className="w-3 h-3 text-[var(--accent)]" aria-hidden="true" />
-            ) : isVisited ? (
-              <CheckCircle2 className="w-3 h-3 text-[var(--status-success-text)]" aria-hidden="true" />
-            ) : isUnlocked ? (
-              <Unlock className="w-3 h-3 text-[var(--text-muted)]" aria-hidden="true" />
-            ) : (
-              <Lock className="w-3 h-3 text-[var(--text-dim)]" aria-hidden="true" />
-            )}
+          <span className="flex items-center gap-1.5">
+            <span
+              className={`font-mono text-[10px] ${
+                isComplete ? 'text-[var(--status-success-text)]' : 'text-[var(--text-muted)]'
+              }`}
+            >
+              {progressLabel}
+            </span>
+            <ProgressRing percent={percent} complete={isComplete} />
           </span>
         </div>
       </button>
-
-      {/* Accessible Locked Tooltip */}
-      {showTooltip && (
-        <div
-          role="tooltip"
-          className="absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-neutral-900 border border-red-500/30 text-white rounded-md p-3 text-[12px] font-mono shadow-xl text-center animate-fade-in"
-          style={{ pointerEvents: 'none' }}
-        >
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-width-[6px] border-solid border-t-neutral-900 border-x-transparent border-b-transparent" />
-          <span className="text-red-400 font-bold block mb-1">🔒 {currentLang === 'no' ? 'STI LÅST' : 'PATH LOCKED'}</span>
-          {currentLang === 'no'
-            ? 'Fullfør det forrige nivået for å låse opp denne stien.'
-            : 'Complete the previous layer to unlock this path.'}
-        </div>
-      )}
     </div>
   );
 }

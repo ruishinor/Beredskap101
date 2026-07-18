@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, AlertTriangle, Play, Lock, Unlock } from 'lucide-react';
+import { Play, Compass } from 'lucide-react';
 import { PillarId } from '../../types';
 import type { ThemeType } from '../../types';
 import { pillarsDataEn, pillarsDataNo } from '../../data/pillarsData';
@@ -41,6 +41,15 @@ const PILLAR_TOPICS_MAP: Record<string, string[]> = {
   'travel-security': ['cuba-baby-milk-scam', 'hotel-room-security'],
 };
 
+// Per-pillar completion progress derived from the shared checklist-completion
+// store (beredskap101_map_progress_v2, threaded in as completedTopics).
+// Guards empty arrays: unknown pillars render 0/0, never NaN.
+function getPillarProgress(pillarId: string, completedTopics: string[]) {
+  const topicIds = PILLAR_TOPICS_MAP[pillarId] || [];
+  const done = topicIds.filter((id) => completedTopics.includes(id)).length;
+  return { done, total: topicIds.length };
+}
+
 export default function KnowledgeMapSection({
   currentLang,
   theme,
@@ -58,9 +67,6 @@ export default function KnowledgeMapSection({
   const [hoveredPillarId, setHoveredPillarId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<'core' | 'category' | 'topics' | 'guides' | 'actions'>('core');
   const [unlockedSteps, setUnlockedSteps] = useState<string[]>(['core']);
-  
-  // Lock Bypass Override Toggle State
-  const [lockOverride, setLockOverride] = useState<boolean>(false);
 
   // Dynamic Hub Skew State
   const [skew, setSkew] = useState({ x: 0, y: 0 });
@@ -127,17 +133,15 @@ export default function KnowledgeMapSection({
     const pillar = knowledgePillars.find((p) => p.id === pillarId);
     if (!pillar) return;
 
-    // Allow interaction if pillar is unlocked OR override is active
-    if (pillar.isUnlocked || lockOverride) {
-      setActivePillarId(pillarId);
-      setCurrentStep('category');
-      setUnlockedSteps((prev) => {
-        const next = [...prev];
-        if (!next.includes('category')) next.push('category');
-        return next;
-      });
-      playBeep(520, 'sine', 0.03, 0.1);
-    }
+    // All pillars are accessible on load; progression is shown as completion.
+    setActivePillarId(pillarId);
+    setCurrentStep('category');
+    setUnlockedSteps((prev) => {
+      const next = [...prev];
+      if (!next.includes('category')) next.push('category');
+      return next;
+    });
+    playBeep(520, 'sine', 0.03, 0.1);
   };
 
   const handleLaunchTopic = (appPillarId: PillarId, actionId: string) => {
@@ -174,8 +178,8 @@ export default function KnowledgeMapSection({
       {/* Background patterns */}
       <div className="knowledge-map-grain" aria-hidden="true" />
       <div className="knowledge-map-grid-bg absolute inset-0 opacity-30 pointer-events-none" aria-hidden="true" />
-      <div 
-        className="knowledge-map-radial-glow" 
+      <div
+        className="knowledge-map-radial-glow"
         aria-hidden="true"
         style={{
           transform: `translate(calc(-50% + ${skew.x * 2.5}px), calc(-50% + ${skew.y * 2.5}px))`,
@@ -188,7 +192,7 @@ export default function KnowledgeMapSection({
 
       {/* B. DASHBOARD SPLIT GRID (Side-by-side on desktop) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch relative z-10 w-full">
-        
+
         {/* Left Column: Radial Map Canvas (75% width on desktop) */}
         <div className="lg:col-span-9 flex justify-center items-center relative min-h-[360px] lg:min-h-[480px] bg-black/10 border border-[var(--border-muted)] rounded-[var(--radius-lg)] p-3">
           <div
@@ -234,11 +238,8 @@ export default function KnowledgeMapSection({
               const top = cardY - cardHeight / 2;
 
               const isActive = activePillarId === pillar.id && currentStep !== 'core';
-              const isUnlocked = pillar.isUnlocked || lockOverride;
-              
-              // Map topic status to visited
-              const topicIds = PILLAR_TOPICS_MAP[pillar.id] || [];
-              const isVisited = topicIds.length > 0 && topicIds.some((id) => completedTopics.includes(id));
+              const { done, total } = getPillarProgress(pillar.id, completedTopics);
+              const isVisited = done > 0;
 
               return (
                 <div
@@ -255,8 +256,9 @@ export default function KnowledgeMapSection({
                   <KnowledgePillarCard
                     pillar={pillar}
                     isActive={isActive}
-                    isUnlocked={isUnlocked}
                     isVisited={isVisited}
+                    progressDone={done}
+                    progressTotal={total}
                     currentLang={currentLang}
                     onClick={() => handleSelectPillar(pillar.id)}
                     onHoverStart={() => setHoveredPillarId(pillar.id)}
@@ -291,8 +293,8 @@ export default function KnowledgeMapSection({
                   {currentLang === 'no' ? 'Kjerneberedskap' : 'Core Preparedness'}
                 </h3>
                 <p className="text-[12px] text-[var(--text-muted)] leading-tight mt-1 font-sans">
-                  {currentLang === 'no' 
-                    ? 'Beredskap starter med kunnskap og handling.' 
+                  {currentLang === 'no'
+                    ? 'Beredskap starter med kunnskap og handling.'
                     : 'Preparedness starts with knowledge and action.'}
                 </p>
               </div>
@@ -301,94 +303,36 @@ export default function KnowledgeMapSection({
             {/* Vertical Flow Divider */}
             <div className="h-3 w-0.5 border-l border-dashed border-[var(--border-muted)] mx-auto" aria-hidden="true" />
 
-            {/* 2. Unlocked/Active Cards */}
+            {/* 2. All pillar cards (accessible on load, progression shown as completion) */}
             <div className="flex flex-col gap-3">
-              {knowledgePillars
-                .filter((p) => p.isUnlocked || lockOverride)
-                .map((pillar) => {
-                  const isActive = activePillarId === pillar.id && currentStep !== 'core';
-                  const topicIds = PILLAR_TOPICS_MAP[pillar.id] || [];
-                  const isVisited = topicIds.length > 0 && topicIds.some((id) => completedTopics.includes(id));
+              {knowledgePillars.map((pillar) => {
+                const isActive = activePillarId === pillar.id && currentStep !== 'core';
+                const { done, total } = getPillarProgress(pillar.id, completedTopics);
+                const isVisited = done > 0;
 
-                  return (
-                    <div key={pillar.id} className="w-full min-h-[135px]">
-                      <KnowledgePillarCard
-                        pillar={pillar}
-                        isActive={isActive}
-                        isUnlocked={true}
-                        isVisited={isVisited}
-                        currentLang={currentLang}
-                        onClick={() => handleSelectPillar(pillar.id)}
-                        onHoverStart={() => {}}
-                        onHoverEnd={() => {}}
-                        cardRef={() => {}}
-                      />
-                    </div>
-                  );
-                })}
-            </div>
-
-            {/* Vertical Flow Divider */}
-            <div className="h-3 w-0.5 border-l border-dashed border-[var(--border-muted)] mx-auto" aria-hidden="true" />
-
-            {/* 3. Locked Cards */}
-            <div className="flex flex-col gap-3">
-              {knowledgePillars
-                .filter((p) => !p.isUnlocked && !lockOverride)
-                .map((pillar) => {
-                  const isActive = activePillarId === pillar.id && currentStep !== 'core';
-                  const topicIds = PILLAR_TOPICS_MAP[pillar.id] || [];
-                  const isVisited = topicIds.length > 0 && topicIds.some((id) => completedTopics.includes(id));
-
-                  return (
-                    <div key={pillar.id} className="w-full min-h-[135px]">
-                      <KnowledgePillarCard
-                        pillar={pillar}
-                        isActive={isActive}
-                        isUnlocked={false}
-                        isVisited={isVisited}
-                        currentLang={currentLang}
-                        onClick={() => handleSelectPillar(pillar.id)}
-                        onHoverStart={() => {}}
-                        onHoverEnd={() => {}}
-                        cardRef={() => {}}
-                      />
-                    </div>
-                  );
-                })}
+                return (
+                  <div key={pillar.id} className="w-full min-h-[135px]">
+                    <KnowledgePillarCard
+                      pillar={pillar}
+                      isActive={isActive}
+                      isVisited={isVisited}
+                      progressDone={done}
+                      progressTotal={total}
+                      currentLang={currentLang}
+                      onClick={() => handleSelectPillar(pillar.id)}
+                      onHoverStart={() => {}}
+                      onHoverEnd={() => {}}
+                      cardRef={() => {}}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
         {/* Right Column: Interactive Control Sidebar (25% width on desktop) */}
         <div className="lg:col-span-3 flex flex-col gap-4 justify-between h-full">
-          
-          {/* Lock Override Actions panel */}
-          <div className="bg-[var(--bg-panel)] border border-[var(--border-muted)] rounded-[var(--radius-md)] p-4 flex items-center justify-between shadow-sm select-none">
-            <span className="text-[12px] font-mono font-bold text-[var(--text-main)] flex items-center gap-1.5">
-              <span aria-hidden="true">
-                {lockOverride ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
-              </span>
-              <span>{currentLang === 'no' ? 'Systemlås' : 'System Lock State'}</span>
-            </span>
-            
-            <button
-              type="button"
-              onClick={() => {
-                setLockOverride(prev => !prev);
-                playBeep(lockOverride ? 350 : 650, 'sine', 0.04, 0.15);
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[12px] font-mono font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] ${
-                lockOverride
-                  ? 'bg-[var(--accent-soft)] border-[var(--border-active)] text-[var(--accent)] font-extrabold shadow-sm'
-                  : 'bg-black/30 border-[var(--border-muted)] text-[var(--text-dim)] hover:border-white/20'
-              }`}
-              aria-label={lockOverride ? 'Bypass locks active. Click to lock.' : 'Locks active. Click to bypass locks.'}
-              aria-pressed={lockOverride}
-            >
-              <span>{lockOverride ? 'Bypass: ACTIVE' : 'Bypass: OFF'}</span>
-            </button>
-          </div>
 
           {/* Stepper (Vertical rendering for compact sidebar) */}
           <ProgressiveDiscoveryStepper
@@ -400,7 +344,7 @@ export default function KnowledgeMapSection({
 
           {/* Compact topic preview (progressive reveal on selected pillar) */}
           {currentStep !== 'core' && activePillarId && activePillarData ? (
-            <div 
+            <div
               className="bg-[var(--bg-panel)] border border-[var(--border-muted)] rounded-[var(--radius-md)] p-3 space-y-3 animate-fade-in flex-grow overflow-hidden flex flex-col justify-between"
               role="region"
               aria-labelledby="sidebar-preview-title"
@@ -414,14 +358,14 @@ export default function KnowledgeMapSection({
                     {activePillarData.title}
                   </h3>
                 </div>
-                
+
                 {/* Completed topics count */}
                 {(() => {
                   const topics = activePillarData.topics;
-                  const completedCount = topics.filter((t) => completedTopics.includes(t.id)).length;
+                  const completedCount = topics.filter((topic) => completedTopics.includes(topic.id)).length;
                   return (
                     <span className="text-[11px] font-mono text-[var(--status-success-text)] bg-[var(--status-success-bg)] px-2 py-0.5 rounded border border-[var(--status-success-border)] flex-shrink-0">
-                      {completedCount}/{topics.length} Done
+                      {completedCount}/{topics.length} {t('pillar_progress_unit')}
                     </span>
                   );
                 })()}
@@ -482,11 +426,11 @@ export default function KnowledgeMapSection({
             </div>
           ) : (
             <div className="bg-black/10 border border-dashed border-[var(--border-muted)] rounded-[var(--radius-md)] p-6 text-center flex flex-col justify-center items-center flex-grow py-8 text-[var(--text-dim)] font-mono select-none">
-              <Lock className="w-5 h-5 mb-2 opacity-50" aria-hidden="true" />
+              <Compass className="w-5 h-5 mb-2 opacity-50" aria-hidden="true" />
               <p className="text-[12px] max-w-[25ch] leading-relaxed">
                 {currentLang === 'no'
-                  ? 'Velg en av søylene på kartet for å låse opp temaer.'
-                  : 'Select an active domain pillar on the map to reveal SOP paths.'}
+                  ? 'Velg en søyle på kartet for å utforske temaene.'
+                  : 'Select a pillar on the map to explore its topics.'}
               </p>
             </div>
           )}

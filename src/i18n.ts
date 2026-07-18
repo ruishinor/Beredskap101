@@ -162,7 +162,21 @@ const en = {
   backup_error_corrupt: 'Backup file is corrupted or passphrase is wrong.',
   backup_error_unsupported_version: 'Unsupported backup version.',
   backup_error_v3_requires_https: 'This backup uses strong encryption (v3) that requires a secure HTTPS connection.',
-  backup_hint_passphrase_strength: 'Tip: mix upper/lowercase letters, digits and symbols for a stronger passphrase.'
+  backup_hint_passphrase_strength: 'Tip: mix upper/lowercase letters, digits and symbols for a stronger passphrase.',
+  pillar_progress: '{{done}}/{{total}} done',
+  pillar_progress_unit: 'done',
+  kmap_search_placeholder: 'Search all content…',
+  status_label_connection: 'Connection',
+  status_label_cache: 'Offline cache',
+  status_label_feed: 'Feed refresh',
+  status_label_guides: 'Guides',
+  status_online: 'Online',
+  status_offline: 'Offline',
+  status_degraded: 'Degraded',
+  status_cache_ready: 'Ready',
+  status_cache_preparing: 'Preparing…',
+  status_cache_unavailable: 'Unavailable on this connection',
+  status_feed_never: 'Not fetched yet'
 };
 
 const no = {
@@ -290,7 +304,21 @@ const no = {
   backup_error_corrupt: 'Backupfilen er ødelagt, eller passordet er feil.',
   backup_error_unsupported_version: 'Ustøttet backupversjon.',
   backup_error_v3_requires_https: 'Denne backupen bruker sterk kryptering (v3) som krever en sikker HTTPS-tilkobling.',
-  backup_hint_passphrase_strength: 'Tips: bland store og små bokstaver, tall og symboler for et sterkere passord.'
+  backup_hint_passphrase_strength: 'Tips: bland store og små bokstaver, tall og symboler for et sterkere passord.',
+  pillar_progress: '{{done}}/{{total}} fullført',
+  pillar_progress_unit: 'fullført',
+  kmap_search_placeholder: 'Søk i alt innhold…',
+  status_label_connection: 'Tilkobling',
+  status_label_cache: 'Offline-cache',
+  status_label_feed: 'Strøm oppdatert',
+  status_label_guides: 'Guider',
+  status_online: 'På nett',
+  status_offline: 'Frakoblet',
+  status_degraded: 'Nedsatt',
+  status_cache_ready: 'Klar',
+  status_cache_preparing: 'Klargjøres…',
+  status_cache_unavailable: 'Utilgjengelig på denne tilkoblingen',
+  status_feed_never: 'Ikke hentet ennå'
 };
 
 const resources = {
