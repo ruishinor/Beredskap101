@@ -1,12 +1,17 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import QRCode from 'qrcode';
 import { Camera, Download, QrCode, RefreshCw, Share2, Shield, Upload } from 'lucide-react';
 import {
+  BackupDecryptionError,
+  UnsupportedBackupVersionError,
   buildSecureBackupBundle,
-  decryptSecureBackupBundle,
+  decryptSecureBackupBundleAuto,
+  detectBackupFormat,
   exportSecureBackupBundle,
+  exportSecureBackupBundleV3,
+  isWebCryptoBackupAvailable,
   loadProgressState,
   loadVaultDocuments,
   saveProgressState,
@@ -15,6 +20,8 @@ import {
 import { readLocalAiSettings, saveLocalAiSettings } from '../utils/localAiSettings';
 import type { ThemeType } from '../types';
 
+const UPGRADE_NOTICE_STORAGE_KEY = 'beredskap101_backup_v3_notice_v1';
+
 export default function SecureSaveManager({
   theme,
   onStateRestored,
@@ -22,7 +29,7 @@ export default function SecureSaveManager({
   theme: ThemeType;
   onStateRestored?: () => void;
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentLang = (i18n.language || 'en') as 'en' | 'no';
 
   const [passkey, setPasskey] = useState<string>('');
@@ -32,13 +39,35 @@ export default function SecureSaveManager({
   const [importPasskey, setImportPasskey] = useState<string>('');
   const [scanActive, setScanActive] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [pendingUpgradeNotice, setPendingUpgradeNotice] = useState<boolean>(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
+  // Draw the QR canvas only after it is mounted. Encryption itself happens
+  // exclusively on button clicks — never per keystroke.
   useEffect(() => {
-    void handleExport();
-  }, [passkey]);
+    if (!qrGenerated || !encryptedExport) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    QRCode.toCanvas(canvas, encryptedExport, {
+      width: 256,
+      margin: 2,
+      color: {
+        dark: '#10201c',
+        light: '#ffffff',
+      },
+    }).catch((error) => {
+      console.error('Failed to generate QR code:', error);
+      showStatus(
+        currentLang === 'no'
+          ? 'QR-generering feilet. Reduser datamengde eller bruk fil-eksport.'
+          : 'QR generation failed. Reduce payload size or use file export.',
+        'error'
+      );
+      setQrGenerated(false);
+    });
+  }, [qrGenerated, encryptedExport]);
 
   const showStatus = (text: string, type: 'success' | 'error' | 'info') => {
     setStatusMessage({ text, type });
@@ -50,11 +79,26 @@ export default function SecureSaveManager({
     return trimmed.length < 12 || trimmed.toUpperCase() === 'BEREDSKAP101';
   };
 
-  const handleExport = async () => {
+  // zxcvbn-free entropy hint: length floor is enforced separately; this only
+  // warns when the class mix is poor (never blocks).
+  const needsStrengthHint = (value: string) => {
+    const trimmed = value.trim();
+    if (trimmed.length < 12) return false;
+    const classes = [/[a-zæøå]/, /[A-ZÆØÅ]/, /\d/, /[^a-zA-ZæøåÆØÅ0-9]/].filter((pattern) => pattern.test(trimmed)).length;
+    return classes < 3;
+  };
+
+  // Builds and encrypts a fresh backup. v3 (WebCrypto PBKDF2 + AES-GCM) when
+  // available; on non-secure contexts (LAN http self-host, no crypto.subtle)
+  // it falls back to the legacy crypto-js path with an explicit UI warning
+  // instead of failing.
+  const buildEncryptedExport = async (): Promise<string | null> => {
     if (isWeakPasskey(passkey)) {
-      setEncryptedExport('');
-      setQrGenerated(false);
-      return;
+      showStatus(
+        currentLang === 'no' ? 'Velg et backup-passord på minst 12 tegn.' : 'Choose a backup passkey of at least 12 characters.',
+        'error'
+      );
+      return null;
     }
 
     try {
@@ -62,44 +106,57 @@ export default function SecureSaveManager({
       const vaultDocuments = await loadVaultDocuments();
       const localAiSettings = readLocalAiSettings();
       const bundle = buildSecureBackupBundle(progressState, vaultDocuments, localAiSettings);
-      const encrypted = exportSecureBackupBundle(bundle, passkey);
-      setEncryptedExport(encrypted);
-      setQrGenerated(false);
+      if (isWebCryptoBackupAvailable()) {
+        return await exportSecureBackupBundleV3(bundle, passkey);
+      }
+      showStatus(t('backup_warn_reduced_encryption'), 'info');
+      return exportSecureBackupBundle(bundle, passkey);
     } catch (error) {
       console.error(error);
       showStatus(currentLang === 'no' ? 'Kunne ikke bygge backup.' : 'Failed to build backup.', 'error');
+      return null;
     }
+  };
+
+  // One-time notice after a legacy import has been re-exported as v3.
+  const maybeShowUpgradeNotice = () => {
+    if (!pendingUpgradeNotice || !isWebCryptoBackupAvailable()) return;
+    try {
+      if (window.localStorage.getItem(UPGRADE_NOTICE_STORAGE_KEY)) {
+        setPendingUpgradeNotice(false);
+        return;
+      }
+      window.localStorage.setItem(UPGRADE_NOTICE_STORAGE_KEY, '1');
+    } catch {
+      // Storage blocked: still show the notice once for this session.
+    }
+    setPendingUpgradeNotice(false);
+    showStatus(t('backup_notice_upgraded'), 'info');
+  };
+
+  const handleExport = async () => {
+    const encrypted = await buildEncryptedExport();
+    if (!encrypted) {
+      setEncryptedExport('');
+      setQrGenerated(false);
+      return;
+    }
+    setEncryptedExport(encrypted);
+    setQrGenerated(false);
+    maybeShowUpgradeNotice();
   };
 
   const generateQRCode = async () => {
-    if (!canvasRef.current || !encryptedExport) return;
-    try {
-      await QRCode.toCanvas(canvasRef.current, encryptedExport, {
-        width: 256,
-        margin: 2,
-        color: {
-          dark: '#10201c',
-          light: '#ffffff',
-        },
-      });
-      setQrGenerated(true);
-    } catch (error) {
-      console.error('Failed to generate QR code:', error);
-      showStatus(
-        currentLang === 'no'
-          ? 'QR-generering feilet. Reduser datamengde eller bruk fil-eksport.'
-          : 'QR generation failed. Reduce payload size or use file export.',
-        'error'
-      );
-    }
+    const encrypted = await buildEncryptedExport();
+    if (!encrypted) return;
+    setEncryptedExport(encrypted);
+    setQrGenerated(true);
   };
 
-  const handleDownload = () => {
-    if (!encryptedExport) {
-      showStatus(currentLang === 'no' ? 'Velg et backup-passord på minst 12 tegn.' : 'Choose a backup passkey of at least 12 characters.', 'error');
-      return;
-    }
-    const blob = new Blob([encryptedExport], { type: 'text/plain' });
+  const handleDownload = async () => {
+    const encrypted = await buildEncryptedExport();
+    if (!encrypted) return;
+    const blob = new Blob([encrypted], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -112,15 +169,13 @@ export default function SecureSaveManager({
   };
 
   const handleShare = async () => {
-    if (!encryptedExport) {
-      showStatus(currentLang === 'no' ? 'Velg et backup-passord på minst 12 tegn.' : 'Choose a backup passkey of at least 12 characters.', 'error');
-      return;
-    }
+    const encrypted = await buildEncryptedExport();
+    if (!encrypted) return;
     if (navigator.share) {
       try {
         await navigator.share({
           title: 'Beredskap101 Backup',
-          text: encryptedExport,
+          text: encrypted,
         });
         showStatus(currentLang === 'no' ? 'Backup delt.' : 'Backup shared.', 'success');
         return;
@@ -130,7 +185,7 @@ export default function SecureSaveManager({
     }
 
     try {
-      await navigator.clipboard.writeText(encryptedExport);
+      await navigator.clipboard.writeText(encrypted);
       showStatus(
         currentLang === 'no' ? 'Backup kopiert til utklippstavle.' : 'Backup copied to clipboard.',
         'success'
@@ -157,22 +212,44 @@ export default function SecureSaveManager({
       return;
     }
 
-    const decryptedBundle = decryptSecureBackupBundle(importText.trim(), importPasskey);
-    if (!decryptedBundle) {
-      showStatus(
-        currentLang === 'no'
-          ? 'Dekryptering feilet. Kontroller kode og passord.'
-          : 'Decryption failed. Verify backup code and passkey.',
-        'error'
-      );
+    // Transactional decode -> validate -> apply: the payload is fully
+    // decrypted and structurally validated before any state is touched, so a
+    // corrupt backup causes zero state mutation.
+    let decrypted: Awaited<ReturnType<typeof decryptSecureBackupBundleAuto>>;
+    try {
+      decrypted = await decryptSecureBackupBundleAuto(importText.trim(), importPasskey);
+    } catch (error) {
+      if (error instanceof UnsupportedBackupVersionError) {
+        showStatus(t('backup_error_unsupported_version'), 'error');
+      } else if (error instanceof BackupDecryptionError) {
+        let looksLikeV3 = false;
+        try {
+          looksLikeV3 = detectBackupFormat(importText.trim()) === 'v3';
+        } catch {
+          looksLikeV3 = false;
+        }
+        if (looksLikeV3 && !isWebCryptoBackupAvailable()) {
+          showStatus(t('backup_error_v3_requires_https'), 'error');
+        } else {
+          showStatus(t('backup_error_corrupt'), 'error');
+        }
+      } else {
+        showStatus(t('backup_error_corrupt'), 'error');
+      }
       return;
     }
+
+    const decryptedBundle = decrypted.bundle;
 
     try {
       await saveProgressState(decryptedBundle.progressState);
       await saveVaultDocuments(decryptedBundle.vaultDocuments);
       if (decryptedBundle.localAiSettings) {
         saveLocalAiSettings(decryptedBundle.localAiSettings);
+      }
+      if (decrypted.format !== 'v3') {
+        // Migration-on-save: the next export will be a v3 envelope.
+        setPendingUpgradeNotice(true);
       }
       showStatus(
         currentLang === 'no'
@@ -270,6 +347,9 @@ export default function SecureSaveManager({
                 ? 'Bruk minst 12 tegn. Standardpassordet BEREDSKAP101 avvises.'
                 : 'Use at least 12 characters. The old BEREDSKAP101 default is rejected.'}
             </p>
+            {needsStrengthHint(passkey) && (
+              <p className="text-[10px] text-amber-500">{t('backup_hint_passphrase_strength')}</p>
+            )}
           </div>
 
           {qrGenerated ? (
