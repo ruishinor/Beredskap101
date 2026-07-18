@@ -6,10 +6,13 @@ const TRANSPARENT_PIXEL_PNG = Buffer.from(
   'base64'
 );
 
-function trackPageErrors(page: Page, pageErrors: string[]) {
+// Registers page-error tracking and returns the assertion to run at test end.
+function assertNoPageErrors(page: Page) {
+  const pageErrors: string[] = [];
   page.on('pageerror', (error) => {
     pageErrors.push(error.message);
   });
+  return () => expect(pageErrors).toEqual([]);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -19,9 +22,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('ui regressions', () => {
-  test('keeps library cards visible, exposes Support, ships the bundled shelter map, and explains local-only storage/AI', async ({ page, baseURL }) => {
-    const pageErrors: string[] = [];
-    trackPageErrors(page, pageErrors);
+  test('library: keeps feature cards visible with distinct card presentation', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
 
     await page.goto(`${baseURL}/#library`, { waitUntil: 'load' });
     await page.locator('#btn-lang-en').click();
@@ -51,6 +53,12 @@ test.describe('ui regressions', () => {
       `${featureCardPresentation.parentBackgroundImage}|${featureCardPresentation.parentBackgroundColor}`
     );
 
+    checkPageErrors();
+  });
+
+  test('support: exposes contact email and GDPR article guidance', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
     await page.goto(`${baseURL}/#support`, { waitUntil: 'load' });
     await expect(page.getByRole('heading', { name: 'Support', exact: true })).toBeVisible();
     await expect(page.locator('a[href="mailto:info@holf.services"]').first()).toBeVisible();
@@ -58,12 +66,27 @@ test.describe('ui regressions', () => {
     await expect(page.locator('section')).toContainText(/Article 17|Artikkel 17/);
     await expect(page.locator('section')).toContainText(/Article 20|Artikkel 20/);
 
+    checkPageErrors();
+  });
+
+  test('contact: exposes the contact email link', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
     await page.goto(`${baseURL}/#contact`, { waitUntil: 'load' });
     await expect(page.locator('a[href="mailto:info@holf.services"]').first()).toBeVisible();
+
+    checkPageErrors();
+  });
+
+  test('shelters: street mode loads tiles and shows the street-active label', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
 
     await page.goto(`${baseURL}/#shelters`, { waitUntil: 'load' });
     await expect(page.locator('#shelter-map-canvas')).toBeVisible();
 
+    // 'topographic' is a legacy value coerced to 'street' on read
+    // (ShelterMap.tsx readPersistedMapLayerMode); reloading lets the
+    // component persist the coerced mode so the Street click below is real.
     await page.evaluate(() => {
       window.localStorage.setItem('beredskap101.shelterMap.layerMode.v1', 'topographic');
     });
@@ -79,6 +102,15 @@ test.describe('ui regressions', () => {
     await streetLayerButton.click();
     await expect(page.locator('body')).toContainText(/Street map active|Gatekart aktivt/);
 
+    checkPageErrors();
+  });
+
+  test('shelters: bundled offline package copy and shelter popup links are honest', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#shelters`, { waitUntil: 'load' });
+    await expect(page.locator('#shelter-map-canvas')).toBeVisible();
+
     const offlinePackageButton = page.locator('button').filter({ hasText: /Offline package|Offline-pakke/ }).first();
     await expect(offlinePackageButton).toBeEnabled();
     await offlinePackageButton.click();
@@ -92,38 +124,11 @@ test.describe('ui regressions', () => {
     await expect(page.getByRole('link', { name: /Data source|Datakilde/ }).first()).toHaveAttribute('href', /objektkatalog\.geonorge\.no/);
     await expect(page.getByRole('link', { name: /DSB guidance|Råd fra DSB/ }).first()).toHaveAttribute('href', /dsb\.no/);
 
-    await page.goto(`${baseURL}/#checklists`, { waitUntil: 'load' });
-    await page.getByRole('button', { name: 'Local AI Assist' }).click();
-    await expect(page.locator('#local-ai-assistant')).toContainText('This app does not download model files.');
-    await expect(page.locator('#local-ai-assistant')).toContainText('Data minimization:');
-    await expect(page.locator('#local-ai-assistant')).toContainText('Recommended: qwen2.5:3b, llama3.2:3b, mistral:7b-instruct');
-
-    await page.getByRole('button', { name: 'Local Document Vault' }).click();
-    await expect(page.locator('#local-document-vault')).toContainText('IndexedDB with localStorage fallback');
-    await expect(page.locator('#local-document-vault')).toContainText('Export/import is manual and local only');
-
-    await page.goto(`${baseURL}/#faq`, { waitUntil: 'load' });
-    await expect(page.locator('section')).toContainText('Do you store personal data?');
-    await expect(page.locator('section')).toContainText('How do I start using a local AI model here?');
-    await expect(page.locator('section')).toContainText('There is no automatic cloud sync');
-    await expect(page.locator('section')).toContainText('How does the map package work now?');
-    await expect(page.locator('section')).toContainText('How do export and deletion work?');
-    await expect(page.locator('section')).toContainText(/orientation backdrop|orienteringsbakgrunn/);
-
-    await page.goto(`${baseURL}/#privacy`, { waitUntil: 'load' });
-    await expect(page.locator('section')).toContainText('No automatic cloud sync is used');
-    await expect(page.locator('section')).toContainText('No data is sent to Beredskap101 servers.');
-
-    await page.goto(`${baseURL}/#about`, { waitUntil: 'load' });
-    await expect(page.locator('section')).toContainText('100% local-first Progressive Web App');
-    await expect(page.locator('section')).toContainText('free from cloud sync or central telemetry');
-
-    expect(pageErrors).toEqual([]);
+    checkPageErrors();
   });
 
-  test('falls back to the offline map background when street tiles fail to load', async ({ page, baseURL }) => {
-    const pageErrors: string[] = [];
-    trackPageErrors(page, pageErrors);
+  test('shelters: falls back to the offline map background when street tiles fail to load', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
 
     // Registered after the beforeEach stub, so this handler wins and every
     // tile request is aborted — pinning the tileerror -> offline-grid path.
@@ -134,6 +139,63 @@ test.describe('ui regressions', () => {
     await expect(page.locator('body')).toContainText(/Offline map background|Offline kartbakgrunn/);
     await expect(page.locator('body')).not.toContainText(/Street map active|Gatekart aktivt/);
 
-    expect(pageErrors).toEqual([]);
+    checkPageErrors();
+  });
+
+  test('checklists: local AI assist explains local-only, no-download behavior', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#checklists`, { waitUntil: 'load' });
+    await page.getByRole('button', { name: 'Local AI Assist' }).click();
+    await expect(page.locator('#local-ai-assistant')).toContainText('This app does not download model files.');
+    await expect(page.locator('#local-ai-assistant')).toContainText('Data minimization:');
+    await expect(page.locator('#local-ai-assistant')).toContainText('Recommended: qwen2.5:3b, llama3.2:3b, mistral:7b-instruct');
+
+    checkPageErrors();
+  });
+
+  test('checklists: local document vault explains IndexedDB/local-only export', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#checklists`, { waitUntil: 'load' });
+    await page.getByRole('button', { name: 'Local Document Vault' }).click();
+    await expect(page.locator('#local-document-vault')).toContainText('IndexedDB with localStorage fallback');
+    await expect(page.locator('#local-document-vault')).toContainText('Export/import is manual and local only');
+
+    checkPageErrors();
+  });
+
+  test('faq: answers privacy, local AI, map package, and export questions', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#faq`, { waitUntil: 'load' });
+    await expect(page.locator('section')).toContainText('Do you store personal data?');
+    await expect(page.locator('section')).toContainText('How do I start using a local AI model here?');
+    await expect(page.locator('section')).toContainText('There is no automatic cloud sync');
+    await expect(page.locator('section')).toContainText('How does the map package work now?');
+    await expect(page.locator('section')).toContainText('How do export and deletion work?');
+    await expect(page.locator('section')).toContainText(/orientation backdrop|orienteringsbakgrunn/);
+
+    checkPageErrors();
+  });
+
+  test('privacy: states no cloud sync and no server-bound data', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#privacy`, { waitUntil: 'load' });
+    await expect(page.locator('section')).toContainText('No automatic cloud sync is used');
+    await expect(page.locator('section')).toContainText('No data is sent to Beredskap101 servers.');
+
+    checkPageErrors();
+  });
+
+  test('about: states local-first PWA positioning without telemetry', async ({ page, baseURL }) => {
+    const checkPageErrors = assertNoPageErrors(page);
+
+    await page.goto(`${baseURL}/#about`, { waitUntil: 'load' });
+    await expect(page.locator('section')).toContainText('100% local-first Progressive Web App');
+    await expect(page.locator('section')).toContainText('free from cloud sync or central telemetry');
+
+    checkPageErrors();
   });
 });
