@@ -2517,7 +2517,8 @@ export default function App() {
       <CookieBanner
         currentLang={currentLang}
         onOpenSettings={() => {
-          setActiveTab('cookies');
+          setActiveTab('support');
+          setSettingsSubTab('cookies');
           scrollToTop();
         }}
       />

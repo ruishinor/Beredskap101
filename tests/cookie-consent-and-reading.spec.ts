@@ -76,6 +76,53 @@ test.describe('cookie consent and reading list', () => {
     expect(pageErrors).toEqual([]);
   });
 
+  test('banner settings button opens the cookies settings panel in both locales', async ({ page, baseURL }) => {
+    const pageErrors: string[] = [];
+    trackPageErrors(page, pageErrors);
+
+    await page.addInitScript(() => {
+      try {
+        if (!sessionStorage.getItem('__beredskap101_cookie_settings_test_cleared')) {
+          localStorage.clear();
+          sessionStorage.setItem('__beredskap101_cookie_settings_test_cleared', '1');
+        }
+      } catch {
+        // Ignore storage errors in the test bootstrap.
+      }
+    });
+
+    // EN: banner "Settings" must land on the cookies settings panel (no dead-end tab).
+    await page.goto(`${baseURL}/`, { waitUntil: 'load' });
+    const bannerEn = page.locator('div.fixed').filter({ hasText: BANNER_TEXT });
+    await expect(bannerEn).toBeVisible();
+    await bannerEn.getByRole('button', { name: 'Settings' }).click();
+    await expect(page.getByRole('heading', { name: 'Cookie Preferences' })).toBeVisible();
+    await expect(page.getByText('Current setting: No preference saved.')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#cookies');
+
+    // NO: same banner path lands on the same panel in Norwegian.
+    await page.locator('#btn-lang-no').click();
+    const bannerNo = page.locator('div.fixed').filter({
+      hasText: 'Vi bruker bare nødvendige funksjonsinnstillinger lokalt i nettleseren.',
+    });
+    await expect(bannerNo).toBeVisible();
+    await bannerNo.getByRole('button', { name: 'Innstillinger' }).click();
+    await expect(page.getByRole('heading', { name: 'Cookie-innstillinger' })).toBeVisible();
+    await expect(page.getByText('Nåværende valg: Ingen valg er lagret.')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#cookies');
+
+    // Re-open path: the hash route and the support navigation entry land identically.
+    await page.goto(`${baseURL}/#cookies`, { waitUntil: 'load' });
+    await expect(page.getByRole('heading', { name: 'Cookie-innstillinger' })).toBeVisible();
+
+    await page.goto(`${baseURL}/#support`, { waitUntil: 'load' });
+    await page.getByRole('button', { name: 'Cookie-valg' }).click();
+    await expect(page.getByRole('heading', { name: 'Cookie-innstillinger' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#cookies');
+
+    expect(pageErrors).toEqual([]);
+  });
+
   test('renders the grouped After trilogy and the new recommendations', async ({ page, baseURL }) => {
     const pageErrors: string[] = [];
     trackPageErrors(page, pageErrors);

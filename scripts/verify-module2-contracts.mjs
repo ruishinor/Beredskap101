@@ -343,6 +343,15 @@ function run() {
     'Pillar cards render an honest i18n completion progress label.'
   );
 
+  assert(
+    !appTsx.includes("setActiveTab('cookies')"),
+    'Cookie banner settings routes to the support cookies sub-tab (no dead-end cookies tab).'
+  );
+  assert(
+    appTsx.includes("setSettingsSubTab('cookies')"),
+    'Cookie settings entry point sets the cookies settings sub-tab.'
+  );
+
   console.log('\n[SUCCESS] Module 2 contract verification completed with no errors or flags.');
 }
 
