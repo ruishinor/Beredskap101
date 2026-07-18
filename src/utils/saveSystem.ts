@@ -130,7 +130,124 @@ function isBackupBundle(raw: unknown): raw is SecureBackupBundle {
   return value.version === 2 && 'progressState' in value;
 }
 
-function decodeEncryptedPayload(encryptedData: string, passkey: string): unknown | null {
+// --- Backup cryptography ---------------------------------------------------
+// v1: crypto-js passphrase mode, bare ProgressState payload (DECRYPT ONLY).
+// v2: crypto-js passphrase mode, SecureBackupBundle payload (DECRYPT ONLY).
+// v3: WebCrypto PBKDF2-SHA-256 + AES-GCM envelope (current export format).
+// New exports always use v3 when WebCrypto is available; the crypto-js import
+// is retained exclusively for reading legacy v1/v2 backups.
+
+const V3_KDF = 'PBKDF2-SHA-256' as const;
+// OWASP floor for PBKDF2-HMAC-SHA-256 is 310k; 600k is used when the device
+// can afford it. The iteration count is stored in each envelope, so per-file
+// cost is self-describing and future changes stay readable.
+const V3_ITERATIONS = 600000;
+const V3_MAX_ITERATIONS = 10_000_000;
+const V3_SALT_BYTES = 16;
+const V3_IV_BYTES = 12;
+
+export interface BackupEnvelopeV3 {
+  v: 3;
+  kdf: typeof V3_KDF;
+  iter: number;
+  salt: string;
+  iv: string;
+  ct: string;
+}
+
+export class UnsupportedBackupVersionError extends Error {
+  readonly code = 'UNSUPPORTED_BACKUP_VERSION';
+  constructor(version: unknown) {
+    super(`Unsupported backup version: ${String(version)}`);
+    this.name = 'UnsupportedBackupVersionError';
+  }
+}
+
+export class BackupDecryptionError extends Error {
+  readonly code = 'BACKUP_DECRYPTION_FAILED';
+  constructor(message = 'Backup decryption failed') {
+    super(message);
+    this.name = 'BackupDecryptionError';
+  }
+}
+
+// crypto.subtle is unavailable on non-secure contexts (e.g. LAN http self-host).
+// Callers must check this and fall back to the legacy path with a UI warning.
+export function isWebCryptoBackupAvailable(): boolean {
+  return (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.subtle !== 'undefined' &&
+    typeof crypto.getRandomValues === 'function' &&
+    typeof TextEncoder !== 'undefined' &&
+    typeof TextDecoder !== 'undefined'
+  );
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+function base64ToBytes(value: string): Uint8Array {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+async function deriveKeyV3(passkey: string, salt: Uint8Array, iter: number): Promise<CryptoKey> {
+  const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(passkey), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+// Encrypts an arbitrary plaintext string into a v3 envelope JSON string.
+// Salt and IV are random per call — never derived, never reused — so two
+// exports of identical plaintext always produce different envelopes.
+export async function encryptV3Payload(plaintext: string, passkey: string): Promise<string> {
+  if (!isWebCryptoBackupAvailable()) {
+    throw new Error('WebCrypto is unavailable in this context');
+  }
+  const salt = crypto.getRandomValues(new Uint8Array(V3_SALT_BYTES));
+  const iv = crypto.getRandomValues(new Uint8Array(V3_IV_BYTES));
+  const key = await deriveKeyV3(passkey, salt, V3_ITERATIONS);
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    new TextEncoder().encode(plaintext)
+  );
+  const envelope: BackupEnvelopeV3 = {
+    v: 3,
+    kdf: V3_KDF,
+    iter: V3_ITERATIONS,
+    salt: bytesToBase64(salt),
+    iv: bytesToBase64(iv),
+    ct: bytesToBase64(new Uint8Array(ciphertext)),
+  };
+  return JSON.stringify(envelope);
+}
+
+async function decryptV3Payload(envelope: BackupEnvelopeV3, passkey: string): Promise<string> {
+  const key = await deriveKeyV3(passkey, base64ToBytes(envelope.salt), envelope.iter);
+  const plaintext = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: base64ToBytes(envelope.iv) },
+    key,
+    base64ToBytes(envelope.ct)
+  );
+  return new TextDecoder().decode(plaintext);
+}
+
+// Legacy crypto-js passphrase-mode decryptor (v1/v2 backups). Decrypt-only:
+// no new export may use this path (kept verbatim from the pre-v3 code).
+function decryptLegacy(encryptedData: string, passkey: string): unknown | null {
   try {
     const bytes = CryptoJS.AES.decrypt(encryptedData, passkey);
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
@@ -140,6 +257,114 @@ function decodeEncryptedPayload(encryptedData: string, passkey: string): unknown
     console.error('Failed to decrypt backup payload', error);
     return null;
   }
+}
+
+// Routes an encrypted payload string to its format. Legacy v1/v2 payloads are
+// raw crypto-js OpenSSL base64 strings (no JSON envelope); v3 payloads are
+// JSON envelopes. Unknown envelope versions raise a typed error.
+export function detectBackupFormat(encryptedData: string): 'legacy' | 'v3' {
+  const trimmed = encryptedData.trim();
+  if (trimmed.startsWith('{')) {
+    let parsed: unknown = null;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      parsed = null;
+    }
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && 'v' in parsed) {
+      const version = (parsed as { v?: unknown }).v;
+      if (version === 3) return 'v3';
+      if (version === 1 || version === 2) return 'legacy';
+      throw new UnsupportedBackupVersionError(version);
+    }
+  }
+  return 'legacy';
+}
+
+// Structural validation between decode and apply: a decrypted payload is only
+// accepted if it matches a known backup shape, so corrupt semantics can never
+// reach the state-apply step (transactional decode -> validate -> apply).
+function buildValidatedBundle(decoded: unknown): SecureBackupBundle | null {
+  if (!decoded || typeof decoded !== 'object' || Array.isArray(decoded)) return null;
+
+  if (isBackupBundle(decoded)) {
+    const value = decoded as SecureBackupBundle;
+    if (!value.progressState || typeof value.progressState !== 'object' || Array.isArray(value.progressState)) return null;
+    if ('vaultDocuments' in decoded && !Array.isArray(value.vaultDocuments)) return null;
+    if ('localAiSettings' in decoded && value.localAiSettings !== null && typeof value.localAiSettings !== 'object') return null;
+    return {
+      version: 2,
+      exportedAt: typeof value.exportedAt === 'string' ? value.exportedAt : new Date().toISOString(),
+      progressState: normalizeProgressState(value.progressState),
+      vaultDocuments: normalizeVaultDocuments(value.vaultDocuments),
+      localAiSettings: normalizeLocalAiSettings(value.localAiSettings),
+    };
+  }
+
+  // Legacy v1 bare progress state must at least look like a progress state.
+  const candidate = decoded as Partial<ProgressState>;
+  if (!('checkedIds' in candidate) && !('notes' in candidate) && !('lastSynced' in candidate)) return null;
+  return {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    progressState: normalizeProgressState(decoded),
+    vaultDocuments: [],
+    localAiSettings: null,
+  };
+}
+
+export type BackupPayloadFormat = 'v1' | 'v2' | 'v3';
+
+// Version-routed decryptor: v3 envelopes via WebCrypto AES-GCM, v1/v2 via the
+// legacy crypto-js path. Throws UnsupportedBackupVersionError for unknown
+// envelope versions and BackupDecryptionError for wrong passphrases, tampered
+// ciphertext (GCM auth failure) and structurally corrupt payloads.
+export async function decryptSecureBackupBundleAuto(
+  encryptedData: string,
+  passkey: string
+): Promise<{ bundle: SecureBackupBundle; format: BackupPayloadFormat }> {
+  const format = detectBackupFormat(encryptedData);
+
+  if (format === 'v3') {
+    if (!isWebCryptoBackupAvailable()) {
+      // v3 backups cannot be decrypted on non-secure (non-HTTPS) contexts.
+      throw new BackupDecryptionError('WebCrypto is unavailable for v3 backup decryption');
+    }
+    let envelope: BackupEnvelopeV3;
+    try {
+      envelope = JSON.parse(encryptedData.trim()) as BackupEnvelopeV3;
+    } catch {
+      throw new BackupDecryptionError('Malformed v3 backup envelope');
+    }
+    if (
+      envelope.kdf !== V3_KDF ||
+      typeof envelope.iter !== 'number' ||
+      !Number.isInteger(envelope.iter) ||
+      envelope.iter < 1 ||
+      envelope.iter > V3_MAX_ITERATIONS ||
+      typeof envelope.salt !== 'string' ||
+      typeof envelope.iv !== 'string' ||
+      typeof envelope.ct !== 'string'
+    ) {
+      throw new BackupDecryptionError('Malformed v3 backup envelope');
+    }
+    let decoded: unknown;
+    try {
+      decoded = JSON.parse(await decryptV3Payload(envelope, passkey));
+    } catch {
+      // AES-GCM auth failure: wrong passphrase or tampered ciphertext.
+      throw new BackupDecryptionError();
+    }
+    const bundle = buildValidatedBundle(decoded);
+    if (!bundle) throw new BackupDecryptionError('Backup payload failed validation');
+    return { bundle, format: 'v3' };
+  }
+
+  const decoded = decryptLegacy(encryptedData, passkey);
+  if (!decoded) throw new BackupDecryptionError();
+  const bundle = buildValidatedBundle(decoded);
+  if (!bundle) throw new BackupDecryptionError('Backup payload failed validation');
+  return { bundle, format: isBackupBundle(decoded) ? 'v2' : 'v1' };
 }
 
 function readLocalVaultFallback(): VaultDocument[] {
@@ -328,7 +553,7 @@ export function exportSecureBackup(state: ProgressState, passkey: string): strin
 
 // Legacy v1 backup decryptor with v2 bundle compatibility.
 export function decryptBackup(encryptedData: string, passkey: string): ProgressState | null {
-  const decoded = decodeEncryptedPayload(encryptedData, passkey);
+  const decoded = decryptLegacy(encryptedData, passkey);
   if (!decoded) return null;
   if (isBackupBundle(decoded)) {
     return normalizeProgressState(decoded.progressState);
@@ -350,12 +575,19 @@ export function buildSecureBackupBundle(
   };
 }
 
+// Legacy v2 export path (crypto-js). Retained for the non-HTTPS fallback where
+// WebCrypto is unavailable; never used when crypto.subtle exists.
 export function exportSecureBackupBundle(bundle: SecureBackupBundle, passkey: string): string {
   return CryptoJS.AES.encrypt(JSON.stringify(bundle), passkey).toString();
 }
 
+// Current v3 export path: PBKDF2-SHA-256 + AES-GCM envelope.
+export async function exportSecureBackupBundleV3(bundle: SecureBackupBundle, passkey: string): Promise<string> {
+  return encryptV3Payload(JSON.stringify(bundle), passkey);
+}
+
 export function decryptSecureBackupBundle(encryptedData: string, passkey: string): SecureBackupBundle | null {
-  const decoded = decodeEncryptedPayload(encryptedData, passkey);
+  const decoded = decryptLegacy(encryptedData, passkey);
   if (!decoded) return null;
 
   if (isBackupBundle(decoded)) {
