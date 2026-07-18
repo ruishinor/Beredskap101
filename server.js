@@ -76,22 +76,29 @@ app.use((req, res, next) => {
 // api/contact.ts. Keep the two sides in sync manually when changing policy.
 // ---------------------------------------------------------------------------
 const RATE_LIMIT_MAX_KEYS = 10000;
-const rateLimitStore = new Map();
+const rateLimitStores = [];
 
-// Periodic cleanup of rate limit store (every 5 minutes)
+// Periodic cleanup of all limiter stores (every 5 minutes)
 setInterval(() => {
   const now = Date.now();
-  for (const [ip, timestamps] of rateLimitStore.entries()) {
-    const active = timestamps.filter((time) => now - time < 60000 * 15);
-    if (active.length === 0) {
-      rateLimitStore.delete(ip);
-    } else {
-      rateLimitStore.set(ip, active);
+  for (const store of rateLimitStores) {
+    for (const [ip, timestamps] of store.entries()) {
+      const active = timestamps.filter((time) => now - time < 60000 * 15);
+      if (active.length === 0) {
+        store.delete(ip);
+      } else {
+        store.set(ip, active);
+      }
     }
   }
 }, 300000);
 
 function rateLimit({ windowMs, max, message }) {
+  // Each limiter instance gets its OWN store. Sharing one Map across limiters
+  // would let a burst against a generous route (e.g. healthz 60/min) exhaust
+  // the budget of a stricter route (e.g. copilot 15/min) for the same peer.
+  const store = new Map();
+  rateLimitStores.push(store);
   return (req, res, next) => {
     // SECURITY (module 5.1): key on the real socket peer. Never key on the
     // spoofable x-forwarded-for header — a client rotating XFF values would
@@ -100,22 +107,22 @@ function rateLimit({ windowMs, max, message }) {
     // exposed directly on localhost/LAN, so the socket peer is authoritative.
     const ip = req.socket.remoteAddress || 'unknown';
     const now = Date.now();
-    let timestamps = rateLimitStore.get(ip);
+    let timestamps = store.get(ip);
     if (!timestamps) {
       // Cap the store: reject brand-new keys once the map is full so a flood
       // of distinct peers cannot grow memory without bound.
-      if (rateLimitStore.size >= RATE_LIMIT_MAX_KEYS) {
+      if (store.size >= RATE_LIMIT_MAX_KEYS) {
         return res.status(429).json({ error: message || 'Too many requests, please try again later.' });
       }
       timestamps = [];
-      rateLimitStore.set(ip, timestamps);
+      store.set(ip, timestamps);
     }
     const active = timestamps.filter((time) => now - time < windowMs);
     if (active.length >= max) {
       return res.status(429).json({ error: message || 'Too many requests, please try again later.' });
     }
     active.push(now);
-    rateLimitStore.set(ip, active);
+    store.set(ip, active);
     next();
   };
 }
