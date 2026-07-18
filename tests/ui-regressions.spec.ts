@@ -1,10 +1,22 @@
-﻿import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+const OSM_TILE_URL_PATTERN = '**/tile.openstreetmap.org/**';
+const TRANSPARENT_PIXEL_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64'
+);
 
 function trackPageErrors(page: Page, pageErrors: string[]) {
   page.on('pageerror', (error) => {
     pageErrors.push(error.message);
   });
 }
+
+test.beforeEach(async ({ page }) => {
+  await page.route(OSM_TILE_URL_PATTERN, (route) =>
+    route.fulfill({ status: 200, contentType: 'image/png', body: TRANSPARENT_PIXEL_PNG })
+  );
+});
 
 test.describe('ui regressions', () => {
   test('keeps library cards visible, exposes Support, ships the bundled shelter map, and explains local-only storage/AI', async ({ page, baseURL }) => {
@@ -105,6 +117,22 @@ test.describe('ui regressions', () => {
     await page.goto(`${baseURL}/#about`, { waitUntil: 'load' });
     await expect(page.locator('section')).toContainText('100% local-first Progressive Web App');
     await expect(page.locator('section')).toContainText('free from cloud sync or central telemetry');
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('falls back to the offline map background when street tiles fail to load', async ({ page, baseURL }) => {
+    const pageErrors: string[] = [];
+    trackPageErrors(page, pageErrors);
+
+    // Registered after the beforeEach stub, so this handler wins and every
+    // tile request is aborted — pinning the tileerror -> offline-grid path.
+    await page.route(OSM_TILE_URL_PATTERN, (route) => route.abort());
+
+    await page.goto(`${baseURL}/#shelters`, { waitUntil: 'load' });
+    await expect(page.locator('#shelter-map-canvas')).toBeVisible();
+    await expect(page.locator('body')).toContainText(/Offline map background|Offline kartbakgrunn/);
+    await expect(page.locator('body')).not.toContainText(/Street map active|Gatekart aktivt/);
 
     expect(pageErrors).toEqual([]);
   });

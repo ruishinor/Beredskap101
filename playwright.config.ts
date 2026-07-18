@@ -10,6 +10,7 @@ export default defineConfig({
   },
   outputDir: 'test-results/playwright',
   reporter: [['list']],
+  retries: process.env.CI ? 1 : 0,
   use: {
     baseURL: 'http://127.0.0.1:4173',
     headless: true,
@@ -21,13 +22,13 @@ export default defineConfig({
     {
       command: 'npm run dev:api',
       url: 'http://127.0.0.1:3002/api/healthz',
-      reuseExistingServer: true,
+      reuseExistingServer: !process.env.CI,
       timeout: 60_000,
     },
     {
       command: 'npm run preview -- --host 127.0.0.1 --port 4173',
       url: 'http://127.0.0.1:4173',
-      reuseExistingServer: true,
+      reuseExistingServer: !process.env.CI,
       timeout: 60_000,
     },
   ],

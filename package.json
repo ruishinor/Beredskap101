@@ -34,7 +34,7 @@
     "verify:module6": "node scripts/run-module6-verification.mjs",
     "verify:module7:contracts": "node scripts/verify-module7-contracts.mjs",
     "verify:module7": "node scripts/run-module7-verification.mjs",
-    "test:e2e": "playwright test --project=chromium-offline",
+    "test:e2e": "npm run build && playwright test --project=chromium-offline",
     "verify:contracts": "npm run verify:module2:contracts && npm run verify:module3:contracts && npm run verify:module4:contracts && npm run verify:module5:contracts && npm run verify:module6:contracts && npm run verify:module7:contracts",
     "verify": "node scripts/run-verification.mjs",
     "verify:security": "npm audit --audit-level=moderate",
