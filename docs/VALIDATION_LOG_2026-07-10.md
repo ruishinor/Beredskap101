@@ -61,3 +61,15 @@ A later clean-tree invocation also stalled once during the PWA build path. The p
 ## Release rule
 
 A successful non-browser gate is necessary but not sufficient. Production approval requires the browser E2E command to pass on the exact source revision being deployed.
+
+## CI gate record
+
+Phase 0 (remediation roadmap, 2026-07-18) established a trustworthy browser gate and continuous integration:
+
+- **Work commits:**
+  - `d70eeab` — `test(e2e): stub OSM tiles and fix street-mode gate (module 0.1)`
+  - `672cac1` — `test(e2e): split ui-regressions mega-test into per-route tests (module 0.2)`
+  - CI workflow commit — `.github/workflows/verify.yml` added with this log entry (module 0.3)
+- **CI run URL:** _pending — to be filled in after the first push to GitHub runs the `verify` workflow (jobs: `gate`, `e2e`)._
+- **Local gate evidence (this machine, 2026-07-18):** `npm run lint` pass; `npm run build` pass from clean `dist/`; `npx playwright test tests/ui-regressions.spec.ts --project=chromium-offline` 11/11 passed, repeated 3 consecutive runs for the street-mode assertion; `npx playwright test --list` shows 11 ui-regressions tests (17 total).
+- **Retroactive classification:** the 2026-07-11 "v1" merge predates any passing browser gate (the e2e suite was environment-blocked and, once runnable, failed on live `tile.openstreetmap.org` fetches). The shipped v1 is therefore retroactively classified as a **release candidate (RC)**, not a validated release. A green suite from this point forward does not retroactively validate v1; it validates only revisions from the Phase 0 gate commit onward.
