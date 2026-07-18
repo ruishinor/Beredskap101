@@ -361,6 +361,24 @@ function run() {
     'KnowledgeMap search field uses a differentiated i18n placeholder.'
   );
 
+  assert(
+    knowledgeMapTsx.includes('SystemStatusGrid') && appTsx.includes('connState={connState}'),
+    'KnowledgeMap renders the real system status grid bound to live connectivity state.'
+  );
+  const systemStatusGridTsx = readText('src/components/knowledge-map/SystemStatusGrid.tsx');
+  assert(
+    !systemStatusGridTsx.includes('#ff3b30') && !knowledgeMapTsx.includes('BATTERY SAVER'),
+    'System status grid uses semantic status tokens instead of fabricated red status literals.'
+  );
+  assert(
+    systemStatusGridTsx.includes('navigator.serviceWorker.ready'),
+    'Offline-cache status is gated on the service worker readiness handshake, not controller alone.'
+  );
+  assert(
+    systemStatusGridTsx.includes('readFeedCacheFreshness'),
+    'Feed refresh status reads the feed cache freshness stamp.'
+  );
+
   console.log('\n[SUCCESS] Module 2 contract verification completed with no errors or flags.');
 }
 

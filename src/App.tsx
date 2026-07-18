@@ -1305,6 +1305,7 @@ export default function App() {
                     completedTopics={completedTopics}
                     guideCount={allGuidesCount}
                     onSearch={handleKnowledgeMapSearch}
+                    connState={connState}
                   />
                 </Suspense>
 

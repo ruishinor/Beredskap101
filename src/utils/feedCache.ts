@@ -110,3 +110,32 @@ export function isFreshFeedResponse(response: Response, now = Date.now()): boole
 export function isFreshFeedCacheTimestamp(cachedAt: number, now = Date.now()): boolean {
   return isFreshCachedAt(cachedAt, now);
 }
+
+/**
+ * Non-destructive freshness probe for status displays: returns the newest
+ * cachedAt/fetchedAt stamp across the given feed snapshot keys, or null when
+ * no feed has been fetched yet. Never purges entries — read-only.
+ */
+export function readFeedCacheFreshness(storageKeys: string[]): number | null {
+  if (typeof window === 'undefined') return null;
+
+  let latest: number | null = null;
+  for (const storageKey of storageKeys) {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) continue;
+
+      const parsed = JSON.parse(raw) as Record<string, unknown> | null;
+      if (!parsed || typeof parsed !== 'object') continue;
+
+      const cachedAt = resolveCachedAt(parsed);
+      if (cachedAt && (latest === null || cachedAt > latest)) {
+        latest = cachedAt;
+      }
+    } catch {
+      // Storage may be blocked; the status display falls back to "not fetched yet".
+    }
+  }
+
+  return latest;
+}

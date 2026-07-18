@@ -7,7 +7,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { PillarId, type ThemeType } from '../types';
+import type { ConnectivityState } from '../utils/connectivityTelemetry';
 import KnowledgeMapSection from './knowledge-map/KnowledgeMapSection';
+import SystemStatusGrid from './knowledge-map/SystemStatusGrid';
 
 interface KnowledgeMapProps {
   currentLang: string;
@@ -20,6 +22,7 @@ interface KnowledgeMapProps {
   completedTopics: string[];
   guideCount: number;
   onSearch: (query: string) => void;
+  connState: ConnectivityState;
 }
 
 export default function KnowledgeMap({
@@ -33,6 +36,7 @@ export default function KnowledgeMap({
   completedTopics,
   guideCount,
   onSearch,
+  connState,
 }: KnowledgeMapProps) {
   const { t } = useTranslation();
   
@@ -129,31 +133,8 @@ export default function KnowledgeMap({
                 />
               </div>
 
-              {/* Grid status indicators */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="border border-[var(--border-muted)] rounded-md p-3 bg-black/10">
-                  <small className="text-[10px] text-[var(--text-dim)] font-mono block tracking-wider uppercase mb-0.5">
-                    OFFLINE CACHE
-                  </small>
-                  <strong className="text-[12px] font-mono text-[#ff3b30] tracking-wide">
-                    {currentLang === 'no' ? 'Klar' : 'Ready'}
-                  </strong>
-                </div>
-                <div className="border border-[var(--border-muted)] rounded-md p-3 bg-black/10">
-                  <small className="text-[10px] text-[var(--text-dim)] font-mono block tracking-wider uppercase mb-0.5">
-                    BATTERY SAVER
-                  </small>
-                  <strong className="text-[12px] font-mono text-[#ff3b30] tracking-wide">
-                    {currentLang === 'no' ? 'Aktivert' : 'Enabled'}
-                  </strong>
-                </div>
-                <div className="border border-[var(--border-muted)] rounded-md p-3 bg-black/10">
-                  <small className="text-[10px] text-[var(--text-dim)] font-mono block tracking-wider uppercase mb-0.5">
-                    {currentLang === 'no' ? 'GUIDER' : 'GUIDES'}
-                  </small>
-                  <strong className="text-[12px] font-mono text-[#ff3b30] tracking-wide">{guideCount}</strong>
-                </div>
-              </div>
+              {/* Real system status signals (connectivity, SW cache readiness, feed freshness) */}
+              <SystemStatusGrid connState={connState} guideCount={guideCount} currentLang={currentLang} />
 
             </div>
 
