@@ -21,6 +21,7 @@
     "verify:text-integrity": "node scripts/verify-text-integrity.mjs",
     "verify:localization": "node --import tsx scripts/verify-localization.mjs",
     "verify:module1:api": "node --import tsx scripts/verify-module1-api.mjs",
+    "verify:phase5:contracts": "node --import tsx scripts/verify-phase5-contracts.mjs",
     "verify:module1": "node scripts/run-module1-verification.mjs",
     "verify:module2:contracts": "node scripts/verify-module2-contracts.mjs",
     "verify:module2": "node scripts/run-module2-verification.mjs",

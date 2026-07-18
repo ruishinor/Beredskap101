@@ -53,6 +53,8 @@ npm run test:offline:smoke
 ## Supported deployment modes
 
 - Hosted/static PWA: deploy `dist` to Vercel or another static host. Serverless handlers under `api/` provide optional live feeds, contact handoff, health, and deterministic copilot compatibility.
+- `/api/contact` is an intentional compatibility stub: the contact feature is client-side (mailto handoff) by design, matching the app's local-first posture and avoiding PII transit. The endpoint is rate-limited (5 requests / 15 min per socket peer, never keyed on `x-forwarded-for`) and must not be wired to a server-side mail pipeline without an explicit owner decision (see the phase 5.2 decision gate in `docs/REMEDIATION_ROADMAP_2026-07-18.md`).
+- Production CSP scopes `connect-src` to `'self'` only (`vercel.json`). The localhost / `*.local` `connect-src` entries exist solely in the dev-only header set (`server.js`) for the local-AI feature, which is local-server-only by design — do not copy them into the production header set.
 - Self-hosted local PWA: run `npm run build` and `npm run preview:lan`, then open `http://<lan-ip>:4173` from the target device while connected once before offline use.
 - Local development API: `npm run dev:api` enables optional routing to a user-configured local OpenAI-compatible model. The endpoint must resolve to localhost, private LAN, loopback, or `.local`; cloud AI endpoints are rejected.
 
