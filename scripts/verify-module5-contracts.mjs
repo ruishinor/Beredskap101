@@ -1,14 +1,18 @@
-﻿import fs from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import {
   buildFullLocalDataExportBundle,
   buildSecureBackupBundle,
   clearVaultDocuments,
   decryptSecureBackupBundle,
+  decryptSecureBackupBundleAuto,
   deleteVaultDocument,
+  encryptV3Payload,
   eraseAllLocalAppData,
   exportSecureBackup,
   exportSecureBackupBundle,
+  exportSecureBackupBundleV3,
+  isWebCryptoBackupAvailable,
   loadProgressState,
   loadVaultDocuments,
   saveProgressState,
@@ -159,6 +163,117 @@ async function runBackupBundleScenarios() {
   assert(legacyDecoded?.vaultDocuments.length === 0, 'Legacy v1 restore falls back to empty vault payload.');
 }
 
+async function assertRejectsWithCode(fn, code, message) {
+  try {
+    await fn();
+  } catch (error) {
+    assert(Boolean(error) && error.code === code, message);
+    return;
+  }
+  throw new Error(`${message} (expected rejection with code ${code}, but it resolved)`);
+}
+
+async function runBackupCryptoV3Scenarios() {
+  assert(isWebCryptoBackupAvailable(), 'WebCrypto is available in the verifier runtime (Node).');
+
+  const progressState = {
+    checkedIds: ['water-3d'],
+    notes: { 'water-3d': 'Rotate weekly' },
+    lastSynced: Date.now(),
+  };
+  const passkey = 'Str0ng!Passphrase-2026';
+  const bundle = buildSecureBackupBundle(progressState, [], null);
+
+  // (a) v3 round-trip restores byte-identical payload.
+  const startedAt = Date.now();
+  const exported = await exportSecureBackupBundleV3(bundle, passkey);
+  console.log(`[INFO] v3 export (PBKDF2 600k + AES-GCM) took ${Date.now() - startedAt} ms in this runtime.`);
+  const envelope = JSON.parse(exported);
+  assert(envelope.v === 3, 'v3 envelope declares version 3.');
+  assert(envelope.kdf === 'PBKDF2-SHA-256', 'v3 envelope declares PBKDF2-SHA-256 KDF.');
+  assert(Number.isInteger(envelope.iter) && envelope.iter >= 310000, 'v3 envelope stores an OWASP-compliant iteration count.');
+  assert(
+    typeof envelope.salt === 'string' && typeof envelope.iv === 'string' && typeof envelope.ct === 'string',
+    'v3 envelope carries salt, iv and ciphertext.'
+  );
+  const roundTrip = await decryptSecureBackupBundleAuto(exported, passkey);
+  assert(roundTrip.format === 'v3', 'v3 export decrypts through the version router as v3.');
+  assert(
+    JSON.stringify(roundTrip.bundle.progressState) === JSON.stringify(bundle.progressState),
+    'v3 round-trip restores byte-identical vault payload.'
+  );
+
+  // (e) IV/salt randomness: two exports of identical plaintext differ.
+  const exportedAgain = await exportSecureBackupBundleV3(bundle, passkey);
+  assert(exportedAgain !== exported, 'Two exports of identical plaintext differ (IV/salt randomness).');
+
+  // (c) bit-flipped v3 ciphertext -> clean rejection (GCM auth failure).
+  const tampered = JSON.parse(exported);
+  const ctBytes = Buffer.from(tampered.ct, 'base64');
+  ctBytes[0] ^= 0x01;
+  tampered.ct = ctBytes.toString('base64');
+  await assertRejectsWithCode(
+    () => decryptSecureBackupBundleAuto(JSON.stringify(tampered), passkey),
+    'BACKUP_DECRYPTION_FAILED',
+    'Bit-flipped v3 ciphertext is rejected cleanly.'
+  );
+
+  // (d) wrong passphrase -> clean rejection.
+  await assertRejectsWithCode(
+    () => decryptSecureBackupBundleAuto(exported, 'Wr0ng!Passphrase-9999'),
+    'BACKUP_DECRYPTION_FAILED',
+    'Wrong passphrase is rejected cleanly.'
+  );
+
+  // Unknown envelope version -> typed UNSUPPORTED_BACKUP_VERSION error.
+  await assertRejectsWithCode(
+    () => decryptSecureBackupBundleAuto(JSON.stringify({ v: 9, ct: 'AAAA' }), passkey),
+    'UNSUPPORTED_BACKUP_VERSION',
+    'Unknown envelope version raises UNSUPPORTED_BACKUP_VERSION.'
+  );
+
+  // (b) legacy v1/v2 vectors still decode through the version router.
+  const legacyV1 = exportSecureBackup(progressState, passkey);
+  const decodedV1 = await decryptSecureBackupBundleAuto(legacyV1, passkey);
+  assert(decodedV1.format === 'v1', 'Legacy v1 backup decodes through the v3 router.');
+  assert(decodedV1.bundle.progressState.checkedIds.length === 1, 'Legacy v1 payload restores progress state.');
+
+  const legacyV2 = exportSecureBackupBundle(bundle, passkey);
+  const decodedV2 = await decryptSecureBackupBundleAuto(legacyV2, passkey);
+  assert(decodedV2.format === 'v2', 'Legacy v2 bundle decodes through the v3 router.');
+
+  await assertRejectsWithCode(
+    () => decryptSecureBackupBundleAuto(legacyV1, 'Wr0ng!Passphrase-9999'),
+    'BACKUP_DECRYPTION_FAILED',
+    'Wrong passphrase on a legacy backup is rejected cleanly.'
+  );
+
+  // Migration-on-save: after a legacy import, the next export is a v3 envelope.
+  const migratedExport = await exportSecureBackupBundleV3(decodedV1.bundle, passkey);
+  assert(JSON.parse(migratedExport).v === 3, 'Migration-on-save: export after legacy import is a v3 envelope.');
+
+  // Transactional decode -> validate -> apply: structurally valid crypto with
+  // corrupt semantics must be rejected before any state mutation.
+  const storage = createMemoryStorage();
+  globalThis.localStorage = storage;
+  globalThis.window = {
+    localStorage: storage,
+    indexedDB: undefined,
+  };
+  await saveProgressState(progressState);
+  const before = storage.getItem('current-state');
+  const corruptPayload = await encryptV3Payload(
+    JSON.stringify({ version: 2, progressState: 42, vaultDocuments: 'not-an-array' }),
+    passkey
+  );
+  await assertRejectsWithCode(
+    () => decryptSecureBackupBundleAuto(corruptPayload, passkey),
+    'BACKUP_DECRYPTION_FAILED',
+    'Structurally-corrupt v3 payload is rejected at the validation step.'
+  );
+  assert(storage.getItem('current-state') === before, 'Corrupt payload causes zero state mutation.');
+}
+
 function runStaticContractChecks() {
   const saveSystemTs = readText('src/utils/saveSystem.ts');
   assert(saveSystemTs.includes("const DB_VERSION = 2"), 'IndexedDB schema version is upgraded for vault support.');
@@ -183,6 +298,14 @@ function runStaticContractChecks() {
   assert(vaultTsx.includes('hasOversizedImportedAttachment'), 'Vault import rejects oversized embedded attachments.');
   assert(saveSystemTs.includes('buildFullLocalDataExportBundle'), 'Article 20 full local export helper exists.');
   assert(saveSystemTs.includes('eraseAllLocalAppData'), 'Article 17 local erasure helper exists.');
+
+  assert(saveSystemTs.includes('PBKDF2-SHA-256'), 'v3 KDF identifier present in saveSystem.');
+  assert(saveSystemTs.includes('AES-GCM'), 'v3 AES-GCM cipher present in saveSystem.');
+  assert(saveSystemTs.includes('UNSUPPORTED_BACKUP_VERSION'), 'Typed unsupported-version error exists.');
+  assert(saveSystemTs.includes('decryptLegacy'), 'Legacy crypto-js decryptor is retained as decrypt-only path.');
+  assert(!secureSaveTsx.includes('[passkey]'), 'No per-keystroke re-encryption effect remains in SecureSaveManager.');
+  assert(secureSaveTsx.includes('isWebCryptoBackupAvailable'), 'SecureSaveManager gates v3 on WebCrypto availability.');
+  assert(secureSaveTsx.includes('backup_warn_reduced_encryption'), 'SecureSaveManager shows the non-HTTPS reduced-encryption warning.');
 }
 
 async function runArticle17And20Scenarios() {
@@ -233,6 +356,7 @@ async function runArticle17And20Scenarios() {
 async function run() {
   await runVaultPersistenceScenarios();
   await runBackupBundleScenarios();
+  await runBackupCryptoV3Scenarios();
   await runArticle17And20Scenarios();
   runStaticContractChecks();
   console.log('\n[SUCCESS] Module 5 contract verification completed with no errors or flags.');
