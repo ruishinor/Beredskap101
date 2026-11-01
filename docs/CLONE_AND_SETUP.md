@@ -58,3 +58,7 @@ npm ci --no-audit
 Commit or otherwise preserve your own work before pulling if Git reports local changes. Use a separate branch when making a new change.
 
 The current audit is `docs/AUDIT_AND_IMPLEMENTATION_2026-10-31.md`. Its `scratch/` references identify evidence retained on the original machine; those ignored logs are not part of a fresh clone. The report includes the validation results and remaining release limitations. The July plans are historical context, not current completion claims.
+
+## Verified handoff
+
+On 2026-11-01, application commit `063f6cfe8e74bf91619ebd6d657d8bbe6b0fdcbd` was pushed and cloned from GitHub into a clean temporary directory. A clean offline install restored all 507 locked packages, and `npm run verify` passed without a private `.env`. The remote Ubuntu/Node 24 verification and browser jobs also [passed](https://github.com/ruishinor/Beredskap101/actions/runs/41332410364). Later handoff-document commits do not change that application code.

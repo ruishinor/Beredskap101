@@ -212,7 +212,16 @@ The owner subsequently authorized committing and publishing the project for use 
 
 Application source, pending runtime/config changes, tests, current audit and historical planning context are included. Unrelated local agent-tool updates, private `.env`, credentials, browser records, build output and scratch logs are excluded. Local runtime/config/test/public files matched the audit's source manifest before the handoff-only README and CI edits.
 
-CI installation now uses `npm ci --no-audit`; advisory queries require an explicit manual workflow opt-in. This preserves the owner's local-only advisory decision. A local credential-pattern preflight of the 46 selected files found no matches; this is a bounded check, not proof against all possible secret formats. Lockfile portability and patch whitespace checks passed. Remote publication and fresh-clone verification are the remaining handoff checks.
+CI installation now uses `npm ci --no-audit`; advisory queries require an explicit manual workflow opt-in. This preserves the owner's local-only advisory decision. A local credential-pattern preflight of the 46 selected files found no matches; this is a bounded check, not proof against all possible secret formats. Lockfile portability and patch whitespace checks passed.
+
+Handoff checks completed for application commit `063f6cfe8e74bf91619ebd6d657d8bbe6b0fdcbd`:
+
+- Pushed the branch to GitHub and verified the remote SHA matched the local commit. The default `main` branch was not changed.
+- Cloned that branch from GitHub into a fresh temporary directory. The checkout was clean.
+- Ran `npm ci --offline --no-audit --no-fund`: installed 507 locked packages using local cache, exit 0. No advisory query was made. npm emitted existing dependency-deprecation notices for source-map and glob; no dependency upgrade was included in the handoff.
+- Ran `npm run verify` from that fresh clone, without a private `.env`: all non-browser gates passed, exit 0. The checkout remained clean. Evidence logs remain local at `scratch/github-clean-install.log` and `scratch/github-clean-verify.log` in the original workspace.
+- Both GitHub Actions jobs, `gate` and `e2e`, passed on Ubuntu/Node 24: [verification run 41332410364](https://github.com/ruishinor/Beredskap101/actions/runs/41332410364).
+- Subsequent handoff-record edits are documentation only. The previously stated safety-content, full accessibility, target-device and advisory limitations remain; publication is not a production-readiness approval.
 
 ## Resume instructions
 
