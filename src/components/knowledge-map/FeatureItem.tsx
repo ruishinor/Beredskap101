@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Icons from 'lucide-react';
+import { Shield, Users, WifiOff, Zap } from 'lucide-react';
 import { FeatureItemData } from '../../data/knowledgeMapData';
 
 interface FeatureItemProps {
@@ -8,9 +8,10 @@ interface FeatureItemProps {
   currentLang: string;
 }
 
+const featureIcons = { WifiOff, Zap, Shield, Users };
+
 export default function FeatureItem({ item, currentLang }: FeatureItemProps) {
-  // Dynamically resolve the Lucide icon component by name
-  const IconComponent = (Icons as any)[item.iconName];
+  const IconComponent = featureIcons[item.iconName] || Shield;
 
   return (
     <div className="flex items-start gap-3 p-2 select-none">

@@ -9,15 +9,14 @@ import {
   buildSecureBackupBundle,
   decryptSecureBackupBundleAuto,
   detectBackupFormat,
-  exportSecureBackupBundle,
   exportSecureBackupBundleV3,
   isWebCryptoBackupAvailable,
   loadProgressState,
   loadVaultDocuments,
-  saveProgressState,
-  saveVaultDocuments,
+  readBackupApplicationStorage,
+  restoreSecureBackupBundle,
 } from '../utils/saveSystem';
-import { readLocalAiSettings, saveLocalAiSettings } from '../utils/localAiSettings';
+import { readLocalAiSettings } from '../utils/localAiSettings';
 import type { ThemeType } from '../types';
 
 const UPGRADE_NOTICE_STORAGE_KEY = 'beredskap101_backup_v3_notice_v1';
@@ -88,11 +87,14 @@ export default function SecureSaveManager({
     return classes < 3;
   };
 
-  // Builds and encrypts a fresh backup. v3 (WebCrypto PBKDF2 + AES-GCM) when
-  // available; on non-secure contexts (LAN http self-host, no crypto.subtle)
-  // it falls back to the legacy crypto-js path with an explicit UI warning
-  // instead of failing.
+  // New encrypted backups always use authenticated WebCrypto encryption.
   const buildEncryptedExport = async (): Promise<string | null> => {
+    if (!isWebCryptoBackupAvailable()) {
+      showStatus(currentLang === 'no'
+        ? 'Kryptert eksport krever HTTPS eller localhost. Bruk eksport av lokale data bare på en betrodd enhet.'
+        : 'Encrypted export requires HTTPS or localhost. Use local-data export only on a trusted device.', 'error');
+      return null;
+    }
     if (isWeakPasskey(passkey)) {
       showStatus(
         currentLang === 'no' ? 'Velg et backup-passord på minst 12 tegn.' : 'Choose a backup passkey of at least 12 characters.',
@@ -105,12 +107,8 @@ export default function SecureSaveManager({
       const progressState = await loadProgressState();
       const vaultDocuments = await loadVaultDocuments();
       const localAiSettings = readLocalAiSettings();
-      const bundle = buildSecureBackupBundle(progressState, vaultDocuments, localAiSettings);
-      if (isWebCryptoBackupAvailable()) {
-        return await exportSecureBackupBundleV3(bundle, passkey);
-      }
-      showStatus(t('backup_warn_reduced_encryption'), 'info');
-      return exportSecureBackupBundle(bundle, passkey);
+      const bundle = buildSecureBackupBundle(progressState, vaultDocuments, localAiSettings, readBackupApplicationStorage());
+      return await exportSecureBackupBundleV3(bundle, passkey);
     } catch (error) {
       console.error(error);
       showStatus(currentLang === 'no' ? 'Kunne ikke bygge backup.' : 'Failed to build backup.', 'error');
@@ -204,17 +202,16 @@ export default function SecureSaveManager({
       );
       return;
     }
-    if (isWeakPasskey(importPasskey)) {
+    // Strength rules apply to new exports; old backups may use a shorter key.
+    if (!importPasskey) {
       showStatus(
-        currentLang === 'no' ? 'Backup-passordet må være minst 12 tegn.' : 'Backup passkey must be at least 12 characters.',
+        currentLang === 'no' ? 'Skriv inn passordet til denne backupen.' : 'Enter the passkey used for this backup.',
         'error'
       );
       return;
     }
 
-    // Transactional decode -> validate -> apply: the payload is fully
-    // decrypted and structurally validated before any state is touched, so a
-    // corrupt backup causes zero state mutation.
+    // Decode and validate before touching local state.
     let decrypted: Awaited<ReturnType<typeof decryptSecureBackupBundleAuto>>;
     try {
       decrypted = await decryptSecureBackupBundleAuto(importText.trim(), importPasskey);
@@ -239,13 +236,13 @@ export default function SecureSaveManager({
       return;
     }
 
-    const decryptedBundle = decrypted.bundle;
-
     try {
-      await saveProgressState(decryptedBundle.progressState);
-      await saveVaultDocuments(decryptedBundle.vaultDocuments);
-      if (decryptedBundle.localAiSettings) {
-        saveLocalAiSettings(decryptedBundle.localAiSettings);
+      const result = await restoreSecureBackupBundle(decrypted.bundle, decrypted.format);
+      if (!result.ok) {
+        showStatus(result.rollbackComplete
+          ? (currentLang === 'no' ? 'Gjenoppretting feilet. Tidligere data er beholdt.' : 'Restore failed. Previous data was retained.')
+          : (currentLang === 'no' ? 'Gjenoppretting feilet delvis. Ikke last inn siden på nytt; eksporter gjenværende data.' : 'Restore was partial. Do not reload; export remaining data.'), 'error');
+        return;
       }
       if (decrypted.format !== 'v3') {
         // Migration-on-save: the next export will be a v3 envelope.
@@ -253,8 +250,8 @@ export default function SecureSaveManager({
       }
       showStatus(
         currentLang === 'no'
-          ? `Gjenopprettet: ${decryptedBundle.vaultDocuments.length} dokumenter.`
-          : `Restored: ${decryptedBundle.vaultDocuments.length} documents.`,
+          ? `Gjenopprettet: ${decrypted.format === 'v1' ? 'eldre fremdrift' : `${decrypted.bundle.vaultDocuments.length} dokumenter`}.`
+          : `Restored: ${decrypted.format === 'v1' ? 'legacy progress' : `${decrypted.bundle.vaultDocuments.length} documents`}.`,
         'success'
       );
       if (onStateRestored) {
@@ -454,6 +451,7 @@ export default function SecureSaveManager({
 
         {statusMessage && (
           <div
+            role={statusMessage.type === 'error' ? 'alert' : 'status'}
             className={`mt-4 p-3 rounded text-xs font-bold border ${
               statusMessage.type === 'success'
                 ? 'bg-green-950/20 border-green-500 text-green-500'

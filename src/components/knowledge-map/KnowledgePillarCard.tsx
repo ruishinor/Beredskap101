@@ -73,7 +73,7 @@ export default function KnowledgePillarCard({
   if (isActive) {
     ariaLabel += currentLang === 'no' ? ' Aktiv søyle.' : ' Active pillar.';
   } else if (isVisited) {
-    ariaLabel += currentLang === 'no' ? ' Fullført / Besøkt.' : ' Completed / Visited.';
+    ariaLabel += currentLang === 'no' ? ' Besøkt.' : ' Visited.';
   }
 
   return (

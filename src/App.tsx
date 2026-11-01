@@ -251,6 +251,20 @@ type ProcessedAssetsLoadState = 'idle' | 'loading' | 'ready' | 'error';
 export default function App() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.resolvedLanguage === 'no' ? 'no' : 'en';
+  const [updateReady, setUpdateReady] = useState(false);
+  useEffect(() => {
+    const announce = () => setUpdateReady(true);
+    window.addEventListener('beredskap101:update-ready', announce);
+    navigator.serviceWorker?.getRegistration().then((registration) => {
+      if (registration?.waiting && navigator.serviceWorker.controller) setUpdateReady(true);
+    });
+    return () => window.removeEventListener('beredskap101:update-ready', announce);
+  }, []);
+  const applyAvailableUpdate = async () => {
+    const registration = await navigator.serviceWorker?.getRegistration();
+    if (!registration?.waiting) { setUpdateReady(false); return; }
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  };
   const [activeTab, setActiveTab] = useState<AppTab>(() => {
     const initialTab = readTabFromHash();
     if (initialTab === 'about' || initialTab === 'contact' || initialTab === 'privacy' || initialTab === 'legal' || initialTab === 'terms' || initialTab === 'faq' || initialTab === 'cookies') {
@@ -580,8 +594,7 @@ export default function App() {
 
   const offlineKnowledge = useMemo(() => {
     return buildOfflineKnowledgeArtifacts({
-      bundledAt: '2026-06-01',
-      lastSourceReview: '2026-06-01',
+      bundledAt: processedAssetsGeneratedAt,
       processedAssetsGeneratedAt,
       pillarsEn: pillarsDataEn as any[],
       pillarsNo: pillarsDataNo as any[],
@@ -1029,6 +1042,14 @@ export default function App() {
 
   return (
     <div className={`app min-h-screen font-sans flex flex-col justify-between text-[var(--text)] bg-[var(--bg)] transition-colors duration-300 ${themeClass}`}>
+      {updateReady && (
+        <div role="status" className="px-4 py-3 bg-[var(--card)] text-[var(--text)] border-b border-[var(--border)] flex items-center justify-center gap-4">
+          <span>{currentLang === 'no' ? 'En ny offline-versjon er klar. Oppdatering laster alle åpne appfaner på nytt. Lagre arbeidet først.' : 'A new offline version is ready. Updating reloads all open app tabs. Save your work first.'}</span>
+          <button type="button" className="min-h-11 px-4 rounded-md bg-[var(--accent-solid)] text-[var(--accent-on-solid)]" onClick={() => void applyAvailableUpdate()}>
+            {currentLang === 'no' ? 'Oppdater nå' : 'Update now'}
+          </button>
+        </div>
+      )}
       
       {/* GLOBAL SYSTEM STATUS BANNER */}
       <div className="preparedness-banner w-full bg-[var(--accent-solid)] text-[var(--accent-on-solid)] text-[10px] md:text-xs font-mono font-bold tracking-wider py-1.5 px-4 flex items-center justify-center gap-2 border-b border-[var(--border)] overflow-hidden">
@@ -1512,8 +1533,8 @@ export default function App() {
                           : 'The reference library is temporarily unavailable in this session. Try again to load the local reference modules.')
                         : processedAssetsReady
                           ? (currentLang === 'no'
-                            ? `Leter du etter spesifikke emner? Referansebiblioteket har ${referenceCount} kvalitetssikrede artikler akkurat nå, og blir stadig utvidet.`
-                            : `Looking for specific topics? The reference library currently includes ${referenceCount} quality-reviewed articles at the moment, and is continuously updated.`)
+                            ? `Referansebiblioteket inneholder ${referenceCount} artikler. Uavhengig faglig gjennomgang er ikke dokumentert. Kontroller kildene før bruk.`
+                            : `The reference library includes ${referenceCount} articles. Independent expert review is not documented. Check the sources before use.`)
                           : (currentLang === 'no'
                             ? 'Referansebiblioteket lastes lokalt i bakgrunnen for å redusere treg oppstart på langsommere enheter.'
                             : 'The reference library is loading locally in the background to reduce slow startup on lower-powered devices.')}
@@ -2035,7 +2056,7 @@ export default function App() {
                             <div className="text-[10px] font-mono text-[var(--muted)] space-y-1">
                               <p>{currentLang === 'no' ? 'Kilder' : 'Sources'}: {pack.sourceIds.length}</p>
                               <p>{currentLang === 'no' ? 'Størrelse' : 'Size'}: {pack.sizeEstimate}</p>
-                              <p>{currentLang === 'no' ? 'Siste verifisering' : 'Last verified'}: {pack.lastVerified}</p>
+                              <p>{currentLang === 'no' ? 'Siste verifisering' : 'Last verified'}: {pack.lastVerified || (currentLang === 'no' ? 'Ikke dokumentert' : 'Not documented')}</p>
                             </div>
                             <div className="pt-2 border-t border-dashed border-[var(--border)] text-[10px] font-mono text-[var(--muted)] space-y-1">
                               <p>{currentLang === 'no' ? 'Valgfrie moduler:' : 'Optional modules:'}</p>
@@ -2052,7 +2073,7 @@ export default function App() {
                         <p className="text-[10px] font-mono uppercase text-[var(--muted)]">
                           {currentLang === 'no' ? 'Bundlet' : 'Bundled at'}
                         </p>
-                        <p className="font-bold">{contentPacks[0]?.bundledAt || '2026-06-01'}</p>
+                        <p className="font-bold">{contentPacks[0]?.bundledAt || (currentLang === 'no' ? 'Ikke dokumentert' : 'Not documented')}</p>
                       </div>
                       <div>
                         <p className="text-[10px] font-mono uppercase text-[var(--muted)]">
@@ -2062,7 +2083,7 @@ export default function App() {
                           {contentPacks
                             .map((pack) => pack.lastVerified)
                             .sort()
-                            .reverse()[0] || '2026-06-01'}
+                            .reverse()[0] || (currentLang === 'no' ? 'Ikke dokumentert' : 'Not documented')}
                         </p>
                       </div>
                       <div>
@@ -2368,7 +2389,7 @@ export default function App() {
             </div>
 
             {/* Sub-tabs selector for Checklist View */}
-            <div className="flex justify-center border-b border-[var(--border)] pb-2 select-none gap-4">
+            <div className="flex flex-wrap justify-center border-b border-[var(--border)] pb-2 select-none gap-x-4 gap-y-2">
               <button
                 onClick={() => setChecklistSubTab('standard')}
                 className={`pb-2 px-1 text-xs font-mono font-bold uppercase border-b-2 transition-all cursor-pointer ${

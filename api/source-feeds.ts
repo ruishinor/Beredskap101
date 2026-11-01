@@ -4,6 +4,8 @@ import {
   extractPolitiloggenThreads,
   fetchJson,
   fetchText,
+  cachedFeedResponse,
+  mapWithConcurrency,
   normalizeMetAlertItems,
   normalizePolitiloggenThreads,
   normalizeRssItems
@@ -170,10 +172,10 @@ export default async function handler(req: any, res: any) {
   }
 
   const lang = readLang(req);
-  const results = await Promise.all(FEED_SOURCES.map((source) => fetchFeed(source, lang)));
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
-  res.status(200).json({
+  const payload = await cachedFeedResponse(`source-feeds:${lang}`, async () => ({
     fetchedAt: new Date().toISOString(),
-    sources: results
-  });
+    sources: await mapWithConcurrency(FEED_SOURCES, 4, (source) => fetchFeed(source, lang)),
+  }));
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
+  res.status(200).json(payload);
 }

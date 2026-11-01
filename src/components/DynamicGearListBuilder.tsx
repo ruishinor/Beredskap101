@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { generateCustomChecklist, GeneratedChecklist, GeneratedChecklistItem } from '../utils/checklistGenerator';
 import { saveProgressState, loadProgressState } from '../utils/saveSystem';
@@ -17,24 +17,14 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
 
   // Active generated checklist
   const [checklist, setChecklist] = useState<GeneratedChecklist | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
-  // Sync loaded progress for checked items
-  useEffect(() => {
-    async function loadSavedState() {
-      const saved = await loadProgressState();
-      if (checklist) {
-        const updatedItems = checklist.items.map(item => ({
-          ...item,
-          checked: saved.checkedIds.includes(item.id)
-        }));
-        setChecklist({ ...checklist, items: updatedItems });
-      }
-    }
-    loadSavedState();
-  }, []);
-
-  const handleGenerate = (e: React.FormEvent) => {
+  const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (saving) return;
+    setSaving(true);
+    const saved = await loadProgressState();
     const generated = generateCustomChecklist({
       familySize,
       durationDays,
@@ -42,11 +32,14 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
       specialNeeds
     }, currentLang);
     
-    setChecklist(generated);
+    setChecklist({ ...generated, items: generated.items.map(item => ({ ...item, checked: saved.checkedIds.includes(item.id) })) });
+    setSaveError(false);
+    setSaving(false);
   };
 
   const toggleItem = async (itemId: string) => {
-    if (!checklist) return;
+    if (!checklist || saving) return;
+    setSaving(true);
 
     const updatedItems = checklist.items.map(item => {
       if (item.id === itemId) {
@@ -54,8 +47,6 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
       }
       return item;
     });
-
-    setChecklist({ ...checklist, items: updatedItems });
 
     // Save to global state
     const saved = await loadProgressState();
@@ -65,11 +56,14 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
     } else {
       nextChecked.push(itemId);
     }
-    await saveProgressState({
+    const stored = await saveProgressState({
       ...saved,
       checkedIds: nextChecked,
       lastSynced: Date.now()
     });
+    if (stored) setChecklist({ ...checklist, items: updatedItems });
+    setSaveError(!stored);
+    setSaving(false);
   };
 
   const handlePrint = () => {
@@ -194,6 +188,7 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
           <div className="col-span-1 md:col-span-2 mt-2">
             <button
               type="submit"
+              disabled={saving}
               className={`w-full py-4 rounded-lg font-extrabold uppercase tracking-wide text-base active:scale-[0.99] transition-transform cursor-pointer min-h-[56px] ${
                 theme !== 'light' ? 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105' : 'bg-[var(--accent-solid)] text-[var(--accent-on-solid)] hover:brightness-105'
               }`}
@@ -203,6 +198,10 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
           </div>
         </form>
       </div>
+
+      {saveError && <p role="alert" className="text-sm text-red-500">
+        {currentLang === 'no' ? 'Kunne ikke lagre fremdriften. Forrige tilstand er beholdt. Frigjør lagringsplass og prøv igjen.' : 'Could not save progress. The previous state was kept. Free storage space and try again.'}
+      </p>}
 
       {checklist && (
         <div className={`p-6 rounded-xl border-2 shadow-sm ${styles.cardBg} transition-all duration-200`}>
@@ -238,11 +237,15 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
           {/* Checklist Items */}
           <div className="space-y-2">
             {checklist.items.map((itm) => (
-              <div
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={itm.checked}
+                disabled={saving}
                 id={`dyn-checklist-row-${itm.id}`}
                 key={itm.id}
                 onClick={() => toggleItem(itm.id)}
-                className={`flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
+                className={`w-full text-left flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
                   itm.checked
                       ? theme !== 'light'
                         ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]/30 text-neutral-400'
@@ -252,17 +255,17 @@ export default function DynamicGearListBuilder({ theme }: { theme: ThemeType }) 
                     : 'bg-slate-50/20 hover:bg-slate-50/80 border-slate-200 text-slate-800'
                 }`}
               >
-                <div className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
+                <span aria-hidden="true" className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
                   {itm.checked ? (
                     <CheckSquare className={`w-5 h-5 ${theme !== 'light' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
                   ) : (
                     <Square className="w-5 h-5 text-neutral-500" />
                   )}
-                </div>
-                <p className="text-sm md:text-base leading-snug font-medium">
+                </span>
+                <span className="text-sm md:text-base leading-snug font-medium">
                   {itm.text}
-                </p>
-              </div>
+                </span>
+              </button>
             ))}
           </div>
 

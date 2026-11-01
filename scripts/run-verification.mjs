@@ -11,7 +11,10 @@ const steps = [
   { script: 'ingest:validate', timeoutMs: 60_000 },
   { script: 'build', timeoutMs: 120_000 },
   { script: 'verify:module1:api', timeoutMs: 120_000 },
+  { script: 'verify:phase5:contracts', timeoutMs: 120_000 },
   { script: 'verify:contracts', timeoutMs: 120_000 },
+  { script: 'verify:stabilization:data', timeoutMs: 120_000 },
+  { script: 'verify:stabilization:runtime', timeoutMs: 60_000 },
 ];
 
 if (releaseMode) {

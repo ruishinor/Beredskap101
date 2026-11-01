@@ -1,10 +1,12 @@
 import {
+  cachedFeedResponse,
   dedupeAndSortNorwayItems,
   extractPolitiloggenLinks,
   extractPolitiloggenThreads,
   feedItemToNorwayNewsItem,
   fetchJson,
   fetchText,
+  mapWithConcurrency,
   normalizeMetAlertItems,
   normalizePolitiloggenThreads,
   normalizeRssItems,
@@ -113,7 +115,10 @@ async function collectItems(lang: 'en' | 'no') {
     ['dsb', () => fetchRssSource('dsb')]
   ] as const;
 
-  const settled = await Promise.allSettled(tasks.map(([, task]) => task()));
+  const settled = await mapWithConcurrency(tasks, 4, async ([, task]) => {
+    try { return { status: 'fulfilled' as const, value: await task() }; }
+    catch (reason) { return { status: 'rejected' as const, reason }; }
+  });
   const partialFailures: string[] = [];
   const items: NorwayNewsItem[] = [];
 
@@ -141,12 +146,10 @@ export default async function handler(req: any, res: any) {
 
   const limit = readLimit(req);
   const lang = readLang(req);
-  const { items, partialFailures } = await collectItems(lang);
-  const payload: NorwayNewsResponse = {
-    fetchedAt: new Date().toISOString(),
-    items: items.slice(0, limit),
-    partialFailures
-  };
+  const payload = await cachedFeedResponse(`norway-news:${lang}:${limit}`, async (): Promise<NorwayNewsResponse> => {
+    const { items, partialFailures } = await collectItems(lang);
+    return { fetchedAt: new Date().toISOString(), items: items.slice(0, limit), partialFailures };
+  });
 
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=1800');
   res.status(200).json(payload);

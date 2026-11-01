@@ -10,7 +10,8 @@
 export function parseIpv4(hostname: string): number[] | null {
   const parts = hostname.split('.');
   if (parts.length !== 4) return null;
-  const octets = parts.map((part) => Number.parseInt(part, 10));
+  if (parts.some((part) => !/^\d{1,3}$/.test(part))) return null;
+  const octets = parts.map((part) => Number(part));
   if (octets.some((octet) => Number.isNaN(octet) || octet < 0 || octet > 255)) return null;
   return octets;
 }

@@ -7,6 +7,64 @@ function trackPageErrors(page: Page, pageErrors: string[]) {
 }
 
 test.describe('offline PWA smoke verification', () => {
+  test('serves bundled map HEAD and byte ranges offline', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ serviceWorkers: 'allow' });
+    try {
+      const page = await context.newPage();
+      await page.goto(`${baseURL}/`, { waitUntil: 'load' });
+      await page.evaluate(() => navigator.serviceWorker.ready);
+      await page.reload();
+      await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+      await context.setOffline(true);
+      const result = await page.evaluate(async () => {
+        const head = await fetch('/maps/norway.pmtiles', { method: 'HEAD' });
+        const range = await fetch('/maps/norway.pmtiles', { headers: { Range: 'bytes=0-16383' } });
+        const full = await (await fetch('/maps/norway.pmtiles')).arrayBuffer();
+        const suffix = await fetch('/maps/norway.pmtiles', { headers: { Range: 'bytes=-16' } });
+        const suffixBytes = new Uint8Array(await suffix.arrayBuffer());
+        const fullBytes = new Uint8Array(full);
+        const overlong = await fetch('/maps/norway.pmtiles', { headers: { Range: `bytes=${full.byteLength - 8}-${full.byteLength + 1024}` } });
+        return {
+          headStatus: head.status,
+          size: Number(head.headers.get('content-length')),
+          rangeStatus: range.status,
+          contentRange: range.headers.get('content-range'),
+          bytes: (await range.arrayBuffer()).byteLength,
+          suffixStatus: suffix.status,
+          suffixMatches: suffixBytes.every((byte, index) => byte === fullBytes[fullBytes.length - 16 + index]),
+          overlongStatus: overlong.status,
+          overlongBytes: (await overlong.arrayBuffer()).byteLength,
+        };
+      });
+      expect(result.headStatus).toBe(200);
+      expect(result.size).toBeGreaterThan(16384);
+      expect(result.rangeStatus).toBe(206);
+      expect(result.contentRange).toBe(`bytes 0-16383/${result.size}`);
+      expect(result.bytes).toBe(16384);
+      expect(result.suffixStatus).toBe(206);
+      expect(result.suffixMatches).toBe(true);
+      expect(result.overlongStatus).toBe(206);
+      expect(result.overlongBytes).toBe(8);
+    } finally { await context.close(); }
+  });
+
+  test('renders the bundled map and shelter markers after an offline reload', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ serviceWorkers: 'allow' });
+    try {
+      const page = await context.newPage();
+      await page.goto(`${baseURL}/`);
+      await page.evaluate(() => navigator.serviceWorker.ready);
+      await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+      await page.evaluate(() => localStorage.setItem('beredskap101.shelterMap.layerMode.v1', 'offline-package'));
+      await context.setOffline(true);
+      await page.goto(`${baseURL}/#shelters`);
+      await page.reload();
+      await expect(page.locator('#shelter-map-canvas')).toHaveClass(/pmtiles-shelter-basemap/);
+      await expect(page.locator('.maplibregl-canvas')).toBeVisible();
+      await expect.poll(() => page.locator('.maplibre-shelter-marker').count()).toBeGreaterThan(0);
+    } finally { await context.close(); }
+  });
+
   test('refreshes core routes offline after service worker install and supports basic click-through', async ({ browser, baseURL }) => {
     test.slow();
 

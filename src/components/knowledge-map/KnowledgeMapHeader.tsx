@@ -21,8 +21,8 @@ export default function KnowledgeMapHeader({ currentLang }: KnowledgeMapHeaderPr
         <AlertTriangle className="w-4 h-4 text-[var(--accent)] animate-pulse" aria-hidden="true" />
         <span className="font-bold">
           {currentLang === 'no' 
-            ? 'Følg rekkefølgen. Hvert steg låser opp neste nivå.' 
-            : 'Follow the flow. Each step unlocks the next layer.'}
+            ? 'Alle emner er tilgjengelige. Rekkefølgen er et forslag.'
+            : 'All topics are available. The order is a suggestion.'}
         </span>
       </div>
     </div>

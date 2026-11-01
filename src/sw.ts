@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+import { cleanupOutdatedCaches, matchPrecache, precacheAndRoute } from 'workbox-precaching';
+import { archiveResponse } from './utils/archiveResponse';
 import {
   isFreshFeedResponse,
   stampFeedResponse,
@@ -15,6 +16,21 @@ const RUNTIME_CACHE = 'beredskap101-runtime-v1';
 const OFFLINE_API_PATHS = new Set(['/api/norway-news', '/api/source-feeds']);
 
 cleanupOutdatedCaches();
+
+// PMTiles reads byte ranges. Workbox's normal precache response is a full 200,
+// so handle archive ranges before registering the precache fetch listener.
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin || url.pathname !== '/maps/norway.pmtiles' ||
+      (request.method !== 'GET' && request.method !== 'HEAD')) return;
+  event.respondWith((async () => {
+    const cached = await matchPrecache('/maps/norway.pmtiles');
+    if (!cached) return fetch(request);
+    return archiveResponse(request, cached);
+  })());
+});
+
 precacheAndRoute(self.__WB_MANIFEST);
 
 function jsonResponse(body: Record<string, unknown>, status = 200): Response {
@@ -57,8 +73,8 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
   return response;
 }
 
-self.addEventListener('install', () => {
-  self.skipWaiting();
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') void self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -89,7 +105,7 @@ self.addEventListener('fetch', (event) => {
       fetch(request).catch(() =>
         jsonResponse({
           status: 'offline-ready',
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
           source: 'service-worker',
         })
       )

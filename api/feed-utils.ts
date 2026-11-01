@@ -298,6 +298,78 @@ function getFeedFetchTimeoutMs(): number {
   return Math.max(500, Math.min(configured, 15000));
 }
 
+const MAX_FEED_BODY_BYTES = 2 * 1024 * 1024;
+
+async function readBoundedBody(response: Response, signal: AbortSignal): Promise<string> {
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+  const read = async () => {
+    if (!response.body) {
+      const text = await response.text();
+      if (new TextEncoder().encode(text).byteLength > MAX_FEED_BODY_BYTES) throw new Error('Feed response is too large');
+      return text;
+    }
+    reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let total = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.byteLength;
+        if (total > MAX_FEED_BODY_BYTES) throw new Error('Feed response is too large');
+        chunks.push(value);
+      }
+      const bytes = new Uint8Array(total);
+      let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+      return new TextDecoder().decode(bytes);
+    } catch (error) {
+      void reader.cancel().catch(() => {});
+      throw error;
+    } finally { reader.releaseLock(); }
+  };
+  if (signal.aborted) throw new Error('Feed fetch timed out');
+  let onAbort: (() => void) | undefined;
+  const aborted = new Promise<never>((_, reject) => {
+    onAbort = () => {
+      void reader?.cancel().catch(() => {});
+      reject(new Error('Feed fetch timed out'));
+    };
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+  try { return await Promise.race([read(), aborted]); }
+  finally { if (onAbort) signal.removeEventListener('abort', onAbort); }
+}
+
+export async function mapWithConcurrency<T, R>(items: readonly T[], concurrency: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await fn(items[index]);
+    }
+  }));
+  return results;
+}
+
+const feedResponseCache = new Map<string, { expiresAt: number; value: unknown }>();
+const inFlightFeeds = new Map<string, Promise<unknown>>();
+
+export async function cachedFeedResponse<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const cached = feedResponseCache.get(key);
+  if (cached && cached.expiresAt > Date.now()) return cached.value as T;
+  const running = inFlightFeeds.get(key);
+  if (running) return running as Promise<T>;
+  const task = load().then((value) => {
+    if (feedResponseCache.size >= 100) feedResponseCache.delete(feedResponseCache.keys().next().value!);
+    feedResponseCache.set(key, { expiresAt: Date.now() + 60_000, value });
+    return value;
+  }).finally(() => inFlightFeeds.delete(key));
+  inFlightFeeds.set(key, task);
+  return task;
+}
+
 export async function fetchText(url: string, accept = 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8') {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), getFeedFetchTimeoutMs());
@@ -315,7 +387,7 @@ export async function fetchText(url: string, accept = 'application/rss+xml, appl
       throw new Error(`Fetch failed for ${url}: ${response.status}`);
     }
 
-    return response.text();
+    return await readBoundedBody(response, controller.signal);
   } finally {
     clearTimeout(timeout);
   }
@@ -338,7 +410,7 @@ export async function fetchJson(url: string, accept = 'application/json, text/js
       throw new Error(`Fetch failed for ${url}: ${response.status}`);
     }
 
-    return response.json();
+    return JSON.parse(await readBoundedBody(response, controller.signal));
   } finally {
     clearTimeout(timeout);
   }

@@ -72,7 +72,7 @@ async function runVaultPersistenceScenarios() {
   await clearVaultDocuments();
   const initial = await loadVaultDocuments();
   assert(Array.isArray(initial) && initial.length === 0, 'Vault starts empty after clear.');
-  assert(storage.getItem('beredskap101_document_vault_v1') === null, 'Vault clear removes localStorage fallback payload.');
+  assert(storage.getItem('beredskap101_document_vault_v1') === '[]', 'Vault clear retains an empty fallback record to prevent resurrection.');
 
   const docA = {
     id: 'doc-a',
@@ -126,7 +126,7 @@ async function runVaultPersistenceScenarios() {
 
   const cleared = await clearVaultDocuments();
   assert(cleared, 'Vault supports clearing all documents.');
-  assert(storage.getItem('beredskap101_document_vault_v1') === null, 'Empty vault save does not resurrect stale fallback data.');
+  assert((await loadVaultDocuments()).length === 0, 'Empty vault save does not resurrect stale fallback data.');
 }
 
 async function runBackupBundleScenarios() {
@@ -290,7 +290,7 @@ function runStaticContractChecks() {
 
   const secureSaveTsx = readText('src/components/SecureSaveManager.tsx');
   assert(secureSaveTsx.includes('loadVaultDocuments'), 'Secure save manager exports vault content.');
-  assert(secureSaveTsx.includes('saveVaultDocuments'), 'Secure save manager restores vault content.');
+  assert(secureSaveTsx.includes('restoreSecureBackupBundle') && secureSaveTsx.includes('if (!result.ok)'), 'Secure save manager checks restore outcome.');
   assert(secureSaveTsx.includes('readLocalAiSettings'), 'Secure save manager includes local AI settings in backup flow.');
 
   assert(vaultTsx.includes('MAX_VAULT_IMPORT_SIZE_BYTES'), 'Vault import enforces maximum JSON file size.');
@@ -305,7 +305,7 @@ function runStaticContractChecks() {
   assert(saveSystemTs.includes('decryptLegacy'), 'Legacy crypto-js decryptor is retained as decrypt-only path.');
   assert(!secureSaveTsx.includes('[passkey]'), 'No per-keystroke re-encryption effect remains in SecureSaveManager.');
   assert(secureSaveTsx.includes('isWebCryptoBackupAvailable'), 'SecureSaveManager gates v3 on WebCrypto availability.');
-  assert(secureSaveTsx.includes('backup_warn_reduced_encryption'), 'SecureSaveManager shows the non-HTTPS reduced-encryption warning.');
+  assert(secureSaveTsx.includes('Encrypted export requires HTTPS or localhost.') && !secureSaveTsx.includes('exportSecureBackupBundle,'), 'SecureSaveManager disables weak encrypted exports.');
 }
 
 async function runArticle17And20Scenarios() {

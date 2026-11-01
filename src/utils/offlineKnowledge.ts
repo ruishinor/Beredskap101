@@ -169,8 +169,6 @@ const PACK_TEMPLATES: PackTemplate[] = [
   },
 ];
 
-const DEFAULT_DATE = '2026-06-01';
-
 function dedupe(values: string[]): string[] {
   return Array.from(new Set(values.filter(Boolean)));
 }
@@ -183,9 +181,9 @@ function compactText(parts: Array<string | undefined | null>): string {
 }
 
 function safeDate(value?: string): string {
-  if (!value) return DEFAULT_DATE;
+  if (!value) return '';
   const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return DEFAULT_DATE;
+  if (Number.isNaN(parsed.getTime())) return '';
   return parsed.toISOString().slice(0, 10);
 }
 
@@ -287,9 +285,9 @@ function buildPackAssets(input: BuildOfflineKnowledgeArtifactsInput): Record<str
     assetsByPack[template.id] = [];
   }
 
-  const bundledAt = safeDate(input.bundledAt);
   const sourceReview = safeDate(input.lastSourceReview);
-  const processedAssetReview = safeDate(input.processedAssetsGeneratedAt || input.lastSourceReview);
+  // Generation/bundling dates are not evidence that content was reviewed.
+  const processedAssetReview = sourceReview;
 
   for (const pillar of input.pillarsEn) {
     const packId = inferPackIdFromPillar(pillar.id);
@@ -416,7 +414,7 @@ function buildPackAssets(input: BuildOfflineKnowledgeArtifactsInput): Record<str
         sourceId: source.id,
         jurisdiction: 'NO',
         language: ['en', 'no'],
-        lastVerified: bundledAt,
+        lastVerified: sourceReview,
         offlineAvailable: true,
         reviewPriority: 'medium',
       },
@@ -434,9 +432,9 @@ function buildContentPacks(input: BuildOfflineKnowledgeArtifactsInput): ContentP
   return PACK_TEMPLATES.map((template) => {
     const assets = assetsByPack[template.id] || [];
     const sourceIds = dedupe(assets.map((asset) => asset.source.sourceId));
-    const lastVerified = dedupe(assets.map((asset) => asset.source.lastVerified))
-      .sort()
-      .reverse()[0] || sourceReview;
+    // A pack is not fully reviewed merely because one of its assets is.
+    const reviewDates = assets.map((asset) => asset.source.lastVerified);
+    const lastVerified = reviewDates.length && reviewDates.every(Boolean) ? reviewDates.sort()[0] : sourceReview;
     return {
       id: template.id,
       title: template.title,
@@ -789,7 +787,7 @@ function buildSearchDocuments(input: BuildOfflineKnowledgeArtifactsInput, packs:
       compactText([
         pack.category,
         `Bundled at ${pack.bundledAt}`,
-        `Last source review ${pack.lastVerified}`,
+        pack.lastVerified ? `Last source review ${pack.lastVerified}` : 'Source review not documented',
         `Assets ${pack.assets.length}`,
         typeCounts,
         pack.optionalModules.join(' '),
@@ -811,7 +809,7 @@ function buildSearchDocuments(input: BuildOfflineKnowledgeArtifactsInput, packs:
       compactText([
         pack.category,
         `Bundlet ${pack.bundledAt}`,
-        `Siste kildegjennomgang ${pack.lastVerified}`,
+        pack.lastVerified ? `Siste kildegjennomgang ${pack.lastVerified}` : 'Kildegjennomgang er ikke dokumentert',
         `Innhold ${pack.assets.length}`,
         typeCounts,
         'Live update unavailable offline',

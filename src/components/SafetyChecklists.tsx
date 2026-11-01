@@ -15,6 +15,7 @@ export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
   const checklistsData = currentLang === 'no' ? checklistsDataNo : checklistsDataEn;
 
   const [activeGroupId, setActiveGroupId] = useState<string>('emergency-72h');
+  const [saveFailed, setSaveFailed] = useState(false);
   
   const [checkedIds, setCheckedIds] = useState<string[]>(() => {
     try {
@@ -35,7 +36,9 @@ export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
   useEffect(() => {
     try {
       window.localStorage.setItem('beredskap_checklists_checked_ids', JSON.stringify(checkedIds));
+      setSaveFailed(false);
     } catch (e) {
+      setSaveFailed(true);
       console.warn('Checklist progress could not be saved to local storage', e);
     }
   }, [checkedIds]);
@@ -80,6 +83,11 @@ export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
 
   return (
     <div className="space-y-6">
+      {saveFailed && <p role="alert" className="text-sm text-red-500">
+        {currentLang === 'no'
+          ? 'Kunne ikke lagre sjekklistefremdriften. Endringene er midlertidige til lagring er tilgjengelig. Frigjør plass og prøv igjen.'
+          : 'Could not save checklist progress. Changes are temporary until storage is available. Free storage space and try again.'}
+      </p>}
       {/* Category selector */}
       <div className="flex flex-col sm:flex-row gap-2">
         {checklistsData.map((group) => (
@@ -132,11 +140,14 @@ export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
           {activeItems.map((itm) => {
             const isChecked = checkedIds.includes(itm.id);
             return (
-              <div
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={isChecked}
                 id={`checklist-row-${itm.id}`}
                 key={itm.id}
                 onClick={() => toggleCheck(itm.id)}
-                className={`flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
+                className={`w-full text-left flex items-start gap-4 p-3.5 rounded-lg border cursor-pointer select-none transition-all duration-150 group ${
                   isChecked
                     ? theme !== 'light'
                       ? 'bg-[var(--accent-solid)]/10 border-[var(--accent)]/30'
@@ -146,19 +157,19 @@ export default function SafetyChecklists({ theme }: { theme: ThemeType }) {
                     : 'bg-slate-50/20 hover:bg-slate-50/80 border-slate-200'
                 }`}
               >
-                <div className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
+                <span aria-hidden="true" className="flex-shrink-0 mt-0.5 text-[var(--accent)] text-[var(--accent)] group-hover:scale-105 transition-transform">
                   {isChecked ? (
                     <CheckSquare className={`w-5 h-5 ${theme !== 'light' ? 'text-[var(--accent)]' : 'text-teal-600'}`} />
                   ) : (
                     <Square className="w-5 h-5 text-neutral-500" />
                   )}
-                </div>
-                <p className={`text-sm md:text-base leading-snug font-medium transition-colors ${
+                </span>
+                <span className={`text-sm md:text-base leading-snug font-medium transition-colors ${
                   isChecked ? 'opacity-80' : 'text-neutral-200 group-hover:text-white dark:text-neutral-200'
                 } ${theme !== 'dark' && !isChecked ? '!text-neutral-800' : ''}`}>
                   {itm.text}
-                </p>
-              </div>
+                </span>
+              </button>
             );
           })}
         </div>

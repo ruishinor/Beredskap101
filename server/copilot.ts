@@ -1,4 +1,5 @@
 import { isLocalHttpUrl } from '../src/utils/privateNetwork.ts';
+import { postLocalModelJson } from './localModelTransport.ts';
 
 type CopilotHandlerOptions = {
   allowLocalModel?: boolean;
@@ -175,6 +176,8 @@ export function analyzeDecisionHistory(
     securityBlindspots,
     operationalRecommendations,
     provider: 'deterministic-local',
+    advisory: true,
+    methodology: 'unvalidated-heuristic',
   };
 }
 
@@ -191,10 +194,7 @@ async function tryLocalAiAnalysis({ history, context }: { history: SanitizedDeci
   const prompt = `Analyze this Beredskap101 tabletop history. Return only JSON with readinessGrade, resilienceScore, avgResponseTimeSec, securityBlindspots, operationalRecommendations.\nContext: ${context}\nHistory: ${JSON.stringify(history)}`;
 
   try {
-    const response = await fetch(`${baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const payload = await postLocalModelJson(baseUrl, {
         model,
         messages: [
           {
@@ -205,18 +205,33 @@ async function tryLocalAiAnalysis({ history, context }: { history: SanitizedDeci
           { role: 'user', content: prompt },
         ],
         temperature: 0.2,
-      }),
-      signal: AbortSignal.timeout(8000),
     });
-
-    if (!response.ok) return null;
-    const payload = await response.json();
-    const content = payload?.choices?.[0]?.message?.content || '';
+    const content = (payload as any)?.choices?.[0]?.message?.content || '';
+    if (typeof content !== 'string' || content.length > 100_000) return null;
     const jsonStart = content.indexOf('{');
     const jsonEnd = content.lastIndexOf('}');
     if (jsonStart === -1 || jsonEnd === -1) return null;
     const parsed = JSON.parse(content.slice(jsonStart, jsonEnd + 1));
-    return { ...parsed, provider: 'local-llm' };
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+    const blindspots = Array.isArray(parsed.securityBlindspots)
+      ? parsed.securityBlindspots.filter((item: unknown) => typeof item === 'string').slice(0, 10).map((item: string) => item.slice(0, 500))
+      : null;
+    const recommendations = Array.isArray(parsed.operationalRecommendations)
+      ? parsed.operationalRecommendations.filter((item: unknown) => typeof item === 'string').slice(0, 10).map((item: string) => item.slice(0, 500))
+      : null;
+    if (!blindspots || !recommendations) return null;
+    const score = Number(parsed.resilienceScore);
+    if (!Number.isFinite(score) || score < 0 || score > 100) return null;
+    return {
+      readinessGrade: typeof parsed.readinessGrade === 'string' && /^[A-F]$/.test(parsed.readinessGrade) ? parsed.readinessGrade : gradeForScore(score),
+      resilienceScore: score,
+      avgResponseTimeSec: Number.isFinite(Number(parsed.avgResponseTimeSec)) ? Math.max(0, Math.min(3600, Number(parsed.avgResponseTimeSec))) : 0,
+      securityBlindspots: blindspots,
+      operationalRecommendations: recommendations,
+      provider: 'local-llm',
+      advisory: true,
+      methodology: 'unvalidated-heuristic',
+    };
   } catch (error) {
     console.warn('Local AI analysis unavailable; using deterministic fallback.', error instanceof Error ? error.message : error);
     return null;

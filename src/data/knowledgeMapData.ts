@@ -214,7 +214,7 @@ export const featureItems: FeatureItemData[] = [
     iconName: 'Users',
     title: 'Community & updates',
     titleNo: 'Fellesskap og oppdateringer',
-    desc: 'Stronger together.',
-    descNo: 'Sterkere sammen.',
+    desc: 'More resilient, together.',
+    descNo: 'Mer motstandsdyktige, sammen.',
   },
 ];

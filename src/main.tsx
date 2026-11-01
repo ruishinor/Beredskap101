@@ -24,8 +24,23 @@ createRoot(document.getElementById('root')!).render(
 
 if ('serviceWorker' in navigator) {
   if (import.meta.env.PROD) {
+    let controlled = Boolean(navigator.serviceWorker.controller);
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      // An accepted update claims every open tab. Reload them together so
+      // none keeps importing old lazy chunks after precache cleanup.
+      if (controlled) window.location.reload();
+      else controlled = true;
+    });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((error) => {
+      navigator.serviceWorker.register('/sw.js').then((registration) => {
+        const announceWaiting = () => {
+          if (registration.waiting && navigator.serviceWorker.controller) window.dispatchEvent(new Event('beredskap101:update-ready'));
+        };
+        announceWaiting();
+        registration.addEventListener('updatefound', () => {
+          registration.installing?.addEventListener('statechange', announceWaiting);
+        });
+      }).catch((error) => {
         console.warn('Service worker registration failed', error);
       });
     });

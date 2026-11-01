@@ -73,3 +73,7 @@ src/data/processedAssets.ingest-report.json
 *.orig
 playwright-report/
 test-results/
+.bmad-loop/runs/
+.bmad-loop/cache/
+.bmad-loop/policy.toml
+.vercel

@@ -28,8 +28,12 @@ export default class AppErrorBoundary extends React.Component {
 
   eraseAndReload = async () => {
     this.setState({ clearing: true });
-    await eraseAllLocalAppData();
-    window.location.reload();
+    const result = await eraseAllLocalAppData();
+    if (result.indexedDbCleared && result.localStorageKeysFailed.length === 0 && result.cacheNamesFailed.length === 0) {
+      window.location.reload();
+    } else {
+      this.setState({ clearing: false, errorMessage: 'Lokal sletting var delvis. Kontroller gjenværende data før du prøver igjen.' });
+    }
   };
 
   render() {

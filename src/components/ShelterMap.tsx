@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 // Verification requirement: The offline package is not installed in this copy
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Protocol } from 'pmtiles';
 import sheltersData from '../data/shelters.json';
@@ -233,6 +233,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
   const [isLocating, setIsLocating] = useState(false);
   const [mapLayerNotice, setMapLayerNotice] = useState<string | null>(null);
   const [providerState, setProviderState] = useState<ShelterMapProviderState>(getFallbackProviderState());
+  const [providerResolved, setProviderResolved] = useState(false);
   const [leafletBasemapId, setLeafletBasemapId] = useState<LeafletBasemapId>('offline-grid');
   const [mapLayerMode, setMapLayerMode] = useState<MapLayerMode>(() => readPersistedMapLayerMode());
   const phoneDevice = useMemo(() => isPhoneDevice(), []);
@@ -243,7 +244,10 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
     resolveShelterMapProviderState().then((resolved) => {
       if (!cancelled) {
         setProviderState(resolved);
+        setProviderResolved(true);
       }
+    }).catch(() => {
+      if (!cancelled) setProviderResolved(true);
     });
 
     return () => {
@@ -261,6 +265,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
 
   useEffect(() => {
     if (mapLayerMode !== 'offline-package') return;
+    if (!providerResolved) return;
     if (providerState.config) return;
     setMapLayerNotice(
       currentLang === 'no'
@@ -268,7 +273,7 @@ export default function ShelterMap({ currentLang, theme }: ShelterMapProps) {
         : 'The bundled offline package is unavailable in this copy. The app is using the reserve background instead.'
     );
     setMapLayerMode(getDefaultMapLayerMode());
-  }, [currentLang, mapLayerMode, providerState.config]);
+  }, [currentLang, mapLayerMode, providerResolved, providerState.config]);
 
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371;

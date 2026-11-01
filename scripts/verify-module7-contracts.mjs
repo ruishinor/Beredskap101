@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 
@@ -84,12 +85,9 @@ function runCspChecks() {
   const connectSrcTokens = extractCspDirective(csp, 'connect-src');
 
   assert(connectSrcTokens.includes("'self'"), 'CSP includes same-origin connect-src.');
-  assert(connectSrcTokens.includes('http://localhost:*'), 'CSP allows localhost HTTP for optional local AI.');
-  assert(connectSrcTokens.includes('http://127.0.0.1:*'), 'CSP allows loopback IPv4 HTTP for optional local AI.');
-  assert(connectSrcTokens.includes('http://*.local:*') && connectSrcTokens.includes('https://*.local:*'), 'CSP allows .local endpoints for trusted local setups.');
-  assert(!connectSrcTokens.includes('*'), 'CSP does not allow wildcard connect-src.');
-  assert(!connectSrcTokens.includes('http:'), 'CSP does not allow all HTTP endpoints.');
-  assert(!connectSrcTokens.includes('https:'), 'CSP does not allow all HTTPS endpoints.');
+  assert(connectSrcTokens.length === 1 && connectSrcTokens[0] === "'self'", 'Production CSP permits same-origin connections only.');
+  const localServer = readText('server.js');
+  assert(localServer.includes('http://localhost:*') && localServer.includes('http://127.0.0.1:*'), 'Local server permits loopback model connections.');
 
   assert(csp.includes("worker-src 'self' blob:"), 'CSP allows same-origin and blob workers for PMTiles renderer support.');
   assert(csp.includes("manifest-src 'self'"), 'CSP explicitly allows same-origin manifest loading.');
@@ -195,21 +193,18 @@ function runDocumentationChecks() {
   assert(readme.includes('## Offline deployment checklist'), 'README includes an offline deployment checklist.');
   assert(readme.includes('## Release boundaries'), 'README distinguishes offline guarantees from online enhancements.');
 
-  const auditDoc = readText('docs/AUDIT_AND_STABILIZATION_2026-07-10.md');
+  const auditDoc = readText('docs/AUDIT_AND_IMPLEMENTATION_2026-10-31.md');
   assert(auditDoc.includes('## Adversarial retrospective'), 'Current audit records the adversarial retrospective.');
-  assert(auditDoc.includes('## Modular roadmap'), 'Current audit records the sequential modular roadmap.');
-  assert(auditDoc.includes('## Deferred work and residual risk'), 'Current audit records residual risks and release conditions.');
-  assert(auditDoc.includes('## Local-first PowerShell validation'), 'Current audit provides local-first PowerShell validation.');
-
-  const validationLog = readText('docs/VALIDATION_LOG_2026-07-10.md');
-  assert(validationLog.includes('## Baseline'), 'Current validation log records the baseline.');
-  assert(validationLog.includes('## Final gate'), 'Current validation log reserves explicit final-gate evidence.');
-  assert(validationLog.includes('Production approval requires the browser E2E command to pass'), 'Current validation log preserves the browser release condition.');
+  assert(auditDoc.includes('## Sequential roadmap and live checklist'), 'Current audit records the sequential modular roadmap.');
+  assert(auditDoc.includes('## Remaining modular roadmap toward an actual release'), 'Current audit records residual risks and release conditions.');
+  assert(auditDoc.includes('### Dependency advisory decision'), 'Current audit records the local-only dependency decision.');
+  assert(readme.includes('trusted HTTPS') && readme.includes('does not establish offline readiness'), 'LAN instructions distinguish HTTP preview from offline installation.');
 
   const historicalPlan = readText('PLAN-26-06-06.md');
   assert(historicalPlan.includes('Historical record only.'), 'Historical completion claims are marked as non-current evidence.');
   readText('.env.example');
-  assert(!fs.existsSync(path.join(ROOT, '.env')), 'Environment configuration is documented without shipping a private .env file.');
+  const trackedEnvironment = execFileSync('git', ['ls-files', '--cached', '--', '.env'], { cwd: ROOT, encoding: 'utf8' }).trim();
+  assert(!trackedEnvironment, 'Private .env is not tracked by Git.');
 }
 
 function run() {

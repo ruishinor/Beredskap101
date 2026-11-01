@@ -6,7 +6,6 @@ import healthzHandler from './api/healthz.ts';
 import sourceFeedsHandler from './api/source-feeds.ts';
 import norwayNewsHandler from './api/norway-news.ts';
 import { localCopilotHandler } from './server/copilot.ts';
-import { isLocalHostname } from './src/utils/privateNetwork.ts';
 
 dotenv.config();
 
@@ -21,21 +20,29 @@ const JSON_BODY_LIMIT = '128kb';
 function normalizeOriginList(value) {
   return String(value || '')
     .split(',')
-    .map((item) => item.trim().replace(/\/+$/, ''))
+    .map((item) => {
+      try {
+        const parsed = new URL(item.trim());
+        if (!['http:', 'https:'].includes(parsed.protocol) || parsed.pathname !== '/' || parsed.search || parsed.hash || parsed.username || parsed.password) return null;
+        return parsed.origin;
+      } catch { return null; }
+    })
     .filter(Boolean);
 }
 
-const configuredAllowedOrigins = new Set(normalizeOriginList(process.env.APP_URL));
+const configuredAllowedOrigins = new Set([
+  'http://localhost:3011',
+  'http://127.0.0.1:3011',
+  ...normalizeOriginList(process.env.APP_URL),
+  ...normalizeOriginList(process.env.B101_ALLOWED_ORIGINS),
+]);
 
 function isAllowedLocalOrigin(origin) {
   if (!origin) return true;
-  const normalizedOrigin = origin.replace(/\/+$/, '');
-  if (configuredAllowedOrigins.has(normalizedOrigin)) return true;
-
   try {
-    const parsed = new URL(normalizedOrigin);
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
-    return isLocalHostname(parsed.hostname);
+    const parsed = new URL(origin);
+    if (parsed.origin !== origin || parsed.username || parsed.password) return false;
+    return configuredAllowedOrigins.has(parsed.origin);
   } catch {
     return false;
   }

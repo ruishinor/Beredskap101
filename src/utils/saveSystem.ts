@@ -13,7 +13,10 @@ export interface SecureBackupBundle {
   progressState: ProgressState;
   vaultDocuments: VaultDocument[];
   localAiSettings: LocalAiSettings | null;
+  applicationStorage?: Record<string, string>;
 }
+
+export type PersistenceResult = { ok: true; backend: 'indexeddb' | 'localStorage' } | { ok: false; backend: 'none'; error: string };
 
 export interface FullLocalDataExportBundle {
   version: 1;
@@ -26,7 +29,9 @@ export interface FullLocalDataExportBundle {
 
 export interface ErasureResult {
   localStorageKeysRemoved: string[];
+  localStorageKeysFailed: string[];
   cacheNamesRemoved: string[];
+  cacheNamesFailed: string[];
   indexedDbCleared: boolean;
 }
 
@@ -37,6 +42,11 @@ const DOCUMENT_STORE = 'document-vault';
 const STATE_KEY = 'current-state';
 const DOCUMENTS_KEY = 'all-documents';
 const DOCUMENTS_LOCAL_FALLBACK_KEY = 'beredskap101_document_vault_v1';
+const BACKUP_STORAGE_KEYS = new Set(['beredskap_checklists_checked_ids', 'beredskap101_map_progress_v2']);
+const BACKUP_STORAGE_PREFIXES = ['beredskap_ext_check_', 'beredskap_ext_notes_'];
+const MAX_BACKUP_STORAGE_BYTES = 2 * 1024 * 1024;
+const MAX_ATTACHMENT_BYTES = 6 * 1024 * 1024;
+const VAULT_CATEGORIES = new Set(['emergency-plan', 'pdf-reference', 'contact-plan', 'medication-list', 'evacuation-note', 'general-note']);
 const APP_LOCAL_STORAGE_EXACT_KEYS = [
   STATE_KEY,
   DOCUMENTS_LOCAL_FALLBACK_KEY,
@@ -71,9 +81,21 @@ function normalizeProgressState(raw: unknown): ProgressState {
 }
 
 function normalizeVaultDocument(raw: unknown): VaultDocument | null {
-  if (!raw || typeof raw !== 'object') return null;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
   const value = raw as Partial<VaultDocument>;
-  if (!value.id || !value.title || !value.category) return null;
+  if (typeof value.id !== 'string' || !value.id.trim() || value.id.length > 200 ||
+      typeof value.title !== 'string' || !value.title.trim() || value.title.length > 300 ||
+      typeof value.category !== 'string' || !VAULT_CATEGORIES.has(value.category) ||
+      (value.tags !== undefined && (!Array.isArray(value.tags) || value.tags.some((tag) => typeof tag !== 'string'))) ||
+      (value.note !== undefined && typeof value.note !== 'string')) return null;
+  if (value.attachment !== undefined) {
+    const attachment = value.attachment;
+    if (!attachment || typeof attachment.fileName !== 'string' || typeof attachment.mimeType !== 'string' ||
+        typeof attachment.dataUrl !== 'string' || !attachment.dataUrl.startsWith('data:') ||
+        typeof attachment.sizeBytes !== 'number' || !Number.isFinite(attachment.sizeBytes) ||
+        attachment.sizeBytes < 0 || attachment.sizeBytes > MAX_ATTACHMENT_BYTES ||
+        attachment.dataUrl.length > MAX_ATTACHMENT_BYTES * 1.5) return null;
+  }
 
   return {
     id: String(value.id),
@@ -111,6 +133,48 @@ function normalizeVaultDocuments(raw: unknown): VaultDocument[] {
     .filter((item): item is VaultDocument => Boolean(item));
 }
 
+export function validateVaultDocuments(raw: unknown): VaultDocument[] | null {
+  if (!Array.isArray(raw) || raw.length > 1000) return null;
+  const documents = raw.map(normalizeVaultDocument);
+  return documents.some((document) => !document) ? null : documents as VaultDocument[];
+}
+
+function isBackupStorageKey(key: string): boolean {
+  return BACKUP_STORAGE_KEYS.has(key) || BACKUP_STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix) && key.length > prefix.length);
+}
+
+function validateApplicationStorage(raw: unknown): Record<string, string> | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const entries = Object.entries(raw);
+  if (entries.length > 500 || JSON.stringify(raw).length > MAX_BACKUP_STORAGE_BYTES) return null;
+  const result: Record<string, string> = Object.create(null);
+  for (const [key, value] of entries) {
+    if (!isBackupStorageKey(key) || typeof value !== 'string' || value.length > MAX_BACKUP_STORAGE_BYTES) return null;
+    try {
+      const parsed: unknown = JSON.parse(value);
+      if (key === 'beredskap_checklists_checked_ids' || key === 'beredskap101_map_progress_v2' || key.startsWith('beredskap_ext_check_')) {
+        if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) return null;
+      } else if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || Object.values(parsed).some((item) => typeof item !== 'string')) return null;
+    } catch { return null; }
+    result[key] = value;
+  }
+  return result;
+}
+
+export function readBackupApplicationStorage(): Record<string, string> {
+  const result: Record<string, string> = Object.create(null);
+  if (typeof window === 'undefined') return result;
+  for (let index = 0; index < window.localStorage.length; index += 1) {
+    const key = window.localStorage.key(index);
+    if (!key || !isBackupStorageKey(key)) continue;
+    const value = window.localStorage.getItem(key);
+    if (value !== null) result[key] = value;
+  }
+  const validated = validateApplicationStorage(result);
+  if (!validated) throw new Error('Local progress data cannot be included in a safe backup');
+  return validated;
+}
+
 function normalizeLocalAiSettings(raw: unknown): LocalAiSettings | null {
   if (!raw || typeof raw !== 'object') return null;
   const value = raw as Partial<LocalAiSettings>;
@@ -128,6 +192,15 @@ function isBackupBundle(raw: unknown): raw is SecureBackupBundle {
   if (!raw || typeof raw !== 'object') return false;
   const value = raw as Partial<SecureBackupBundle>;
   return value.version === 2 && 'progressState' in value;
+}
+
+function isValidProgressState(raw: unknown): raw is ProgressState {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return false;
+  const value = raw as Partial<ProgressState>;
+  return Array.isArray(value.checkedIds) && value.checkedIds.every((id) => typeof id === 'string') &&
+    Boolean(value.notes) && typeof value.notes === 'object' && !Array.isArray(value.notes) &&
+    Object.values(value.notes).every((note) => typeof note === 'string') &&
+    typeof value.lastSynced === 'number' && Number.isFinite(value.lastSynced);
 }
 
 // --- Backup cryptography ---------------------------------------------------
@@ -172,7 +245,7 @@ export class BackupDecryptionError extends Error {
 }
 
 // crypto.subtle is unavailable on non-secure contexts (e.g. LAN http self-host).
-// Callers must check this and fall back to the legacy path with a UI warning.
+// Callers must check this before offering authenticated encrypted export.
 export function isWebCryptoBackupAvailable(): boolean {
   return (
     typeof crypto !== 'undefined' &&
@@ -253,8 +326,8 @@ function decryptLegacy(encryptedData: string, passkey: string): unknown | null {
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
     if (!decrypted) return null;
     return JSON.parse(decrypted);
-  } catch (error) {
-    console.error('Failed to decrypt backup payload', error);
+  } catch {
+    // Wrong legacy passphrases are expected input errors.
     return null;
   }
 }
@@ -289,21 +362,26 @@ function buildValidatedBundle(decoded: unknown): SecureBackupBundle | null {
 
   if (isBackupBundle(decoded)) {
     const value = decoded as SecureBackupBundle;
-    if (!value.progressState || typeof value.progressState !== 'object' || Array.isArray(value.progressState)) return null;
+    if (!isValidProgressState(value.progressState)) return null;
     if ('vaultDocuments' in decoded && !Array.isArray(value.vaultDocuments)) return null;
     if ('localAiSettings' in decoded && value.localAiSettings !== null && typeof value.localAiSettings !== 'object') return null;
+    const documents = value.vaultDocuments === undefined ? [] : validateVaultDocuments(value.vaultDocuments);
+    if (!documents) return null;
+    const applicationStorage = value.applicationStorage === undefined ? undefined : validateApplicationStorage(value.applicationStorage);
+    if (value.applicationStorage !== undefined && !applicationStorage) return null;
     return {
       version: 2,
       exportedAt: typeof value.exportedAt === 'string' ? value.exportedAt : new Date().toISOString(),
       progressState: normalizeProgressState(value.progressState),
-      vaultDocuments: normalizeVaultDocuments(value.vaultDocuments),
+      vaultDocuments: documents,
       localAiSettings: normalizeLocalAiSettings(value.localAiSettings),
+      ...(applicationStorage ? { applicationStorage } : {}),
     };
   }
 
   // Legacy v1 bare progress state must at least look like a progress state.
   const candidate = decoded as Partial<ProgressState>;
-  if (!('checkedIds' in candidate) && !('notes' in candidate) && !('lastSynced' in candidate)) return null;
+  if (!isValidProgressState(candidate)) return null;
   return {
     version: 2,
     exportedAt: new Date().toISOString(),
@@ -380,21 +458,22 @@ function readLocalVaultFallback(): VaultDocument[] {
 
 function saveLocalVaultFallback(documents: VaultDocument[]) {
   try {
-    if (documents.length === 0) {
-      localStorage.removeItem(DOCUMENTS_LOCAL_FALLBACK_KEY);
-      return;
-    }
+    // An empty array is a deletion record: removing it could resurrect an old
+    // IndexedDB copy after a failed write or temporary database outage.
     localStorage.setItem(DOCUMENTS_LOCAL_FALLBACK_KEY, JSON.stringify(documents));
+    return true;
   } catch (error) {
     console.error('Failed to write local vault fallback', error);
+    return false;
   }
 }
 
-function removeLocalVaultFallback() {
+function removeLocalFallback(key: string): boolean {
   try {
-    localStorage.removeItem(DOCUMENTS_LOCAL_FALLBACK_KEY);
+    localStorage.removeItem(key);
+    return true;
   } catch {
-    // Ignore storage errors.
+    return false;
   }
 }
 
@@ -406,6 +485,14 @@ function getIndexedDB(): Promise<IDBDatabase | null> {
     }
 
     const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+    let settled = false;
+    const finish = (db: IDBDatabase | null) => {
+      if (settled) { db?.close(); return; }
+      settled = true;
+      clearTimeout(timeout);
+      resolve(db);
+    };
+    const timeout = setTimeout(() => finish(null), 5000);
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(PROGRESS_STORE)) {
@@ -416,21 +503,30 @@ function getIndexedDB(): Promise<IDBDatabase | null> {
       }
     };
     request.onsuccess = (event) => {
-      resolve((event.target as IDBOpenDBRequest).result);
+      finish((event.target as IDBOpenDBRequest).result);
     };
     request.onerror = () => {
-      resolve(null);
+      finish(null);
     };
+    request.onblocked = () => finish(null);
   });
 }
 
-function putInStore<T>(db: IDBDatabase, storeName: string, key: string, value: T): Promise<boolean> {
+function writeStores(db: IDBDatabase, writes: Array<{ store: string; key: string; value: unknown }>): Promise<boolean> {
   return new Promise((resolve) => {
-    const transaction = db.transaction(storeName, 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.put(value, key);
-    request.onsuccess = () => resolve(true);
-    request.onerror = () => resolve(false);
+    let transaction: IDBTransaction;
+    try { transaction = db.transaction([...new Set(writes.map((write) => write.store))], 'readwrite'); }
+    catch { resolve(false); return; }
+    transaction.oncomplete = () => resolve(true);
+    transaction.onabort = () => resolve(false);
+    // Wait for onabort: a request error aborts the transaction by default.
+    try {
+      for (const write of writes) transaction.objectStore(write.store).put(write.value, write.key);
+    } catch {
+      // Synchronous exceptions do not automatically abort previously queued puts.
+      try { transaction.abort(); }
+      catch { resolve(false); }
+    }
   });
 }
 
@@ -441,73 +537,114 @@ function getFromStore<T>(db: IDBDatabase, storeName: string, key: string): Promi
     const request = store.get(key);
     request.onsuccess = () => resolve(request.result as T | undefined);
     request.onerror = () => resolve(undefined);
+    transaction.onabort = () => resolve(undefined);
   });
 }
 
-export async function saveProgressState(state: ProgressState): Promise<boolean> {
+export async function saveProgressStateResult(state: ProgressState): Promise<PersistenceResult> {
   const normalized = normalizeProgressState(state);
   try {
     const db = await getIndexedDB();
     if (db) {
-      const stored = await putInStore(db, PROGRESS_STORE, STATE_KEY, normalized);
-      if (stored) return true;
+      try {
+        const stored = await writeStores(db, [{ store: PROGRESS_STORE, key: STATE_KEY, value: normalized }]);
+        if (stored && removeLocalFallback(STATE_KEY)) return { ok: true, backend: 'indexeddb' };
+      } finally { db.close(); }
     }
   } catch (error) {
     console.error('Failed to save state to IndexedDB', error);
   }
 
   try {
-    localStorage.setItem(STATE_KEY, JSON.stringify(normalized));
-    return true;
+    localStorage.setItem(STATE_KEY, JSON.stringify({ ...normalized, _storageFallback: true }));
+    return { ok: true, backend: 'localStorage' };
   } catch (error) {
     console.error('Failed to save state to localStorage fallback', error);
-    return false;
+    return { ok: false, backend: 'none', error: 'Unable to store progress in IndexedDB or localStorage' };
   }
 }
 
+export async function saveProgressState(state: ProgressState): Promise<boolean> {
+  return (await saveProgressStateResult(state)).ok;
+}
+
 export async function loadProgressState(): Promise<ProgressState> {
+  // A fallback record is the latest acknowledged write until a successful
+  // database save removes it. A recovered database may still contain old data.
+  let fallback: ProgressState | null = null;
+  try {
+    const local = localStorage.getItem(STATE_KEY);
+    if (local) {
+      const parsed: unknown = JSON.parse(local);
+      if (isValidProgressState(parsed)) {
+        fallback = normalizeProgressState(parsed);
+        if ((parsed as ProgressState & { _storageFallback?: boolean })._storageFallback === true) return fallback;
+      }
+    }
+  } catch {
+    // Unavailable or malformed fallback must not prevent a database read.
+  }
   try {
     const db = await getIndexedDB();
     if (db) {
       const value = await getFromStore<unknown>(db, PROGRESS_STORE, STATE_KEY);
-      if (value) return normalizeProgressState(value);
+      db.close();
+      if (value) {
+        const stored = normalizeProgressState(value);
+        // Older releases left local fallback copies after successful database
+        // saves. Use their timestamp, not the new explicit fallback precedence.
+        return fallback && fallback.lastSynced > stored.lastSynced ? fallback : stored;
+      }
     }
   } catch (error) {
     console.error('Failed to load state from IndexedDB', error);
   }
 
-  try {
-    const local = localStorage.getItem(STATE_KEY);
-    if (local) {
-      return normalizeProgressState(JSON.parse(local));
-    }
-  } catch (error) {
-    console.error('Failed to load state from localStorage fallback', error);
-  }
+  if (fallback) return fallback;
   return { ...DEFAULT_PROGRESS_STATE };
 }
 
-export async function saveVaultDocuments(documents: VaultDocument[]): Promise<boolean> {
-  const normalized = normalizeVaultDocuments(documents);
+export async function saveVaultDocumentsResult(documents: VaultDocument[]): Promise<PersistenceResult> {
+  const normalized = validateVaultDocuments(documents);
+  if (!normalized) return { ok: false, backend: 'none', error: 'Invalid document data' };
   try {
     const db = await getIndexedDB();
     if (db) {
-      const stored = await putInStore(db, DOCUMENT_STORE, DOCUMENTS_KEY, normalized);
-      if (stored) return true;
+      try {
+        const stored = await writeStores(db, [{ store: DOCUMENT_STORE, key: DOCUMENTS_KEY, value: normalized }]);
+        if (stored && removeLocalFallback(DOCUMENTS_LOCAL_FALLBACK_KEY)) {
+          return { ok: true, backend: 'indexeddb' };
+        }
+      } finally { db.close(); }
     }
   } catch (error) {
     console.error('Failed to save vault documents to IndexedDB', error);
   }
 
-  saveLocalVaultFallback(normalized);
-  return true;
+  return saveLocalVaultFallback(normalized)
+    ? { ok: true, backend: 'localStorage' }
+    : { ok: false, backend: 'none', error: 'Unable to store documents in IndexedDB or localStorage' };
+}
+
+export async function saveVaultDocuments(documents: VaultDocument[]): Promise<boolean> {
+  return (await saveVaultDocumentsResult(documents)).ok;
 }
 
 export async function loadVaultDocuments(): Promise<VaultDocument[]> {
   try {
+    const fallback = localStorage.getItem(DOCUMENTS_LOCAL_FALLBACK_KEY);
+    if (fallback !== null) {
+      const documents = validateVaultDocuments(JSON.parse(fallback));
+      if (documents) return documents;
+    }
+  } catch {
+    // Try IndexedDB when fallback storage is unavailable or malformed.
+  }
+  try {
     const db = await getIndexedDB();
     if (db) {
       const value = await getFromStore<unknown>(db, DOCUMENT_STORE, DOCUMENTS_KEY);
+      db.close();
       if (value !== undefined) {
         if (Array.isArray(value)) {
           return normalizeVaultDocuments(value);
@@ -526,7 +663,6 @@ export async function loadVaultDocuments(): Promise<VaultDocument[]> {
 }
 
 export async function clearVaultDocuments(): Promise<boolean> {
-  removeLocalVaultFallback();
   return saveVaultDocuments([]);
 }
 
@@ -564,15 +700,79 @@ export function decryptBackup(encryptedData: string, passkey: string): ProgressS
 export function buildSecureBackupBundle(
   progressState: ProgressState,
   vaultDocuments: VaultDocument[],
-  localAiSettings: LocalAiSettings | null
+  localAiSettings: LocalAiSettings | null,
+  applicationStorage?: Record<string, string>
 ): SecureBackupBundle {
+  const validatedApplicationStorage = applicationStorage === undefined ? undefined : validateApplicationStorage(applicationStorage);
+  if (applicationStorage !== undefined && !validatedApplicationStorage) throw new Error('Invalid application progress data');
   return {
     version: 2,
     exportedAt: new Date().toISOString(),
     progressState: normalizeProgressState(progressState),
     vaultDocuments: normalizeVaultDocuments(vaultDocuments),
     localAiSettings: normalizeLocalAiSettings(localAiSettings),
+    ...(validatedApplicationStorage ? { applicationStorage: validatedApplicationStorage } : {}),
   };
+}
+
+export interface RestorationResult {
+  ok: boolean;
+  rollbackComplete: boolean;
+  error?: string;
+}
+
+/** Writes localStorage records first, then commits IndexedDB stores together.
+ * Cross-store rollback is best effort; failures are always reported to callers. */
+export async function restoreSecureBackupBundle(bundle: SecureBackupBundle, format: BackupPayloadFormat): Promise<RestorationResult> {
+  const applicationStorage = bundle.applicationStorage === undefined ? {} : validateApplicationStorage(bundle.applicationStorage);
+  const documents = validateVaultDocuments(bundle.vaultDocuments);
+  if (!isValidProgressState(bundle.progressState) || !documents || !applicationStorage) {
+    return { ok: false, rollbackComplete: true, error: 'Backup data failed validation' };
+  }
+
+  let db: IDBDatabase | null;
+  try { db = await getIndexedDB(); }
+  catch { db = null; }
+  const changes = new Map<string, string | null>(Object.entries(applicationStorage));
+  if (bundle.localAiSettings) changes.set('beredskap101_local_ai_settings_v1', JSON.stringify(bundle.localAiSettings));
+  if (!db) {
+    changes.set(STATE_KEY, JSON.stringify({ ...bundle.progressState, _storageFallback: true }));
+    if (format !== 'v1') changes.set(DOCUMENTS_LOCAL_FALLBACK_KEY, JSON.stringify(documents));
+  } else {
+    changes.set(STATE_KEY, null);
+    if (format !== 'v1') changes.set(DOCUMENTS_LOCAL_FALLBACK_KEY, null);
+  }
+
+  const previous = new Map<string, string | null>();
+  try {
+    for (const key of changes.keys()) previous.set(key, localStorage.getItem(key));
+  } catch {
+    db?.close();
+    return { ok: false, rollbackComplete: true, error: 'Unable to read current local state' };
+  }
+
+  try {
+    for (const [key, value] of changes) {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    }
+    if (db) {
+      const writes = [{ store: PROGRESS_STORE, key: STATE_KEY, value: bundle.progressState as unknown }];
+      if (format !== 'v1') writes.push({ store: DOCUMENT_STORE, key: DOCUMENTS_KEY, value: documents });
+      const committed = await writeStores(db, writes);
+      if (!committed) throw new Error('IndexedDB restore transaction failed');
+    }
+    return { ok: true, rollbackComplete: true };
+  } catch (error) {
+    let rollbackComplete = true;
+    for (const [key, value] of previous) {
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch { rollbackComplete = false; }
+    }
+    return { ok: false, rollbackComplete, error: error instanceof Error ? error.message : 'Restore failed' };
+  } finally { db?.close(); }
 }
 
 // Legacy v2 export path (crypto-js). Retained for the non-HTTPS fallback where
@@ -691,18 +891,20 @@ export function downloadFullLocalDataExport(bundle: FullLocalDataExportBundle) {
 
 export async function eraseAllLocalAppData(): Promise<ErasureResult> {
   const localStorageKeysRemoved: string[] = [];
+  const localStorageKeysFailed: string[] = [];
   if (typeof window !== 'undefined') {
     for (const key of getAppLocalStorageKeys()) {
       try {
         window.localStorage.removeItem(key);
         localStorageKeysRemoved.push(key);
       } catch {
-        // Continue erasure best-effort across keys.
+        localStorageKeysFailed.push(key);
       }
     }
   }
 
   const cacheNamesRemoved: string[] = [];
+  const cacheNamesFailed: string[] = [];
   if (typeof caches !== 'undefined') {
     for (const cacheName of await listAppCacheNames()) {
       if (!shouldDeleteCache(cacheName)) continue;
@@ -711,14 +913,16 @@ export async function eraseAllLocalAppData(): Promise<ErasureResult> {
           cacheNamesRemoved.push(cacheName);
         }
       } catch {
-        // Continue erasure best-effort across caches.
+        cacheNamesFailed.push(cacheName);
       }
     }
   }
 
   return {
     localStorageKeysRemoved,
+    localStorageKeysFailed,
     cacheNamesRemoved,
+    cacheNamesFailed,
     indexedDbCleared: await deleteAppIndexedDb(),
   };
 }

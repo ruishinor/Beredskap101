@@ -11,6 +11,7 @@ import {
   eraseAllLocalAppData,
   loadVaultDocuments,
   saveVaultDocuments,
+  validateVaultDocuments,
   upsertVaultDocument,
 } from '../utils/saveSystem';
 
@@ -309,8 +310,10 @@ export default function LocalDocumentVault({ theme }: { theme: ThemeType }) {
       if (parsed.documents.some((document) => hasOversizedImportedAttachment(document))) {
         throw new Error('Imported attachment too large');
       }
-      const merged = uniqueById([...documents, ...(parsed.documents as VaultDocument[])]);
-      await saveVaultDocuments(merged);
+      const imported = validateVaultDocuments(parsed.documents);
+      if (!imported) throw new Error('Invalid document fields');
+      const merged = uniqueById([...documents, ...imported]);
+      if (!(await saveVaultDocuments(merged))) throw new Error('Document storage failed');
       await refreshDocuments();
       showStatus(
         'success',
@@ -334,13 +337,14 @@ export default function LocalDocumentVault({ theme }: { theme: ThemeType }) {
     if (!window.confirm(message)) return;
     const result = await eraseAllLocalAppData();
     await refreshDocuments();
+    const completelyErased = result.indexedDbCleared && result.localStorageKeysFailed.length === 0 && result.cacheNamesFailed.length === 0;
     showStatus(
-      'success',
+      completelyErased ? 'success' : 'error',
       currentLang === 'no'
-        ? `Lokal sletting fullført. Nøkler: ${result.localStorageKeysRemoved.length}, cacher: ${result.cacheNamesRemoved.length}.`
-        : `Local erasure complete. Keys: ${result.localStorageKeysRemoved.length}, caches: ${result.cacheNamesRemoved.length}.`
+        ? `${completelyErased ? 'Lokal sletting fullført' : 'Delvis sletting; kontroller dataene før du går videre'}. Nøkler: ${result.localStorageKeysRemoved.length}, cacher: ${result.cacheNamesRemoved.length}.`
+        : `${completelyErased ? 'Local erasure complete' : 'Partial erasure; review remaining data before continuing'}. Keys: ${result.localStorageKeysRemoved.length}, caches: ${result.cacheNamesRemoved.length}.`
     );
-    window.setTimeout(() => window.location.reload(), 1200);
+    if (completelyErased) window.setTimeout(() => window.location.reload(), 1200);
   };
 
   return (
@@ -356,6 +360,11 @@ export default function LocalDocumentVault({ theme }: { theme: ThemeType }) {
               {currentLang === 'no'
                 ? 'Denne enheten kan inneholde sensitive beredskapsnotater. Bruk passord på enheten, unngå delte profiler, og bruk manuell eksport/sletting ved behov.'
                 : 'This device may contain sensitive preparedness notes. Use device lock-screen protection, avoid shared profiles, and use manual export/deletion when needed.'}
+            </p>
+            <p className="text-xs leading-relaxed">
+              {currentLang === 'no'
+                ? 'Dokumentene er ikke kryptert i nettleserens lokale lagring. JSON-eksporten er også ukryptert.'
+                : 'Documents are not encrypted in browser storage. JSON exports are also unencrypted.'}
             </p>
             <p className="text-xs leading-relaxed">
               {currentLang === 'no'
@@ -571,6 +580,7 @@ export default function LocalDocumentVault({ theme }: { theme: ThemeType }) {
 
         {status && (
           <div
+            role={status.type === 'error' ? 'alert' : 'status'}
             className={`mb-4 rounded-lg border px-3 py-2 text-xs ${
               status.type === 'success'
                 ? 'border-green-500/40 text-green-500'
